@@ -86,12 +86,19 @@ const isValidName = computed(() => {
 
 const fetchMembers = async () => {
   try {
-    await collectionStore.getMembersByCollectionId(props.collectionId);
+    const response = await collectionStore.getMembersByCollectionId(props.collectionId);
+    console.log('API 응답 데이터:', response);
+
+    console.log("멤버 데이터:", collectionStore.membersByCollectionId.value); // API 응답 확인
+
     // results 배열의 각 사용자 정보를 members에 맞는 형식으로 변환
-    members.value = collectionStore.membersByCollectionId.value.results.map(user => ({
+    members.value = response.results.map(user => ({
       id: user.userId,
       name: user.nickname
     }));
+
+    console.log("변환된 멤버 목록:", members.value);
+
   } catch (error) {
     console.error('멤버 정보 로딩 실패:', error);
   }
