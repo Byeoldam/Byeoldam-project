@@ -83,7 +83,7 @@ const showCreateModal = ref(false);
 
 
 const collections = computed(() => {
-    return sharedCollections.value.results;
+    return sharedCollections.value || [];
 });
 
 
