@@ -87,10 +87,12 @@ function cleanupContent(content) {
 
 // <3> background.js로 페이지 정보 전송
 const readingTimeInfo = calculateReadingTime();
+const pageTitle = document.querySelector('meta[property="og:title"]')?.content || document.title;
 chrome.runtime.sendMessage({
   action: "GET_PAGE_INFO_FROM_SITE",
   url: window.location.href,
+  title: pageTitle,
+  // content : readingTimeInfo.text,
   readingTime: readingTimeInfo.totalTime,
-  stats: readingTimeInfo.stats,
-  text : readingTimeInfo.text
+  stats: readingTimeInfo.stats
 });

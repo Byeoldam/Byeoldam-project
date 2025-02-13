@@ -31,8 +31,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     } else {
       // else >> *********** test용 **************
       const testLoginData = {
-        userId: "tester@naver.com",
-        access_token: "test_access_token_value",
+        userId: "ex@naver.com",
+        access_token: "eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInVzZXJJZCI6NywiZW1haWwiOiJleEBuYXZlci5jb20iLCJyb2xlIjoiUk9MRV9VU0VSIiwiaWF0IjoxNzM5NDQ2MTczLCJleHAiOjE3Mzk0NTIxNzN9.ENWzOKCIQCjZJrrtRR1i_i-vfcb5dzAZJbEw_r4ZEhw",
       };
       saveLoginData(testLoginData);
       sendResponse({ status: "success" });
@@ -62,7 +62,10 @@ function saveLoginData(userLoginInfo) {
 // ===============================================================================================
 
 // 페이지 정보를 저장할 변수
-let currentUrl = null;
+let pageInfo = {
+  siteUrl: null,
+  title: null
+};
 let readingTimeInfo = {
   readingTime: null,
   stats: null
@@ -71,19 +74,23 @@ let readingTimeInfo = {
 // <1> contentScript.js로부터 페이지 정보 수신
 chrome.runtime.onMessage.addListener((message, sender) => {
   if (message.action === "GET_PAGE_INFO_FROM_SITE") {
-    currentUrl = message.url;
+    pageInfo.siteUrl = message.url;
+    pageInfo.title = message.title;
     readingTimeInfo.readingTime = message.readingTime;
     readingTimeInfo.stats = message.stats;
-    readingTimeInfo.text = message.text;
-    console.log("저장된 통계:", readingTimeInfo.stats);
-    console.log("TEXT:", readingTimeInfo.text);
+
+    // console.log("페이지 타이틀 : " , pageInfo.title);
+    // console.log("언어별 전처리 통계:", readingTimeInfo.stats);
   }
 });
 
 // <2> StorageView로 페이지 정보 응답
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "GET_PAGE_INFO_FROM_BACK") {
-    sendResponse({ url: currentUrl, readingTime: readingTimeInfo.readingTime });
+    sendResponse({ 
+      pageInfo: pageInfo, 
+      readingTime: readingTimeInfo.readingTime 
+    });
   }
   return true;
 });

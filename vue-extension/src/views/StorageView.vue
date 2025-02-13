@@ -148,57 +148,13 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
 import api from "@/utils/api";
-
-// HSL을 HEX로 변환하는 함수
-const hslToHex = (h, s, l) => {
-  s /= 100;
-  l /= 100;
-
-  const c = (1 - Math.abs(2 * l - 1)) * s;
-  const x = c * (1 - Math.abs((h / 60) % 2 - 1));
-  const m = l - c/2;
-  let r = 0, g = 0, b = 0;
-
-  if (0 <= h && h < 60) {
-    r = c; g = x; b = 0;
-  } else if (60 <= h && h < 120) {
-    r = x; g = c; b = 0;
-  } else if (120 <= h && h < 180) {
-    r = 0; g = c; b = x;
-  } else if (180 <= h && h < 240) {
-    r = 0; g = x; b = c;
-  } else if (240 <= h && h < 300) {
-    r = x; g = 0; b = c;
-  } else if (300 <= h && h < 360) {
-    r = c; g = 0; b = x;
-  }
-
-  // 각 색상값에 m을 더하고 255를 곱한 후 16진수로 변환
-  const toHex = (value) => {
-    const hex = Math.round((value + m) * 255).toString(16);
-    return hex.length === 1 ? '0' + hex : hex;
-  };
-
-  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
-};
-
-// 랜덤 색상 생성 함수
-const generatePastelColors = () => {
-  const hue = Math.floor(Math.random() * 359); // 0-359 범위의 색조
-  const saturation = 65 + Math.random() * 15;  // 65-80% 채도 (더 부드러운 파스텔)
-  const lightness = 75 + Math.random() * 15;   // 75-90% 명도 (더 밝은 색상)
-
-  // 배경색 (더 밝은 색상)
-  const tagColor = hslToHex(hue, saturation, lightness);
-  
-  // 테두리색 (더 진한 색상)
-  const tagBorderColor = hslToHex(hue, saturation + 10, lightness - 15);
-
-  return { tagColor, tagBorderColor };
-};
+import { generatePastelColors } from "@/utils/colorUtils";
 
 
 const accessToken = ref("");
+const siteUrl = ref("");
+const title = ref("")
+const readingTime = ref(null);
 const gptTags = ref([ // GPT 생성 태그 배열
   { tagName: "태그1", ...generatePastelColors()  },
   { tagName: "태그2", ...generatePastelColors()  },
@@ -210,23 +166,19 @@ const finalTags = computed(() => {
   return [...gptTags.value, ...newTags.value];
 });
 
-const url = ref("");
-const readingTime = ref(null);
+
 onMounted(async () => {
   try {
-    // URL, 읽기 시간, 토큰을 비동기적으로 가져오기
-    const pageInfo = await new Promise((resolve, reject) => {
+    // 페이지정보와 토큰을 비동기적으로 가져오기
+    const pageData = await new Promise((resolve, reject) => {
       chrome.runtime.sendMessage({ action: "GET_PAGE_INFO_FROM_BACK" }, (response) => {
         if (!response) {
-              reject("응답이 없습니다.");
+              reject("페이지 정보 응답이 없습니다.");
               return;
           }
 
-        if (response && response.url && response.readingTime) {
-          resolve({
-            url: response.url,
-            readingTime: response.readingTime
-          });
+          if (response.pageInfo && response.pageInfo.siteUrl && response.pageInfo.title) {
+            resolve(response);
         } else {
           reject("페이지 정보를 가져오는 데 실패했습니다.");
         }
@@ -243,30 +195,20 @@ onMounted(async () => {
       });
     });
 
-    url.value = pageInfo.url;
-    readingTime.value = pageInfo.readingTime;
+    siteUrl.value = pageData.pageInfo.siteUrl;
+    title.value = pageData.pageInfo.title;
+    readingTime.value = pageData.readingTime;
     accessToken.value = fetchedAccessToken;
 
-    console.log('StorageView.vue 가져오기 성공:', {
-      url: url.value,
-      readingTime: readingTime.value,
-      accessToken: accessToken.value
-    });
-
-
     // 초기 데이터 로드 API 요청
-    // const response = await api.post("/popup/load", { siteUrl: url.value }, {
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //     "Authorization": `Bearer ${accessToken.value}`, 
-    //   }
-    // });
+    const response = await api.post("/popup/load", { siteUrl: siteUrl.value, title: title.value });
+    console.log(response);
 
-    // if (response.data.success) {
-    //   console.log("팝업 데이터 로드 성공:", response.data.data);
-    // } else {
-    //   console.error("에러 발생:", response.data.message);
-    // }
+    if (response.data.success) {
+      console.log("팝업 데이터 로드 성공:", response.data.data);
+    } else {
+      console.error("에러 발생:", response.data.message);
+    }
 
   } catch (error) {
     console.error("데이터 로딩 실패:", error);

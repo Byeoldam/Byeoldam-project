@@ -9,17 +9,32 @@ const api = axios.create({
 
 // 요청 인터셉터
 api.interceptors.request.use(
-  (config) => {
-    
-    const accessToken =  chrome.storage.local.get(["access_token"]);
-    if (accessToken) {
-      config.headers['accessToken'] = accessToken;
-      console.log('요청 URL:', config.baseURL + config.url);
-      console.log('요청 헤더:', config.headers);
-    } else {
-      console.log('토큰이 없습니다!');
+  async (config) => {  // async 추가
+    try {
+      // Promise로 감싸서 비동기 처리
+      const response = await new Promise((resolve, reject) => {
+        chrome.storage.local.get(["access_token"], (result) => {
+          if (chrome.runtime.lastError) {
+            reject(chrome.runtime.lastError);
+          } else {
+            resolve(result);
+          }
+        });
+      });
+
+      const accessToken = response.access_token;
+      if (accessToken) {
+        config.headers['accessToken'] = accessToken;
+        console.log('요청 URL:', config.baseURL + config.url);
+        console.log('요청 헤더:', config.headers);
+      } else {
+        console.log('토큰이 없습니다!');
+      }
+      return config;
+    } catch (error) {
+      console.error('토큰 가져오기 실패:', error);
+      return config;
     }
-    return config;
   },
   (error) => {
     console.error('요청 인터셉터 에러:', error);
