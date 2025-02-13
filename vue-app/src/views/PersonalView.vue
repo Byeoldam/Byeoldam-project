@@ -82,7 +82,7 @@ const selectedCollection = ref('all');
 const showCreateModal = ref(false);
 
 const collections = computed(() => {
-    return personalCollections.value?.results || [];
+    return personalCollections.value || [];
 });
 
 const filteredCollections = computed(() => {

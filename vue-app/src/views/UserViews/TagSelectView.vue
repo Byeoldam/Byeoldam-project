@@ -7,10 +7,10 @@
   
         <!-- 추천 태그 목록 -->
         <div class="flex flex-wrap gap-3 mb-8">
-          <span v-for="tag in recommendedTags" :key="tag"
+          <span v-for="tag in recommendedTags" :key="tag.tagName"
                 class="px-3 py-1.5 text-sm rounded-lg bg-gray-200 cursor-pointer hover:bg-gray-300"
-                @click="addTag(tag)">
-            # {{ tag }}
+                @click="addTag(tag.tagName)">
+            # {{ tag.tagName }}
           </span>
         </div>
   
@@ -53,7 +53,7 @@
   
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { RouterLink } from "vue-router";
 import { useErrorStore } from "@/stores/error";
 import { useBookmarkStore } from "@/stores/bookmark";
@@ -61,17 +61,27 @@ import { useBookmarkStore } from "@/stores/bookmark";
 const errorStore = useErrorStore();
 const bookmarkStore = useBookmarkStore();
 
-const recommendedTags = ref([
-    "BackEnd", "오징어게임2", "연말정산", "설연휴", 
-    "반려동물", "정보처리기사", "미국여행", "양식", "캐나다 워홀"
-]);
+// 추천 태그를 저장할 ref 생성
+const recommendedTags = ref([]);
+
+// 컴포넌트가 마운트될 때 추천 태그 데이터 불러오기
+onMounted(async () => {
+    try {
+        await bookmarkStore.getTopTags();
+        // results.tagList에서 태그 데이터 가져오기
+        recommendedTags.value = bookmarkStore.topTags.results?.tagList || [];
+    } catch (error) {
+        console.error("추천 태그 로딩 실패:", error);
+        errorStore.setError("추천 태그를 불러오는데 실패했습니다.");
+    }
+});
 
 const selectedTags = ref([]);
 const newTag = ref("");
 
-const addTag = (tag) => {
-    if (tag && !selectedTags.value.includes(tag)) {
-        selectedTags.value.push(tag);
+const addTag = (tagName) => {
+    if (tagName && !selectedTags.value.includes(tagName)) {
+        selectedTags.value.push(tagName);
         newTag.value = "";
     }
 };
@@ -82,15 +92,17 @@ const removeTag = (tag) => {
 
 const saveSelectedTags = async () => {
   try {
-    for (const tag of selectedTags.value) {
-      const tagData = {
+    // tagList 형식에 맞춰 데이터 구조화
+    const tagsData = {
+      tagList: selectedTags.value.map(tag => ({
         tagName: tag,
-        tagColor: "#0000FF",
-        tagBolder: false
-      };
-      await bookmarkStore.saveUserDefineTags(tagData);
-    }
-    console.log("모든 태그가 성공적으로 저장되었습니다.");
+        tagColor: "#3B82F6",  // 기본 색상 설정
+        tagBolder: "normal"   // 기본 굵기 설정
+      }))
+    };
+    
+    await bookmarkStore.saveUserDefineTags(tagsData);
+    errorStore.setSuccess("태그가 성공적으로 저장되었습니다.");
   } catch (error) {
     console.error("태그 저장 중 오류 발생:", error);
     errorStore.setError("태그 저장에 실패했습니다.");

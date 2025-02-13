@@ -612,7 +612,13 @@ export const useBookmarkStore = defineStore("bookmark", () => {
         }
       );
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    // 북마크 상세 페이지에서 메모 조회
+    // 상위 태그 10개 조회
+    const topTags = ref({});
+
+    const getTopTags = async () => {
+        const response = await api.get('/tags/recommend');
+        topTags.value = response.data;
+    };
 
     return {
         changePriority,
@@ -647,6 +653,8 @@ export const useBookmarkStore = defineStore("bookmark", () => {
         oldBookmarks,
         // exampleBookmarkMemo,
         bookmarkMemo,
-        saveUserDefineTags
+        saveUserDefineTags,
+        getTopTags,
+        topTags
     };
 });
