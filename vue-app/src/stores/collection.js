@@ -11,6 +11,9 @@ export const useCollectionStore = defineStore("collection", () => {
   const sharedCollections = ref([]); // 공유 컬렉션
   const allCollections = ref([]); // 전체 컬렉션 저장 (필요할 경우)
 
+  // membersByCollectionId를 ref로 초기화
+  const membersByCollectionId = ref(null);  // 여기에 ref 추가
+
   // 로그인 후 개인 & 공유 컬렉션 모두 불러오기
   const fetchAllCollection = async () => {
     try {
@@ -100,15 +103,16 @@ export const useCollectionStore = defineStore("collection", () => {
       ]
     }
   )
-  //공유 컬렉션 id로 멤버 조회 response
-  const membersByCollectionId = ref({})
   //공유 컬렉션 id로 멤버 조회
   const getMembersByCollectionId = async (collectionId) => {
     try {
-      const response = await api.get(`/collections/shared/${collectionId}/users`)
-      membersByCollectionId.value = response.data
+      console.log('컬렉션 ID:', collectionId);
+      const response = await api.get(`/collections/shared/${collectionId}/users`);
+      console.log('API 응답:', response.data);
+      membersByCollectionId.value = response.data;  // .value로 값 설정
+      return response.data;
     } catch (error) {
-      console.error('공유컬렉션 멤버 조회 중 오류 발생:', error)
+      console.error('공유컬렉션 멤버 조회 중 오류 발생:', error);
       throw error;
     }
   };
