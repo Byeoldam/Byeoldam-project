@@ -131,7 +131,7 @@ public class SharedCollectionService {
                 .orElseThrow(() -> new CustomException(""));
         SharedCollection collection = sharedCollectionRepository.findById(collectionId)
                 .orElseThrow(() -> new CustomException(""));
-        List<Bookmark> bookmarks = bookmarkRepository.findByUserAndSharedCollection(user, collection);
+        List<Bookmark> bookmarks = bookmarkRepository.findBySharedCollection(collection);
         return makeBookmarkResponse(bookmarks);
     }
 
