@@ -9,48 +9,35 @@
                         <div class="header-content">
                             <div class="title-section">
                                 <i class="fas fa-thumbs-up title-icon"></i>
-                                <h2 class="title">추천 북마크</h2>
+                                <h2 class="title">추천 태그</h2>
                             </div>
-                            <p class="description">사용자의 관심사에 맞는 추천 북마크를 확인할 수 있습니다</p>
+                            <p class="description">자주 사용되는 태그들을 확인해보세요</p>
                         </div>
                     </div>
-
-                    <!-- 태그가 없는 경우 -->
-                    <div v-if="!hasUserTags" class="empty-state">
-                        <i class="fas fa-tags empty-icon"></i>
-                        <p class="empty-text">관심사 태그가 없습니다</p>
-                        <p class="empty-description">관심 태그를 추가하면 관련된 추천 콘텐츠를 받아볼 수 있습니다.</p>
+                    
+                    <div class="filter-buttons">
+                        <button 
+                            v-for="tag in tags" 
+                            :key="tag.tagName"
+                            :class="['filter-btn', selectedTag === tag.tagName ? 'active' : '']"
+                            @click="handleTagClick(tag.tagName)"
+                        >
+                            {{ tag.tagName }}
+                        </button>
                     </div>
 
-                    <!-- 태그가 있는 경우 -->
-                    <template v-else>
-                        <div class="tabs-container">
-                            <div class="tabs">
-                                <button 
-                                    v-for="tag in userTags" 
-                                    :key="tag.id"
-                                    :class="['tab', { active: selectedTag === tag.id }]"
-                                    @click="handleTagSelect(tag.id)"
-                                >
-                                    {{ tag.name }}
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <div class="bookmarks-grid" v-if="!isLoading">
-                            <CardUnbookmarked 
-                                v-for="bookmark in recommendedBookmarks.result.recommendedUrlList" 
-                                :key="bookmark.url"
-                                :url="bookmark.url"
-                                :img="bookmark.img"
-                                :title="bookmark.title"
-                                :description="bookmark.description"
-                            />
-                        </div>
-                        <div v-else class="loading">
-                            <i class="fas fa-spinner fa-spin"></i>
-                        </div>
-                    </template>
+                    <!-- 추천 북마크 카드 표시 영역 -->
+                    <div class="cards-grid" v-if="recommendedBookmarks.length > 0">
+                        <RecommendCard
+                            v-for="bookmark in recommendedBookmarks"
+                            :key="bookmark.url"
+                            :url="bookmark.url"
+                            :title="bookmark.title"
+                            :description="bookmark.description"
+                            :imageUrl="bookmark.imageUrl"
+                            :readingTime="bookmark.readingTime"
+                        />
+                    </div>
                 </div>
             </div>
         </div>
@@ -65,12 +52,13 @@ import Header from '@/common/Header.vue';
 import SideBar from '@/common/SideBar.vue';
 import CardUnbookmarked from '@/common/CardUnbookmarked.vue';
 import { useBookmarkStore } from '@/stores/bookmark';
+import api from '@/utils/api';
+import RecommendCard from '@/common/RecommendCard.vue';
 
 const router = useRouter();
 const bookmarkStore = useBookmarkStore();
 const { userDefineTags, recommendedBookmarks } = storeToRefs(bookmarkStore);
 const { getUserDefineTags, getRecommendedBookmarks } = bookmarkStore;
-
 
 const isLoading = ref(true);
 const selectedTag = ref(null);
@@ -95,7 +83,7 @@ const fetchUserTags = async () => {
                 name: tagName
             }));
             if (userTags.value.length > 0) {
-                selectedTag.value = userTags.value[0].id;
+                selectedTag.value = userTags.value[0].name;
                 await fetchRecommendedBookmarks(userTags.value[0].name);
             }
         }
@@ -117,17 +105,15 @@ const fetchRecommendedBookmarks = async (tagName = null) => {
 };
 
 const handleTagSelect = async (tagId) => {
-    selectedTag.value = tagId;
-    const selectedTagName = userTags.value.find(tag => tag.id === tagId)?.name;
-    await fetchRecommendedBookmarks(selectedTagName);
+    selectedTag.value = userTags.value.find(tag => tag.id === tagId)?.name;
+    await fetchRecommendedBookmarks(selectedTag.value);
 };
 
 const setupIntersectionObserver = () => {
     observer.value = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && hasMore.value && !isLoading.value) {
             page.value++;
-            const selectedTagName = userTags.value.find(tag => tag.id === selectedTag.value)?.name;
-            fetchRecommendedBookmarks(selectedTagName);
+            fetchRecommendedBookmarks(selectedTag.value);
         }
     });
 
@@ -139,9 +125,37 @@ const goToBookmarks = () => {
     router.push('/personal-collection');  // 북마크 관리 페이지로 이동
 };
 
+const tags = ref([]);
+
+const handleTagClick = async (tagName) => {
+    selectedTag.value = tagName;
+    try {
+        const response = await api.get(`/tags/recommend-search`, {
+            params: {
+                cursorId: 1,
+                size: 10,
+                tag: tagName
+            }
+        });
+        console.log('Recommended bookmarks:', response.data, 'hakjun0412');
+        recommendedBookmarks.value = response.data.results;
+    } catch (error) {
+        console.error('추천 북마크 로딩 실패:', error, 'hakjun0412');
+        recommendedBookmarks.value = [];
+    }
+};
+
 onMounted(async () => {
     await fetchUserTags();
     setupIntersectionObserver();
+    try {
+        const response = await api.get('/tags');
+        console.log('Tags response:', response.data, 'hakjun0412');
+        tags.value = response.data.results.tagList;
+    } catch (error) {
+        console.error('태그 로딩 실패:', error, 'hakjun0412');
+        tags.value = [];
+    }
 });
 
 onUnmounted(() => {
@@ -236,34 +250,73 @@ onUnmounted(() => {
     line-height: 1.4;
 }
 
-.tabs-container {
-    margin-bottom: 24px;
-    overflow-x: hidden;
-    width: 100%;
-}
-
-.tabs {
+.filter-buttons {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
-    padding: 4px;
+    gap: 10px;
+    margin: 20px;
+    justify-content: flex-start;
+    max-width: 1800px;
 }
 
-.tab {
-    padding: 8px 16px;
-    border: none;
+.filter-btn {
+    flex: 0 0 calc(8.33% - 10px);
+    padding: 10px 15px;
     border-radius: 20px;
     background-color: #f8f9fa;
-    color: #666;
+    border: 1px solid #dee2e6;
+    color: #495057;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-align: center;
     white-space: nowrap;
-    margin: 4px 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 120px;
 }
 
-.tab.active {
+.filter-btn:hover {
+    background-color: #e9ecef;
+    transform: scale(1.05);
+}
+
+.filter-btn.active {
     background-color: #007bff;
     color: white;
+    border-color: #007bff;
+    box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
+}
+
+@media (max-width: 1600px) {
+    .filter-btn {
+        flex: 0 0 calc(10% - 10px);
+    }
+}
+
+@media (max-width: 1200px) {
+    .filter-btn {
+        flex: 0 0 calc(12.5% - 10px);
+    }
+}
+
+@media (max-width: 992px) {
+    .filter-btn {
+        flex: 0 0 calc(16.66% - 10px);
+    }
+}
+
+@media (max-width: 768px) {
+    .filter-btn {
+        flex: 0 0 calc(25% - 10px);
+    }
+}
+
+@media (max-width: 576px) {
+    .filter-btn {
+        flex: 0 0 calc(33.33% - 10px);
+    }
 }
 
 .bookmarks-grid {
@@ -307,5 +360,12 @@ onUnmounted(() => {
 .empty-description {
     color: #888;
     font-size: 0.9rem;
+}
+
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    padding: 20px;
 }
 </style>
