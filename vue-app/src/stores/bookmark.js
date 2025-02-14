@@ -442,8 +442,9 @@ export const useBookmarkStore = defineStore("bookmark", () => {
 
       //태그 기반 검색 불러오는 함수
       const getSearchBookmarksByTag = async (tagName, cursorId = 1, size = 10) => {
-        const response = await api.get(`/tags/my-data/search?cursorId=${cursorId}&size=${size}&tag=${tagName}`);
+        const response = await api.get(`/tags/search?cursorId=${cursorId}&size=${size}&tag=${tagName}`);
         searchBookmarksByTag.value = response.data;
+        console.log("------------getSearchBookmarksByTag------------");
         console.log(response.data);
       };
 

@@ -34,10 +34,14 @@
                 <div class="tags-container">
                     <span 
                         v-for="tag in visibleTags" 
-                        :key="tag"
+                        :key="tag.tagName"
                         class="tag"
+                        :style="{
+                            backgroundColor: tag.tagColor,
+                            borderColor: tag.tagBolder
+                        }"
                     >
-                        #{{ tag }}
+                        #{{ tag.tagName }}
                     </span>
                     <span 
                         v-if="remainingTagsCount > 0" 
@@ -84,7 +88,15 @@ const props = defineProps({
     },
     tag: {
         type: Array,
-        default: () => []
+        default: () => [],
+        validator: (value) => {
+            return value.every(tag => 
+                typeof tag === 'object' && 
+                'tagName' in tag && 
+                'tagColor' in tag && 
+                'tagBolder' in tag
+            )
+        }
     },
     priority: {
         type: Boolean,
@@ -221,9 +233,9 @@ const handlePriorityToggle = () => {
 
 .tag {
     padding: 2px 6px;
-    background-color: #f0f0f0;
     border-radius: 12px;
     white-space: nowrap;
+    border: 1px solid;
 }
 
 .remaining-count {
