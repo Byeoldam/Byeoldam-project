@@ -79,7 +79,7 @@ public class PersonalCollectionController {
 
     ) {
 
-        return ResponseTemplate.ok(personalCollectionService.getCollectionBookmark(personalCollectionId, userId));
+        return ResponseTemplate.ok(personalCollectionService.getCollectionBookmark(userId, personalCollectionId));
     }
 
     @Operation(summary = "오래된 북마크 조회", description = "30일 이상 보지 않은 북마크 목록 조회")
