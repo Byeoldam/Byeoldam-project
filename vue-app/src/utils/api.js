@@ -17,8 +17,8 @@ api.interceptors.request.use(
     const accessToken = sessionStorage.getItem("accessToken");
     if (accessToken) {
       config.headers['accessToken'] = accessToken;
-      console.log('요청 URL:', config.baseURL + config.url);
-      console.log('요청 헤더:', config.headers);
+      // console.log('요청 URL:', config.baseURL + config.url);
+      // console.log('요청 헤더:', config.headers);
     } else {
       console.log('토큰이 없습니다!');
     }
