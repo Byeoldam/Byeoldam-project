@@ -14,23 +14,25 @@ import java.util.List;
 @Builder
 public class PersonalBookmarkResponse {
     private Long bookmarkId;
+
     private String url;
     private String img;
     private String title;
     private String description;
+
     private int readingTime;
     private boolean priority;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private List<TagDto> tags;
 
-    public static PersonalBookmarkResponse of(Bookmark bookmark, List<TagDto> tagDtos, String img, String title, String description) {
+    public static PersonalBookmarkResponse of(Bookmark bookmark, List<TagDto> tagDtos) {
         return PersonalBookmarkResponse.builder()
                 .bookmarkId(bookmark.getId())
                 .url(bookmark.getBookmarkUrl().getUrl())
-                .img(img)
-                .title(title)
-                .description(description)
+                .img(bookmark.getBookmarkUrl().getImg())
+                .title(bookmark.getBookmarkUrl().getTitle())
+                .description(bookmark.getBookmarkUrl().getDescription())
                 .priority(bookmark.isPriority())
                 .readingTime(bookmark.getBookmarkUrl().getReadingTime())
                 .createdAt(bookmark.getCreatedAt())

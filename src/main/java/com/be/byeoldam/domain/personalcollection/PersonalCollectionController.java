@@ -74,8 +74,9 @@ public class PersonalCollectionController {
     @ApiResponse(responseCode = "200", description = "개인컬렉션 북마크 목록 조회 성공", useReturnTypeSchema = true)
     @GetMapping("/{personalCollectionId}")
     public ResponseTemplate<List<PersonalBookmarkResponse>> getPersonalBookmark(
-            @PathVariable Long personalCollectionId,
-            @UserId Long userId
+            @UserId Long userId,
+            @PathVariable Long personalCollectionId
+
     ) {
 
         return ResponseTemplate.ok(personalCollectionService.getCollectionBookmark(personalCollectionId, userId));

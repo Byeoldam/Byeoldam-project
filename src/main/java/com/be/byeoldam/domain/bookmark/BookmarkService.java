@@ -17,6 +17,8 @@ import com.be.byeoldam.domain.sharedcollection.repository.SharedCollectionReposi
 import com.be.byeoldam.domain.sharedcollection.repository.SharedUserRepository;
 import com.be.byeoldam.domain.tag.model.Tag;
 import com.be.byeoldam.domain.tag.repository.TagRepository;
+import com.be.byeoldam.domain.tag.util.JsoupUtil;
+import com.be.byeoldam.domain.tag.util.UrlPreview;
 import com.be.byeoldam.domain.user.model.User;
 import com.be.byeoldam.domain.user.repository.UserRepository;
 import com.be.byeoldam.exception.CustomException;
@@ -64,8 +66,11 @@ public class BookmarkService {
 
         // 븍마크 존재 여부 확인 후 없으면 생성, 그 후 +1
         BookmarkUrl bookmarkUrl = bookmarkUrlRepository.findByUrl(request.getUrl())
-                .orElseGet(() ->
-                        bookmarkUrlRepository.save(BookmarkUrl.create(request.getUrl(), 0L, request.getReadingTime())));
+                .orElseGet(() -> {
+                    UrlPreview preview = JsoupUtil.fetchMetadata(request.getUrl());
+                    return bookmarkUrlRepository.save(BookmarkUrl.create(preview, request.getUrl(), 0L, request.getReadingTime()));
+                });
+
         bookmarkUrl.increment();
 
 //        bookmarkRepository.findByBookmarkUrlAndUser(bookmarkUrl, user).stream()
