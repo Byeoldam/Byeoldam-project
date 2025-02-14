@@ -9,8 +9,8 @@ export const useCollectionStore = defineStore("collection", () => {
     const allCollections = ref(null);
     const membersByCollectionId = ref(null);
 
-    // 액션 정의
-    const fetchAllCollection = async () => {
+    // 개인 컬렉션 조회
+    const fetchPersonalCollection = async () => {
         try {
             const response = await api.get('/collections/personal');
             console.log('API Response:', response.data, 'hakjun0412');
@@ -22,6 +22,7 @@ export const useCollectionStore = defineStore("collection", () => {
         }
     };
 
+    // 공유 컬렉션 조회
     const fetchSharedCollection = async () => {
         try {
             const response = await api.get('/collections/shared');
@@ -34,9 +35,10 @@ export const useCollectionStore = defineStore("collection", () => {
         }
     };
 
+    // 모든 컬렉션 조회
     const fetchAllCollections = async () => {
         try {
-            const personalCollectionsData = await fetchAllCollection();
+            const personalCollectionsData = await fetchPersonalCollection();
             const sharedCollectionsData = await fetchSharedCollection();
             allCollections.value = [...personalCollectionsData.results, ...sharedCollectionsData.results];
             return { 
@@ -50,6 +52,7 @@ export const useCollectionStore = defineStore("collection", () => {
         }
     };
 
+    // 공유 컬렉션 멤버 조회
     const getMembersByCollectionId = async (collectionId) => {
         try {
             console.log('컬렉션 ID:', collectionId);
@@ -63,6 +66,7 @@ export const useCollectionStore = defineStore("collection", () => {
         }
     };
 
+    // 개인 컬렉션 생성
     const createPersonalCollection = async (name) => {
         try {
             const request = { "name": name };
@@ -74,6 +78,7 @@ export const useCollectionStore = defineStore("collection", () => {
         }
     };
 
+    // 공유 컬렉션 생성
     const createSharedCollection = async (name) => {
         try {
             const request = { "name": name };
@@ -85,12 +90,13 @@ export const useCollectionStore = defineStore("collection", () => {
         }
     };
 
+    // 개인 컬렉션 이름 변경
     const updatePersonalCollectionName = async (collectionId, newName) => {
         try {
             const request = { "name": newName };
             const response = await api.put(`/collections/personal/${collectionId}`, request);
             console.log('컬렉션 이름 변경 성공:');
-            await fetchAllCollection();
+            await fetchPersonalCollection();
         } catch (error) {
             console.error('컬렉션 이름 변경 중 오류 발생:', error);
             throw error;
@@ -102,13 +108,14 @@ export const useCollectionStore = defineStore("collection", () => {
             const request = { "name": newName };
             const response = await api.put(`/collections/shared/${collectionId}`, request);
             console.log('컬렉션 이름 변경 성공:');
-            await fetchAllCollection();
+            await fetchSharedCollection();
         } catch (error) {
             console.error('컬렉션 이름 변경 중 오류 발생:', error);
             throw error;
         }
     };
 
+    // 개인 컬렉션 삭제
     const deletePersonalCollection = async (collectionId) => {
         try {
             if (!collectionId) {
@@ -116,13 +123,14 @@ export const useCollectionStore = defineStore("collection", () => {
             }
             const response = await api.delete(`/collections/personal/${collectionId}`);
             console.log('개인컬렉션 삭제 성공:');
-            await fetchAllCollection();
+            await fetchPersonalCollection();
         } catch (error) {
             console.error('개인컬렉션 삭제 중 오류 발생:', error);
             throw error;
         }
     };
 
+    // 공유 컬렉션 삭제
     const deleteSharedCollection = async (collectionId) => {
         try {
             if (!collectionId) {
@@ -130,13 +138,14 @@ export const useCollectionStore = defineStore("collection", () => {
             }
             const response = await api.delete(`/collections/shared/${collectionId}`);
             console.log('공유컬렉션 삭제 성공:');
-            await fetchAllCollection();
+            await fetchSharedCollection();
         } catch (error) {
             console.error('공유컬렉션 삭제 중 오류 발생:', error);
             throw error;
         }
     };
 
+    // 공유 컬렉션 인원 추가
     const addMemberToSharedCollection = async (collectionId, memberEmail) => {
         try {
             const request = { "email": memberEmail };
@@ -148,6 +157,7 @@ export const useCollectionStore = defineStore("collection", () => {
         }
     };
 
+    // 공유 컬렉션 인원 강퇴  
     const removeMemberFromSharedCollection = async (collectionId, userId) => {
         try {
             const response = await api.delete(`/collections/shared/${collectionId}/members/${userId}`);
@@ -158,76 +168,6 @@ export const useCollectionStore = defineStore("collection", () => {
         }
     };
 
-    // 예시 데이터를 위한 getter들
-    const exampleAllCollections = [
-        { "collection_id": 1, "name": "개발", "isPersonal": true },
-        { "collection_id": 2, "name": "자바", "isPersonal": true },
-        { "collection_id": 3, "name": "웹서핑", "isPersonal": true },
-        { "collection_id": 4, "name": "일본여행", "isPersonal": false },
-        { "collection_id": 5, "name": "알고리즘스터디", "isPersonal": false },
-        { "collection_id": 6, "name": "영어공부", "isPersonal": false }
-    ];
-
-    const examplePersonalCollections = {
-        "success": true,
-        "message": "some message",
-        "results": [
-            {
-                "collection_id": 1,
-                "name": "개발",
-                "isPersonal": true
-            },
-            {
-                "collection_id": 2,
-                "name": "자바",
-                "isPersonal": true
-            },
-            {
-                "collection_id": 3,
-                "name": "웹서핑",
-                "isPersonal": true
-            }
-        ]
-    };
-
-    const exampleSharedCollections = {
-        "success": true,
-        "message": "some message",
-        "results": [
-            {
-                "collection_id": 1,
-                "name": "일본여행",
-                "isPersonal": false
-            },
-            {
-                "collection_id": 2,
-                "name": "알고리즘스터디",
-                "isPersonal": false
-            },
-            {
-                "collection_id": 3,
-                "name": "영어공부",
-                "isPersonal": false
-            }
-        ]
-    };
-
-    const exampleMembersByCollectionId = {
-        "success": true,
-        "message": "공유컬렉션의 사용자를 조회합니다. ",
-        "results": [
-            {
-                "user_id": 1,
-                "email": "example11@naver.com",
-                "nickname": "사용자1"
-            },
-            {
-                "user_id": 2,
-                "email": "ex222@google.com",
-                "nickname": "사용자2"
-            },
-        ]
-    };
 
     return {
         // 상태
@@ -237,7 +177,7 @@ export const useCollectionStore = defineStore("collection", () => {
         membersByCollectionId,
 
         // 액션
-        fetchAllCollection,
+        fetchPersonalCollection,
         fetchSharedCollection,
         fetchAllCollections,
         getMembersByCollectionId,
@@ -249,12 +189,6 @@ export const useCollectionStore = defineStore("collection", () => {
         deleteSharedCollection,
         addMemberToSharedCollection,
         removeMemberFromSharedCollection,
-
-        // 예시 데이터
-        exampleAllCollections,
-        examplePersonalCollections,
-        exampleSharedCollections,
-        exampleMembersByCollectionId
     };
 });
 

@@ -107,7 +107,7 @@ const handleCollectionClick = async (collectionId, collectionName) => {
 
 onMounted(async () => {
     try {
-        const response = await collectionStore.fetchAllCollection();
+        const response = await collectionStore.fetchPersonalCollection();
         console.log('Collections Response:', response, 'hakjun0412');
         collections.value = response.results || [];
         
