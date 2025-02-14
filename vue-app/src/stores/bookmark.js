@@ -328,11 +328,23 @@ export const useBookmarkStore = defineStore("bookmark", () => {
       const personalCollectionBookmarks = ref({});
 
       //개인 컬렉션 별 북마크 불러오는 함수
-      const getPersonalCollectionBookmarks = async (personalCollectionId) => {
-        const response = await api.get(`/collections/personal/${personalCollectionId}`);
-        personalCollectionBookmarks.value = response.data;
-        console.log(response.data);
-      };
+      const getPersonalCollectionBookmarks = async (collectionId) => {
+        if (!collectionId) {
+            console.error('CollectionId is undefined', 'hakjun0412');
+            throw new Error('CollectionId is required');
+        }
+
+        try {
+            console.log('Fetching bookmarks for collection:', collectionId, 'hakjun0412');
+            const response = await api.get(`/collections/personal/${collectionId}`);
+            console.log('Bookmarks API Response:', response.data, 'hakjun0412');
+            personalCollectionBookmarks.value = response.data;
+            return response.data;
+        } catch (error) {
+            console.error('북마크 데이터 가져오기 실패:', error, 'hakjun0412');
+            throw error;
+        }
+    };
 
 
       //개인 컬렉션 별 북마크 예시 response
