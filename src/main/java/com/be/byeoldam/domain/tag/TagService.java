@@ -1,6 +1,5 @@
 package com.be.byeoldam.domain.tag;
 
-
 import com.be.byeoldam.domain.bookmark.dto.TagDto;
 import com.be.byeoldam.domain.bookmark.model.Bookmark;
 import com.be.byeoldam.domain.bookmark.repository.BookmarkTagRepository;
@@ -149,7 +148,7 @@ public class TagService {
                                 Tag userTag = bookmarkTag.getTag();
                                 return TagDto.of(userTag);
                             }).toList();
-                    return PersonalBookmarkResponse.of(bookmark, tagDtos, preview.getImageUrl(), preview.getTitle(), preview.getDescription());
+                    return PersonalBookmarkResponse.of(bookmark, tagDtos);
                 }).toList();
 
 

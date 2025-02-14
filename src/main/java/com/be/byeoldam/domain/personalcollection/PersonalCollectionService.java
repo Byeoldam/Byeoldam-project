@@ -93,13 +93,13 @@ public class PersonalCollectionService {
         personalCollectionRepository.delete(collection);
     }
 
-    // 컬렉션에서 전체 북마크 조회
+    // 컬렉션에서 북마크 조회
     @Transactional(readOnly = true)
     public List<PersonalBookmarkResponse> getCollectionBookmark(Long userId, Long collectionId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(""));
+                .orElseThrow(() -> new CustomException("사용자를 찾을 수 없습니다."));
         PersonalCollection collection = personalCollectionRepository.findById(collectionId)
-                .orElseThrow(() -> new CustomException(""));
+                .orElseThrow(() -> new CustomException("컬렉션을 찾을 수 없습니다."));
         List<Bookmark> bookmarks = bookmarkRepository.findByUserAndPersonalCollection(user, collection);
         return makeBookmarkResponse(bookmarks);
     }
@@ -108,7 +108,7 @@ public class PersonalCollectionService {
     @Transactional(readOnly = true)
     public List<PersonalBookmarkResponse> getLongUnreadBookmark(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(""));
+                .orElseThrow(() -> new CustomException("사용자를 찾을 수 없습니다."));
         LocalDateTime thirtyDaysAgo = LocalDateTime.now().minusDays(30);
         List<Bookmark> bookmarks = bookmarkRepository.findOldBookmarksByUser(user, thirtyDaysAgo);
         return makeBookmarkResponse(bookmarks);
@@ -118,7 +118,7 @@ public class PersonalCollectionService {
     @Transactional(readOnly = true)
     public List<PersonalBookmarkResponse> getPriorityBookmark(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(""));
+                .orElseThrow(() -> new CustomException("사용자를 찾을 수 없습니다."));
         List<Bookmark> bookmarks = bookmarkRepository.findPriorityByUser(user);
         return makeBookmarkResponse(bookmarks);
     }
@@ -126,19 +126,17 @@ public class PersonalCollectionService {
     private List<PersonalBookmarkResponse> makeBookmarkResponse(List<Bookmark> bookmarks) {
         return bookmarks.stream()
                 .map(bookmark -> {
-                    UrlPreview preview = JsoupUtil.fetchMetadata(bookmark.getBookmarkUrl().getUrl());
                     List<TagDto> tagDtos = bookmarkTagRepository.findByBookmark(bookmark).stream()
                             .map(bookmarkTag -> {
                                 Tag tag = bookmarkTag.getTag();
                                 return TagDto.of(tag);
                             }).toList();
-                    return PersonalBookmarkResponse.of(bookmark, tagDtos, preview.getImageUrl(), preview.getTitle(), preview.getDescription());
+                    return PersonalBookmarkResponse.of(bookmark, tagDtos);
                 }).toList();
     }
 
 
     // 개인컬렉션 이름 검증(create, update)
-    // TODO : 나중에 controller에서 @Valid로 입력 길이, null 처리
     private void validate(User user, String name) {
         if (personalCollectionRepository.existsByUserIdAndName(user.getId(), name)) {
             throw new CustomException("같은 이름의 컬렉션이 이미 존재합니다.");

@@ -15,8 +15,6 @@ import com.be.byeoldam.domain.sharedcollection.model.SharedUser;
 import com.be.byeoldam.domain.sharedcollection.repository.SharedCollectionRepository;
 import com.be.byeoldam.domain.sharedcollection.repository.SharedUserRepository;
 import com.be.byeoldam.domain.tag.model.Tag;
-import com.be.byeoldam.domain.tag.util.JsoupUtil;
-import com.be.byeoldam.domain.tag.util.UrlPreview;
 import com.be.byeoldam.domain.user.model.User;
 import com.be.byeoldam.domain.user.repository.UserRepository;
 import com.be.byeoldam.exception.CustomException;
@@ -32,16 +30,11 @@ import java.util.stream.Collectors;
 public class SharedCollectionService {
 
     private final SharedCollectionRepository sharedCollectionRepository;
-
     private final SharedUserRepository sharedUserRepository;
-
     private final UserRepository userRepository;
-
     private final BookmarkRepository bookmarkRepository;
-
     private final BookmarkTagRepository bookmarkTagRepository;
     private final NotificationRepository notificationRepository;
-
     private final BookmarkService bookmarkService;
 
     // 공유컬렉션 생성
@@ -128,9 +121,9 @@ public class SharedCollectionService {
     @Transactional(readOnly = true)
     public List<SharedBookmarkResponse> getCollectionBookmark(Long userId, Long collectionId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(""));
+                .orElseThrow(() -> new CustomException("사용자를 찾을 수 없습니다."));
         SharedCollection collection = sharedCollectionRepository.findById(collectionId)
-                .orElseThrow(() -> new CustomException(""));
+                .orElseThrow(() -> new CustomException("컬렉션을 찾을 수 없습니다."));
         List<Bookmark> bookmarks = bookmarkRepository.findBySharedCollection(collection);
         return makeBookmarkResponse(bookmarks);
     }
@@ -142,11 +135,9 @@ public class SharedCollectionService {
     public void inviteNewMember(InviteAcceptRequest request, Long userId) {
         Notification notification = notificationRepository.findById(request.getNotificationId())
                 .orElseThrow(() -> new CustomException("알림이 존재하지 않습니다."));
-        if(!(notification instanceof InviteNotification)) {
+        if(!(notification instanceof InviteNotification inviteNotification)) {
             throw new CustomException("유효하지 않은 초대 알림입니다.");
         }
-
-        InviteNotification inviteNotification = (InviteNotification) notification;
 
         // 로그인해있는 유저
         User user = userRepository.findById(userId)
@@ -202,15 +193,15 @@ public class SharedCollectionService {
 
     public List<CollectionMemberResponse> getMember(Long userId, Long collectionId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(""));
+                .orElseThrow(() -> new CustomException("사용자를 찾을 수 없습니다."));
         SharedCollection collection = sharedCollectionRepository.findById(collectionId)
-                .orElseThrow(() -> new CustomException(""));
+                .orElseThrow(() -> new CustomException("컬렉션을 찾을 수 없습니다."));
 
         List<SharedUser> sharedUsers = sharedUserRepository.findBySharedCollection(collection);
         List<User> users = sharedUsers.stream().map(SharedUser::getUser).toList();
 
         if (!users.contains(user)) {
-            throw new CustomException("");
+            throw new CustomException("해당 컬렉션에 대한 조회 권한이 없습니다.");
         }
 
         return users.stream()
@@ -225,13 +216,12 @@ public class SharedCollectionService {
     private List<SharedBookmarkResponse> makeBookmarkResponse(List<Bookmark> bookmarks) {
         return bookmarks.stream()
                 .map(bookmark -> {
-                    UrlPreview preview = JsoupUtil.fetchMetadata(bookmark.getBookmarkUrl().getUrl());
                     List<TagDto> tagDtos = bookmarkTagRepository.findByBookmark(bookmark).stream()
                             .map(bookmarkTag -> {
                                 Tag tag = bookmarkTag.getTag();
                                 return TagDto.of(tag);
                             }).toList();
-                    return SharedBookmarkResponse.of(bookmark, tagDtos, preview.getImageUrl(), preview.getTitle(), preview.getDescription());
+                    return SharedBookmarkResponse.of(bookmark, tagDtos);
                 }).toList();
     }
 }
