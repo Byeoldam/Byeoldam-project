@@ -1,10 +1,10 @@
 -- 유저 테이블
 INSERT INTO `user` (
-    alert_day, is_verified, created_at, deleted_at, id, updated_at, 
-    nickname, role, provider_id, email, password, profile_url, 
-    access_token, email_verification_token, refresh_token, 
+    alert_day, is_verified, created_at, deleted_at, id, updated_at,
+    nickname, role, provider_id, email, password, profile_url,
+    access_token, email_verification_token, refresh_token,
     is_active, provider
-) 
+)
 VALUES
 (7, b'1', NOW(), NULL, NULL, NOW(), 'jun', 'ROLE_USER', NULL, 'jun@naver.com', '$2a$10$JIc80smPY9/iZZ1BeHifqulw.QePRRVyO3u1nHoP9ycMF0m/Hgou6', 'https://byeol-mypage.s3.ap-northeast-2.amazonaws.com/free-icon-user-9386837.PNG', NULL, NULL, NULL, 'ACTIVE', 'LOCAL'),
 (7, b'1', NOW(), NULL, NULL, NOW(), 'hyeon', 'ROLE_USER', NULL, 'hyeon@naver.com', '$2a$10$JIc80smPY9/iZZ1BeHifqulw.QePRRVyO3u1nHoP9ycMF0m/Hgou6', 'https://byeol-mypage.s3.ap-northeast-2.amazonaws.com/free-icon-user-9386837.PNG', NULL, NULL, NULL, 'ACTIVE', 'LOCAL'),
