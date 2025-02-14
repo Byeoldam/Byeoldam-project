@@ -4,11 +4,11 @@
     <div 
         v-for="post in posts" 
         :key="post.url"
-        :class="['post-item', { 'read': post.is_read }]"
+        :class="['post-item', { 'read': post.read }]"
         @click="$emit('select-post', post.url)"
     >
         <h3>{{ post.title }}</h3>
-        <div v-if="!post.is_read" class="unread-dot"></div>
+        <div v-if="!post.read" class="unread-dot"></div>
     </div>
     </template>
     <div v-else class="no-posts">
