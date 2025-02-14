@@ -326,8 +326,8 @@ INSERT INTO `user_rss` (`is_read`, `id`, `rss_id`, `user_id`, `latest_title`, `p
 (b'0', NULL, 3, 1, NULL, NULL),
 (b'1', NULL, 4, 1, NULL, NULL),
 (b'0', NULL, 5, 1, NULL, NULL),
-(b'1', NULL, 1, 1, NULL, NULL),
-(b'0', NULL, 2, 1, NULL, NULL),
+(b'1', NULL, 1, 2, NULL, NULL),
+(b'0', NULL, 2, 2, NULL, NULL),
 (b'1', NULL, 3, 2, NULL, NULL),
 (b'0', NULL, 4, 2, NULL, NULL),
 (b'1', NULL, 5, 3, NULL, NULL);
