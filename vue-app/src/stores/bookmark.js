@@ -28,7 +28,7 @@ export const useBookmarkStore = defineStore("bookmark", () => {
     //북마크 중요도 수정 함수
     const changePriority = async (bookmarkId, priority) => {
         try {
-            const response = await api.put(`/bookmarks/${bookmarkId}/priority`, {
+            const response = await api.put(`/bookmarks/${bookmarkId}`, {
                 priority: priority
             });
             

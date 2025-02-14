@@ -24,8 +24,8 @@
                     <div v-else class="cards-grid">
                         <Card
                             v-for="bookmark in bookmarkResults"
-                            :key="bookmark.bookmark_id"
-                            :bookmarkId="bookmark.bookmark_id"
+                            :key="bookmark.bookmarkId"
+                            :bookmarkId="bookmark.bookmarkId"
                             :url="bookmark.url"
                             :img="bookmark.img"
                             :title="bookmark.title"
@@ -33,8 +33,8 @@
                             :tag="bookmark.tags"
                             :priority="bookmark.priority"
                             :isPersonal="bookmark.isPersonal"
-                            :createdAt="bookmark.created_at"
-                            :updatedAt="bookmark.updated_at"
+                            :createdAt="bookmark.createdAt"
+                            :updatedAt="bookmark.updatedAt"
                         />
                     </div>
                 </div>
