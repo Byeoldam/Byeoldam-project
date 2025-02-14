@@ -27,16 +27,15 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "popupOpened") {
     if (cachedLoginData) {
       saveLoginData(cachedLoginData);
-      sendResponse({ status: "success" }); // 응답을 보내 popupOpened 처리가 완료되었음을 알림
+      // sendResponse({ status: "success" }); // 응답을 보내 popupOpened 처리가 완료되었음을 알림
     } else {
       // else >> *********** test용 **************
       const testLoginData = {
         userId: "jun@naver.com",
         access_token:
-          "eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInVzZXJJZCI6MSwiZW1haWwiOiJqdW5AbmF2ZXIuY29tIiwicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTczOTQ1MzgyMywiZXhwIjoxNzM5NDU5ODIzfQ.zUv2s9K2fB2-ao3J1Gotql3-hX3Tdc4PQVvqvzExIT0",
+          "eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInVzZXJJZCI6MSwiZW1haWwiOiJqdW5AbmF2ZXIuY29tIiwicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTczOTUxNzgwNCwiZXhwIjoxNzM5NTIzODA0fQ.CYRBYyD-KhQ-qRhy4YleaavQCRn3oFDSHFqq98RFEf4",
       };
       saveLoginData(testLoginData);
-      sendResponse({ status: "success" });
     }
   }
 });

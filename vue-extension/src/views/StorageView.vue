@@ -26,13 +26,34 @@
       <label class="block text-sm font-medium mb-2 mt-5">컬렉션</label>
       <div class="flex gap-2">
         <select
+          v-model="selectedCollection"
           class="flex-1 p-2 border rounded-md focus:outline-none focus:border-gray-400"
         >
-          <option value="" disabled selected>컬렉션 선택</option>
-          <option value="">공통프로젝트</option>
-          <option value="">A208</option>
+        <!-- <option value="" disabled selected>컬렉션을 선택하세요</option> -->
+
+          <!-- 개인 컬렉션 -->
+          <optgroup v-if="bookmarkOptions.personalCollections.length > 0" label="개인 컬렉션">
+            <option 
+              v-for="collection in bookmarkOptions.personalCollections" 
+              :key="collection.collectionId"
+              :value="{ collectionId: collection.collectionId, isPersonal: collection.isPersonal }"
+            >
+              {{ collection.name }}
+            </option>
+          </optgroup>
+          <!-- 공유 컬렉션 -->
+          <optgroup v-if="bookmarkOptions.sharedCollections.length > 0" label="공유 컬렉션">
+            <option 
+              v-for="collection in bookmarkOptions.sharedCollections" 
+              :key="collection.collectionId"
+              :value="{ collectionId: collection.collectionId, isPersonal: collection.isPersonal }"
+            >
+              {{ collection.name }}
+            </option>
+          </optgroup>
         </select>
         <input
+          v-model="newCollection"
           type="text"
           placeholder="새로운 컬렉션 만들기"
           class="flex-1 p-2 border rounded-md focus:outline-none focus:border-gray-400"
@@ -143,27 +164,51 @@
       </button>
     </div>
   </div>
+  <div>User ID: {{ bookmarkStore.userId }}</div>
 </template>
 
 <script setup>
 import { ref, onMounted, computed } from "vue";
 import api from "@/utils/api";
 import { generatePastelColors } from "@/utils/colorUtils";
+import { useBookmarkStore } from "@/stores/bookmarkStore";
 
+const bookmarkStore = useBookmarkStore();
 
-const accessToken = ref("");
-const siteUrl = ref("");
-const title = ref("")
-const readingTime = ref(null);
+// 웹페이지 정보
+const webpage = ref({
+  siteUrl: null,
+  title: null,
+  readingTime: 0,
+})
+
+// 초기 로드 데이터
+const bookmarkOptions = ref({
+  personalCollections : [],
+  sharedCollections: [],
+  keywords: [],
+  canSubscribeRss: false,
+  notificationCnt: 0,
+  hasNewFeed: false,
+})
+
+// 태그 정보
 const gptTags = ref([ // GPT 생성 태그 배열
-  { tagName: "태그1", ...generatePastelColors()  },
-  { tagName: "태그2", ...generatePastelColors()  },
-  { tagName: "태그3", ...generatePastelColors()  },
+  { tagName: bookmarkOptions.value.keywords[0], ...generatePastelColors()  },
+  { tagName: bookmarkOptions.value.keywords[1], ...generatePastelColors()  },
+  { tagName: bookmarkOptions.value.keywords[2], ...generatePastelColors()  },
 ]); 
 const newTag = ref(""); // 사용자 입력 태그
 const newTags = ref([]); // 사용자 입력 태그 배열
 const finalTags = computed(() => {
   return [...gptTags.value, ...newTags.value];
+});
+
+
+// 선택한 컬렉션 정보를 저장할 변수
+const selectedCollection = ref({
+  collectionId: null, 
+  isPersonal: null    
 });
 
 
@@ -185,54 +230,54 @@ onMounted(async () => {
       });
     });
 
-    const fetchedAccessToken = await new Promise((resolve, reject) => {
-      chrome.storage.local.get(["access_token"], (response) => {
-        if (response && response.access_token) {
-          resolve(response.access_token);
-        } else {
-          reject("액세스 토큰을 가져오는 데 실패했습니다.");
-        }
-      });
-    });
-
-    siteUrl.value = pageData.pageInfo.siteUrl;
-    title.value = pageData.pageInfo.title;
-    readingTime.value = pageData.readingTime;
-    accessToken.value = fetchedAccessToken;
+    webpage.value = {
+      siteUrl: pageData.pageInfo.siteUrl,
+      title: pageData.pageInfo.title,
+      readingTime: pageData.readingTime
+    };
 
     // 초기 데이터 로드 API 요청
-    const response = await api.post("/popup/load", { siteUrl: siteUrl.value, title: title.value });
-    console.log(response);
+    const response = await api.post("/popup/load", { siteUrl: webpage.value.siteUrl, title: webpage.value.title });
+    if (response.data.status) {
+      bookmarkOptions.value = response.data.results;
 
-    if (response.data.success) {
-      console.log("팝업 데이터 로드 성공:", response.data.data);
+      // bookmarkOptions가 업데이트된 후에 gptTags 업데이트
+      gptTags.value = bookmarkOptions.value.keywords.slice(0, 3).map((keyword, index) => ({
+        tagName: (index === 0 || index === 2) ? keyword.replace(/[\[\]]/g, '') : keyword,
+        ...generatePastelColors(),
+      }));
+
+
+
     } else {
       console.error("에러 발생:", response.data.message);
     }
-
   } catch (error) {
     console.error("데이터 로딩 실패:", error);
   }
 });
 
+const bookmarkSaveData = {
+  bookmark_url: webpage.value.siteUrl, 
+  collectionId: selectedCollection.value.collectionId, 
+  isPersonal: selectedCollection.value.isPersonal, 
+  tags: finalTags.value.map((finalTag) => ({
+    tagName: finalTag.tagName,
+    tagColor: finalTag.tagColor,
+    tagBorderColor: finalTag.tagBorderColor
+  })),
+  readingTime: webpage.value.readingTime  
+};
+
+
+
 // 북마크 저장 API 요청
 const saveBookmark = async () => {
+  console.log(JSON.stringify(bookmarkOptions.value));
   if (url.value) {
-   
     try {
       const response = await api.post(
-        "/bookmarks/extension", 
-        {
-          bookmark_url: url.value,
-          collectionId: collectionId,         
-          isPersonal: true,    
-          tags: finalTags.value.map((finalTag) => ({
-            tagName: finalTag.tagName,
-            tagColor: finalTag.tagColor,
-            tagBorderColor: finalTag.tagBorderColor
-          })),
-          readingTime: readingTime.value
-        }
+        "/bookmarks/extension", bookmarkSaveData
       );
       if (response.status === 201) {
         // 크롬 익스텐션 창에 저장완료 표시 뜨도록!

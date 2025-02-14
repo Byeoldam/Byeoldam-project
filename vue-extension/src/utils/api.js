@@ -9,7 +9,7 @@ const api = axios.create({
 
 // 요청 인터셉터
 api.interceptors.request.use(
-  async (config) => {  // async 추가
+  async (config) => {  
     try {
       // Promise로 감싸서 비동기 처리
       const response = await new Promise((resolve, reject) => {
