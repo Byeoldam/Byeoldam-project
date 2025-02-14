@@ -313,6 +313,43 @@ INSERT INTO `bookmark_url_tag` (`bookmark_url_id`, `tag_id`) VALUES
 (17, 4),
 (18, 4);
 
+INSERT INTO `rss` (`created_at`, `updated_at`, `name`, `rss_url`) VALUES
+(NOW(), NOW(), '연합뉴스', 'https://www.yna.co.kr/rss/news.xml'),
+(NOW(), NOW(), '김밥상의 먹는 일상', 'https://rss.blog.naver.com/ss0110010.xml'),
+(NOW(), NOW(), '구글 뉴스', 'https://news.google.com/rss?hl=ko&gl=KR&ceid=KR:ko'),
+(NOW(), NOW(), 'TechCrunch', 'https://techcrunch.com/feed/'),
+(NOW(), NOW(), 'Slashdot', 'https://rss.slashdot.org/Slashdot/slashdot');
+
+INSERT INTO `user_rss` (`is_read`, `id`, `rss_id`, `user_id`, `latest_title`, `previous_title`) VALUES
+(b'0', NULL, 1, 1, NULL, NULL),
+(b'1', NULL, 2, 1, NULL, NULL),
+(b'0', NULL, 3, 1, NULL, NULL),
+(b'1', NULL, 4, 1, NULL, NULL),
+(b'0', NULL, 5, 1, NULL, NULL),
+(b'1', NULL, 1, 1, NULL, NULL),
+(b'0', NULL, 2, 1, NULL, NULL),
+(b'1', NULL, 3, 2, NULL, NULL),
+(b'0', NULL, 4, 2, NULL, NULL),
+(b'1', NULL, 5, 3, NULL, NULL);
+
+INSERT INTO `notification` (`bookmark_id`, `created_at`, `updated_at`, `shared_collection_id`, `user_id`, `type`, `message`, `nickname`)
+VALUES
+-- 북마크 알림 (BOOKMARK)
+(1, NOW(), NOW(), NULL, 1, 'BOOKMARK', '📌 북마크한 글이 7일이 지나갔습니다. 확인해보세요!', NULL),
+(2, NOW(), NOW(), NULL, 2, 'BOOKMARK', '📌 북마크한 글이 15일이 지나갔습니다. 확인해보세요!', NULL),
+(3, NOW(), NOW(), NULL, 3, 'BOOKMARK', '📌 북마크한 글이 7일이 지나갔습니다. 확인해보세요!', NULL),
+(4, NOW(), NOW(), NULL, 4, 'BOOKMARK', '📌 북마크한 글이 7일이 지나갔습니다. 확인해보세요!', NULL),
+(5, NOW(), NOW(), NULL, 5, 'BOOKMARK', '📌 북마크한 글이 7일이 지나갔습니다. 확인해보세요!', NULL),
+
+-- 초대 알림 (INVITE)
+(NULL, NOW(), NOW(), 1, 1, 'INVITE', '개발자 모임 자료 공유 컬렉션에 초대되었습니다.', 'jun'),
+(NULL, NOW(), NOW(), 2, 2, 'INVITE', '요리 동호회 레시피 공유 컬렉션에 초대되었습니다.', 'hyeon'),
+(NULL, NOW(), NOW(), 3, 3, 'INVITE', '여행 플랜 공유 컬렉션에 초대되었습니다.', 'young'),
+(NULL, NOW(), NOW(), 4, 4, 'INVITE', '영화 팬클럽 추천작 공유 컬렉션에 초대되었습니다.', 'hee'),
+(NULL, NOW(), NOW(), 5, 5, 'INVITE', '독서 토론 그룹 공유 컬렉션에 초대되었습니다.', 'ji');
+
+
+
 -- 데이터 담은 테이블들
 -- select * from bookmarks;
 -- select * from bookmark_tag;
