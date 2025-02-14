@@ -1,10 +1,10 @@
 -- 유저 테이블
 INSERT INTO `user` (
-    alert_day, is_verified, created_at, deleted_at, id, updated_at, 
-    nickname, role, provider_id, email, password, profile_url, 
-    access_token, email_verification_token, refresh_token, 
+    alert_day, is_verified, created_at, deleted_at, id, updated_at,
+    nickname, role, provider_id, email, password, profile_url,
+    access_token, email_verification_token, refresh_token,
     is_active, provider
-) 
+)
 VALUES
 (7, b'1', NOW(), NULL, NULL, NOW(), 'jun', 'ROLE_USER', NULL, 'jun@naver.com', '$2a$10$JIc80smPY9/iZZ1BeHifqulw.QePRRVyO3u1nHoP9ycMF0m/Hgou6', 'https://byeol-mypage.s3.ap-northeast-2.amazonaws.com/free-icon-user-9386837.PNG', NULL, NULL, NULL, 'ACTIVE', 'LOCAL'),
 (7, b'1', NOW(), NULL, NULL, NOW(), 'hyeon', 'ROLE_USER', NULL, 'hyeon@naver.com', '$2a$10$JIc80smPY9/iZZ1BeHifqulw.QePRRVyO3u1nHoP9ycMF0m/Hgou6', 'https://byeol-mypage.s3.ap-northeast-2.amazonaws.com/free-icon-user-9386837.PNG', NULL, NULL, NULL, 'ACTIVE', 'LOCAL'),
@@ -142,28 +142,27 @@ INSERT INTO `shared_user` (`created_at`, `id`, `shared_collection_id`, `updated_
 (NOW(), NULL, 3, NOW(), 1, 'MEMBER');
 
 
-INSERT INTO `bookmark_url` (`reading_time`, `id`, `reference_count`, `url`) VALUES
-(FLOOR(RAND() * 11) + 5, NULL, FLOOR(RAND() * 100) + 1, 'https://www.naver.com'),
-(FLOOR(RAND() * 11) + 5, NULL, FLOOR(RAND() * 100) + 1, 'https://www.google.com'),
-(FLOOR(RAND() * 11) + 5, NULL, FLOOR(RAND() * 100) + 1, 'https://www.tistory.com'),
-(FLOOR(RAND() * 11) + 5, NULL, FLOOR(RAND() * 100) + 1, 'https://www.github.com'),
-(FLOOR(RAND() * 11) + 5, NULL, FLOOR(RAND() * 100) + 1, 'https://www.medium.com'),
-(FLOOR(RAND() * 11) + 5, NULL, FLOOR(RAND() * 100) + 1, 'https://www.reddit.com'),
-(FLOOR(RAND() * 11) + 5, NULL, FLOOR(RAND() * 100) + 1, 'https://www.wikipedia.org'),
-(FLOOR(RAND() * 11) + 5, NULL, FLOOR(RAND() * 100) + 1, 'https://www.stackoverflow.com'),
-(FLOOR(RAND() * 11) + 5, NULL, FLOOR(RAND() * 100) + 1, 'https://www.youtube.com'),
-(FLOOR(RAND() * 11) + 5, NULL, FLOOR(RAND() * 100) + 1, 'https://www.facebook.com'),
-(FLOOR(RAND() * 11) + 5, NULL, FLOOR(RAND() * 100) + 1, 'https://www.amazon.com'),
-(FLOOR(RAND() * 11) + 5, NULL, FLOOR(RAND() * 100) + 1, 'https://www.apple.com'),
-(FLOOR(RAND() * 11) + 5, NULL, FLOOR(RAND() * 100) + 1, 'https://www.bbc.com'),
-(FLOOR(RAND() * 11) + 5, NULL, FLOOR(RAND() * 100) + 1, 'https://www.cnn.com'),
-(FLOOR(RAND() * 11) + 5, NULL, FLOOR(RAND() * 100) + 1, 'https://www.nytimes.com'),
-(FLOOR(RAND() * 11) + 5, NULL, FLOOR(RAND() * 100) + 1, 'https://www.ted.com'),
-(FLOOR(RAND() * 11) + 5, NULL, FLOOR(RAND() * 100) + 1, 'https://www.quora.com'),
-(FLOOR(RAND() * 11) + 5, NULL, FLOOR(RAND() * 100) + 1, 'https://www.netflix.com'),
-(FLOOR(RAND() * 11) + 5, NULL, FLOOR(RAND() * 100) + 1, 'https://www.tumblr.com'),
-(FLOOR(RAND() * 11) + 5, NULL, FLOOR(RAND() * 100) + 1, 'https://www.instagram.com');
-
+INSERT INTO `bookmark_url` (`id`, `url`, `title`, `img`, `description`, `reference_count`, `reading_time`) VALUES
+(NULL, 'https://www.naver.com', '네이버', 'https://s.pstatic.net/static/www/mobile/edit/2016/0705/mobile_212852414260.png', '네이버 메인에서 다양한 정보와 유용한 컨텐츠를 만나 보세요', FLOOR(RAND() * 100) + 1, FLOOR(RAND() * 11) + 5),
+(NULL, 'https://www.google.com', 'Google', 'https://byeol-mypage.s3.ap-northeast-2.amazonaws.com/no_image.jpg', '', FLOOR(RAND() * 100) + 1, FLOOR(RAND() * 11) + 5),
+(NULL, 'https://www.tistory.com', '티스토리', 'https://t1.daumcdn.net/tistory_admin/static/images/openGraph/tistoryOpengraph.png', '좀 아는 블로거들의 유용한 이야기, 티스토리. 블로그, 포트폴리오, 웹사이트까지 티스토리에서 나를 표현해 보세요.', FLOOR(RAND() * 100) + 1, FLOOR(RAND() * 11) + 5),
+(NULL, 'https://www.github.com', 'GitHub · Build and ship software on a single, collaborative platform', 'https://github.githubassets.com/assets/home24-5939032587c9.jpg', 'Join the world''s most widely adopted, AI-powered developer platform where millions of developers, businesses, and the largest open source community build software that advances humanity.', FLOOR(RAND() * 100) + 1, FLOOR(RAND() * 11) + 5),
+(NULL, 'https://www.medium.com', 'Medium: Read and write stories.', 'https://miro.medium.com/v2/da:true/bd978bb536350a710e8efb012513429cabdc4c28700604261aeda246d0f980b7', 'On Medium, anyone can share insightful perspectives, useful knowledge, and life wisdom with the world.', FLOOR(RAND() * 100) + 1, FLOOR(RAND() * 11) + 5),
+(NULL, 'https://www.reddit.com', 'reddit', 'https://www.redditstatic.com/shreddit/assets/favicon/192x192.png', 'Reddit is a network of communities where people can dive into their interests, hobbies and passions. There''s a community for whatever you''re interested in on Reddit.', FLOOR(RAND() * 100) + 1, FLOOR(RAND() * 11) + 5),
+(NULL, 'https://www.wikipedia.org', 'Wikipedia, the free encyclopedia', 'https://upload.wikimedia.org/wikipedia/en/thumb/8/80/Wikipedia-logo-v2.svg/2244px-Wikipedia-logo-v2.svg.png', 'Wikipedia is a free online encyclopedia, created and edited by volunteers around the world and hosted by the Wikimedia Foundation.', FLOOR(RAND() * 100) + 1, FLOOR(RAND() * 11) + 5),
+(NULL, 'https://www.stackoverflow.com', 'Newest Questions', 'https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded', 'Stack Overflow | The World’s Largest Online Community for Developers', FLOOR(RAND() * 100) + 1, FLOOR(RAND() * 11) + 5),
+(NULL, 'https://www.youtube.com', 'YouTube', 'https://www.youtube.com/img/desktop/yt_1200.png', 'YouTube에서 마음에 드는 동영상과 음악을 감상하고, 직접 만든 콘텐츠를 업로드하여 친구, 가족뿐 아니라 전 세계 사람들과 콘텐츠를 공유할 수 있습니다.', FLOOR(RAND() * 100) + 1, FLOOR(RAND() * 11) + 5),
+(NULL, 'https://www.facebook.com', '', 'https://byeol-mypage.s3.ap-northeast-2.amazonaws.com/no_image.jpg', '', FLOOR(RAND() * 100) + 1, FLOOR(RAND() * 11) + 5),
+(NULL, 'https://www.amazon.com', 'Amazon.com. Spend less. Smile more.', 'https://m.media-amazon.com/images/I/31epF-8N9LL.png', 'Free shipping on millions of items. Get the best of Shopping and Entertainment with Prime. Enjoy low prices and great deals on the largest selection of everyday essentials and other products, including fashion, home, beauty, electronics, Alexa Devices, sporting goods, toys, automotive, pets, baby, books, video games, musical instruments, office supplies, and more.', FLOOR(RAND() * 100) + 1, FLOOR(RAND() * 11) + 5),
+(NULL, 'https://www.apple.com', 'Apple', 'https://www.apple.com/ac/structured-data/images/open_graph_logo.png?202110180743', 'Discover the innovative world of Apple and shop everything iPhone, iPad, Apple Watch, Mac, and Apple TV, plus explore accessories, entertainment, and expert device support.', FLOOR(RAND() * 100) + 1, FLOOR(RAND() * 11) + 5),
+(NULL, 'https://www.bbc.com', 'BBC Home - Breaking News, World News, US News, Sports, Business, Innovation, Climate, Culture, Travel, Video & Audio', 'https://byeol-mypage.s3.ap-northeast-2.amazonaws.com/no_image.jpg', 'Visit BBC for trusted reporting on the latest world and US news, sports, business, climate, innovation, culture and much more.', FLOOR(RAND() * 100) + 1, FLOOR(RAND() * 11) + 5),
+(NULL, 'https://www.cnn.com', 'Breaking News, Latest News and Videos | CNN', 'https://byeol-mypage.s3.ap-northeast-2.amazonaws.com/no_image.jpg', 'View the latest news and breaking news today for U.S., world, weather, entertainment, politics and health at CNN.com.', FLOOR(RAND() * 100) + 1, FLOOR(RAND() * 11) + 5),
+(NULL, 'https://www.nytimes.com', 'The New York Times - Breaking News, US News, World News and Videos', 'https://static01.nyt.com/newsgraphics/images/icons/defaultPromoCrop.png', 'Live news, investigations, opinion, photos and video by the journalists of The New York Times from more than 150 countries around the world. Subscribe for coverage of U.S. and international news, politics, business, technology, science, health, arts, sports and more', FLOOR(RAND() * 100) + 1, FLOOR(RAND() * 11) + 5),
+(NULL, 'https://www.ted.com', 'TED: Ideas change everything', 'https://byeol-mypage.s3.ap-northeast-2.amazonaws.com/no_image.jpg', '', FLOOR(RAND() * 100) + 1, FLOOR(RAND() * 11) + 5),
+(NULL, 'https://www.quora.com', 'Quora', 'https://qsf.cf2.quoracdn.net/-4-images.share_default_image.png-26-2f12660e125b218f.png', '', FLOOR(RAND() * 100) + 1, FLOOR(RAND() * 11) + 5),
+(NULL, 'https://www.netflix.com', 'Netflix', 'https://byeol-mypage.s3.ap-northeast-2.amazonaws.com/no_image.jpg', 'Watch Netflix movies & TV shows online or stream right to your smart TV, game console, PC, Mac, mobile, tablet and more.', FLOOR(RAND() * 100) + 1, FLOOR(RAND() * 11) + 5),
+(NULL, 'https://www.tumblr.com', 'Browse communities on Tumblr', 'https://assets.tumblr.com/pop/src/assets/images/labs/communities/browse-585339b9.jpg', 'Join over 100 million people using Tumblr to find their communities and make friends.', FLOOR(RAND() * 100) + 1, FLOOR(RAND() * 11) + 5),
+(NULL, 'https://www.instagram.com', 'Instagram', 'https://byeol-mypage.s3.ap-northeast-2.amazonaws.com/no_image.jpg', '', FLOOR(RAND() * 100) + 1, FLOOR(RAND() * 11) + 5);
 
 INSERT INTO `bookmarks` (
     is_read, priority, created_at, updated_at, 
