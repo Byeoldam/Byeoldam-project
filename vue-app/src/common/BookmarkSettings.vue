@@ -12,7 +12,7 @@
     
     <div class="popover-content">
       <el-button-group vertical class="settings-menu">
-        <el-button link @click="togglePriority">
+        <el-button link @click="togglePriority" v-if="props.isPersonal">
           {{ props.priority ? '중요 북마크 해제' : '중요 북마크로 설정' }}
         </el-button>
         
@@ -130,7 +130,7 @@ const props = defineProps({
   },
   collectionId: {
     type: Number,
-    default: null
+    required: true
   }
 })
 
@@ -143,7 +143,12 @@ const isTagSettingOpen = ref(false)
 
 const togglePriority = async () => {
   try {
-    const success = await bookmarkStore.changePriority(props.bookmarkId, !props.priority, props.collectionId)
+    const success = await bookmarkStore.changePriority(
+      props.bookmarkId, 
+      !props.priority, 
+      props.collectionId,
+      props.isPersonal
+    );
     if (success) {
       ElMessage.success(props.priority ? '중요 북마크가 해제되었습니다.' : '중요 북마크로 설정되었습니다.')
       emit('update:priority', !props.priority)

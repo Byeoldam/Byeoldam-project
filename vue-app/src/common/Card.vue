@@ -1,7 +1,7 @@
 <template>
     <div class="card">
         <div class="card-header">
-            <div class="priority">
+            <div class="priority" v-if="props.isPersonal">
                 <span v-if="props.priority" class="star-icon">★</span>
                 <span v-else class="star-icon empty">☆</span>
             </div>
@@ -311,6 +311,7 @@ const handlePriorityToggle = () => {
 
 .settings {
     position: relative;
+    margin-left: auto;
 }
 
 

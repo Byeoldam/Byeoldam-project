@@ -76,9 +76,12 @@ import Card from '@/common/Card.vue';
 const collectionStore = useCollectionStore();
 const bookmarkStore = useBookmarkStore();
 const { personalCollections } = storeToRefs(collectionStore);
+const { personalCollectionBookmarks } = storeToRefs(bookmarkStore);
 const selectedCollectionId = ref(null);
 const selectedCollectionName = ref('');
-const selectedCollectionBookmarks = ref([]);
+const selectedCollectionBookmarks = computed(() => 
+    personalCollectionBookmarks.value?.results?.bookmarks || []
+);
 const showCreateModal = ref(false);
 
 const collections = ref([]);
@@ -95,12 +98,9 @@ const handleCollectionClick = async (collectionId, collectionName) => {
     selectedCollectionName.value = collectionName;
     
     try {
-        const response = await bookmarkStore.getPersonalCollectionBookmarks(collectionId);
-        console.log('Bookmarks Response:', response, 'hakjun0412');
-        selectedCollectionBookmarks.value = response.results.bookmarks || [];
+        await bookmarkStore.getPersonalCollectionBookmarks(collectionId);
     } catch (error) {
         console.error('북마크 로딩 실패:', error, 'hakjun0412');
-        selectedCollectionBookmarks.value = [];
     }
 };
 
