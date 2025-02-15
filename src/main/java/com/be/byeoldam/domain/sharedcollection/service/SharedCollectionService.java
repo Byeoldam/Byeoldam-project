@@ -119,13 +119,19 @@ public class SharedCollectionService {
 
     // 공유컬렉션 상세 조회 - 북마크 목록 조회
     @Transactional(readOnly = true)
-    public List<SharedBookmarkResponse> getCollectionBookmark(Long userId, Long collectionId) {
+    public SharedBookmarkListResponse getCollectionBookmark(Long userId, Long collectionId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException("사용자를 찾을 수 없습니다."));
         SharedCollection collection = sharedCollectionRepository.findById(collectionId)
                 .orElseThrow(() -> new CustomException("컬렉션을 찾을 수 없습니다."));
+
+        if (sharedUserRepository.findByUserAndSharedCollection(user, collection).isEmpty()) {
+            throw new CustomException("해당 컬렉션에 대한 조회 권한이 없습니다.");
+        }
+
         List<Bookmark> bookmarks = bookmarkRepository.findBySharedCollection(collection);
-        return makeBookmarkResponse(bookmarks);
+
+        return SharedBookmarkListResponse.of(collectionId, makeBookmarkResponse(bookmarks));
     }
 
     // 공유컬렉션 멤버 관리 - 초대
