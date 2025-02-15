@@ -54,6 +54,11 @@ const userLogin = async (email, password) => {
       // 사용자 정보 업데이트
       user.value = { userId, email, nickname };
 
+
+      // 로그인 데이터를 postMessage로 전달 (accessToken → access_token)
+      const loginData = { access_token: accessToken, userId };  
+      window.postMessage({ type: 'LOGIN', data: loginData }, window.location.origin);
+
       // /me 엔드포인트로 테스트 요청
       try {
         const meResponse = await api.get('/users/me');
