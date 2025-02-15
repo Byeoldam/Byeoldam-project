@@ -129,9 +129,9 @@ const imageSrc = computed(() => {
 });
 
 const handleImageClick = () => {
-    const route = props.isPersonal 
-        ? `/personal-collection/${props.bookmarkId}`
-        : `/shared-collection/${props.bookmarkId}`;
+    const route = props.isPersonal === false 
+        ? `/shared-collection/${props.bookmarkId}`
+        : `/personal-collection/${props.bookmarkId}`;
     
     router.push(route);
 };
