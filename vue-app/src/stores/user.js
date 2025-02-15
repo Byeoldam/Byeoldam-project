@@ -71,7 +71,7 @@ const userLogin = async (email, password) => {
       // 컬렉션 정보 가져오는 컨트롤러 아직 백엔드 준비 안됨
       try {
         // 컬렉션 데이터 가져오기
-        await collectionStore.fetchAllCollection();
+        await collectionStore.fetchAllCollections();
         
         // 라우팅 처리
         if (collectionStore.allCollections.length === 0) {

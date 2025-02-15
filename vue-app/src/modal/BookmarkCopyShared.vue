@@ -18,8 +18,8 @@
           <option value="" disabled>컬렉션을 선택해주세요</option>
           <option 
             v-for="collection in sharedCollections" 
-            :key="collection.collection_id" 
-            :value="collection.collection_id"
+            :key="collection.collectionId" 
+            :value="collection.collectionId"
           >
             {{ collection.name }}
           </option>
@@ -94,7 +94,7 @@ const handleClose = () => {
 onMounted(async () => {
   try {
     // 공유 컬렉션 목록 불러오기
-    await collectionStore.fetchSharedCollections()
+    await collectionStore.fetchSharedCollection()
   } catch (error) {
     console.error('공유 컬렉션 로드 실패:', error)
     ElMessage.error('공유 컬렉션 목록을 불러오는데 실패했습니다')

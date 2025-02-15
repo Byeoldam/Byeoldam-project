@@ -28,12 +28,39 @@ export const useBookmarkStore = defineStore("bookmark", () => {
     //북마크 중요도 수정 함수
     const changePriority = async (bookmarkId, priority) => {
         try {
-            const response = await api.put(`/bookmarks/${bookmarkId}/priority`, {
-                priority: priority
+            const response = await api.put(`/bookmarks/${bookmarkId}`, {
+                priority: priority,
+                collectionId: currentCollection.value.id,
+                isPersonal: currentCollection.value.isPersonal
             });
             
-            if (response.data.success) {
+            if (response.data.status) {
                 console.log('북마크 중요도 변경 완료');
+                
+                // 중요 북마크 목록 새로고침
+                await getImportantBookmarks();
+                
+                // 현재 컬렉션 페이지 새로고침
+                if (currentCollection.value.id) {
+                    if (currentCollection.value.isPersonal) {
+                        await getPersonalCollectionBookmarks(currentCollection.value.id);
+                    } else {
+                        await getSharedCollectionBookmarks(currentCollection.value.id);
+                    }
+                }
+                
+                // 오래된 북마크 목록 새로고침
+                await getOldBookmarks();
+                
+                // 검색 결과가 있는 경우 검색 결과 새로고침
+                if (searchBookmarksByTag.value) {
+                    await getSearchBookmarksByTag(
+                        searchBookmarksByTag.value.searchTag,
+                        searchBookmarksByTag.value.cursorId,
+                        searchBookmarksByTag.value.size
+                    );
+                }
+                
                 return true;
             } else {
                 console.error('북마크 중요도 변경 실패:', response.data.message);
@@ -101,36 +128,8 @@ export const useBookmarkStore = defineStore("bookmark", () => {
     //북마크 메모목록 조회 함수
     const getMemo = async (bookmarkId) => {
         const response = await api.get(`/bookmarks/${bookmarkId}/memos`);
-        console.log(response.data);
+        return response;
     };  
-    //북마크 메모목록 조회 예시 response
-    // const exampleBookmarkMemo = ref(
-    //   {
-    //     "success":true,
-    //     "message":"some message",
-    //     "results": {
-    //       "memos": [
-    //         {
-    //           "memo_id": 1,
-    //           "nickname":"ex",
-    //           "image_url":"",
-    //           "content": "첫 번째 메모입니다.",
-    //           "created_at": "2025-01-17T12:00:00Z",
-    //           "updated_at": "2025-01-17T12:05:00Z"
-    //         },
-    //         {
-    //           "memoId": 2,
-    //           "nickname":"ex",
-    //           "image_url":"",
-    //           "content": "두 번째 메모입니다.",
-    //           "createdAt": "2025-01-17T12:10:00Z",
-    //           "updatedAt": "2025-01-17T12:15:00Z"
-    //         },
-    //       ]
-    //     }
-    //   }
-    // )
-
 
     //북마크 메모 생성
     const createMemo = async (bookmarkId, memo) => {
@@ -138,21 +137,8 @@ export const useBookmarkStore = defineStore("bookmark", () => {
             content: memo
         };
         const response = await api.post(`/bookmarks/${bookmarkId}/memos`, request);
-        console.log(response.data);
+        return response;
     };
-    //북마크 메모 생성 예시 response
-    // const exampleCreateMemo = ref({
-    //   "success":true,
-    //   "message":"some message",
-    //   "results": {
-    //     "memo_id": 1,
-    //     "nickname":"ex",
-    //     "image_url":"",
-    //     "content": "생성된 메모입니다.",
-    //     "created_at": "2025-01-17T12:00:00Z",
-    //     "updated_at": "2025-01-17T12:05:00Z"
-    //   }
-    // })
 
     //북마크 메모 수정
     const updateMemo = async (bookmarkId, memoId, memo) => {
@@ -162,25 +148,13 @@ export const useBookmarkStore = defineStore("bookmark", () => {
         const response = await api.put(`/bookmarks/${bookmarkId}/memos/${memoId}`, request);
         console.log(response.data);
     };
-    //북마크 메모 수정 예시 response
-    // const exampleUpdateMemo = ref({
-    //   "success":true,
-    //   "message":"some message",
-    //   "results": {
-    //     "memoId": 1,
-    //     "nickname":"ex",
-    //     "image_url":"",
-    //     "content": "수정 메모입니다.",
-    //     "createdAt": "2025-01-17T12:00:00Z",
-    //     "updatedAt": "2025-01-17T12:05:00Z"
-    //   },
-    // })
 
     //북마크 메모 삭제
     const deleteMemo = async (bookmarkId, memoId) => {
         const response = await api.delete(`/bookmarks/${bookmarkId}/memos/${memoId}`);
-        console.log(response.data);
+        return response;
     };
+
     ///////////////////////////////////////////////////////////////////////////////////////////////
     //중요 북마크 실제 response
     const importantBookmarks = ref({});
@@ -328,11 +302,21 @@ export const useBookmarkStore = defineStore("bookmark", () => {
       const personalCollectionBookmarks = ref({});
 
       //개인 컬렉션 별 북마크 불러오는 함수
-      const getPersonalCollectionBookmarks = async (personalCollectionId) => {
-        const response = await api.get(`/collections/personal/${personalCollectionId}`);
-        personalCollectionBookmarks.value = response.data;
-        console.log(response.data);
-      };
+      const getPersonalCollectionBookmarks = async (collectionId) => {
+        try {
+            const response = await api.get(`/collections/personal/${collectionId}`);
+            personalCollectionBookmarks.value = response.data;
+            // 현재 컬렉션 정보 저장
+            currentCollection.value = {
+                id: collectionId,
+                isPersonal: true
+            };
+            return response.data;
+        } catch (error) {
+            console.error('개인 컬렉션 북마크 로딩 실패:', error);
+            throw error;
+        }
+    };
 
 
       //개인 컬렉션 별 북마크 예시 response
@@ -377,11 +361,21 @@ export const useBookmarkStore = defineStore("bookmark", () => {
       const sharedCollectionBookmarks = ref({});
 
       //공유 컬렉션 별 북마크 불러오는 함수
-      const getSharedCollectionBookmarks = async (sharedCollectionId) => {  
-        const response = await api.get(`/collections/shared/${sharedCollectionId}`);
-        sharedCollectionBookmarks.value = response.data;
-        console.log(response.data);
-      };
+      const getSharedCollectionBookmarks = async (collectionId) => {
+        try {
+            const response = await api.get(`/collections/shared/${collectionId}`);
+            sharedCollectionBookmarks.value = response.data;
+            // 현재 컬렉션 정보 저장
+            currentCollection.value = {
+                id: collectionId,
+                isPersonal: false
+            };
+            return response.data;
+        } catch (error) {
+            console.error('공유 컬렉션 북마크 로딩 실패:', error);
+            throw error;
+        }
+    };
 
       //공유 컬렉션 별 북마크 예시 response
       const exampleSharedCollectionBookmarks = ref(
@@ -442,8 +436,9 @@ export const useBookmarkStore = defineStore("bookmark", () => {
 
       //태그 기반 검색 불러오는 함수
       const getSearchBookmarksByTag = async (tagName, cursorId = 1, size = 10) => {
-        const response = await api.get(`/tags/my-data/search?cursorId=${cursorId}&size=${size}&tag=${tagName}`);
+        const response = await api.get(`/tags/search?cursorId=${cursorId}&size=${size}&tag=${tagName}`);
         searchBookmarksByTag.value = response.data;
+        console.log("------------getSearchBookmarksByTag------------");
         console.log(response.data);
       };
 
@@ -620,6 +615,31 @@ export const useBookmarkStore = defineStore("bookmark", () => {
         topTags.value = response.data;
     };
 
+    // 현재 페이지의 북마크 목록을 새로고침하는 함수들
+    const refreshCurrentPage = async (collectionId = null) => {
+        try {
+            // 중요 북마크 새로고침
+            await getImportantBookmarks();
+            
+            // 개인 컬렉션 북마크 새로고침
+            if (collectionId) {
+                await getPersonalCollectionBookmarks(collectionId);
+            }
+            
+            // 오래된 북마크 새로고침
+            await getOldBookmarks();
+            
+        } catch (error) {
+            console.error('북마크 목록 새로고침 중 오류 발생:', error);
+        }
+    };
+
+    // 현재 컬렉션 상태 저장
+    const currentCollection = ref({
+        id: null,
+        isPersonal: true
+    });
+
     return {
         changePriority,
         moveToOtherCollection,
@@ -651,10 +671,11 @@ export const useBookmarkStore = defineStore("bookmark", () => {
         searchBookmarksByTag,
         exampleOldBookmarks,
         oldBookmarks,
-        // exampleBookmarkMemo,
         bookmarkMemo,
         saveUserDefineTags,
         getTopTags,
-        topTags
+        topTags,
+        refreshCurrentPage,
+        currentCollection,
     };
 });

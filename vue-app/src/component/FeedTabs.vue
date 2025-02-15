@@ -2,12 +2,12 @@
 <div class="feed-tabs">
     <div 
     v-for="feed in feeds" 
-    :key="feed.rss_id"
-    :class="['tab', { active: selectedFeed === feed.rss_id }]"
-    @click="$emit('select-feed', feed.rss_id)"
+    :key="feed.rssId"
+    :class="['tab', { active: selectedFeed === feed.rssId }]"
+    @click="$emit('select-feed', feed.rssId)"
     >
     {{ feed.name }}
-    <span v-if="!feed.is_read" class="unread-badge"></span>
+    <span v-if="!feed.read" class="unread-badge"></span>
     </div>
 </div>
 </template>

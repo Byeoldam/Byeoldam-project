@@ -24,17 +24,17 @@
                     <div v-else class="cards-grid">
                         <Card
                             v-for="bookmark in bookmarkResults"
-                            :key="bookmark.bookmark_id"
-                            v-model:priority="bookmark.priority"
-                            :bookmarkId="bookmark.bookmark_id"
+                            :key="bookmark.bookmarkId"
+                            :bookmarkId="bookmark.bookmarkId"
                             :url="bookmark.url"
                             :img="bookmark.img"
                             :title="bookmark.title"
                             :description="bookmark.description"
-                            :tag="bookmark.tag"
+                            :tag="bookmark.tags"
+                            :priority="bookmark.priority"
                             :isPersonal="bookmark.isPersonal"
-                            :createdAt="bookmark.created_at"
-                            :updatedAt="bookmark.updated_at"
+                            :createdAt="bookmark.createdAt"
+                            :updatedAt="bookmark.updatedAt"
                         />
                     </div>
                 </div>
@@ -58,7 +58,14 @@ const { getImportantBookmarks } = bookmarkStore;
 
 
 // exampleImportantBookmarks 대신 실제 데이터인 importantBookmarks 사용
-const bookmarkResults = computed(() => importantBookmarks.value.results || []);
+const bookmarkResults = computed(() => {
+    const results = importantBookmarks.value.results || [];
+    // 태그 데이터 구조가 올바른지 확인하고, 필요한 경우 변환
+    return results.map(bookmark => ({
+        ...bookmark,
+        tags: Array.isArray(bookmark.tags) ? bookmark.tags : []
+    }));
+});
 
 
 onMounted(async () => {

@@ -22,7 +22,7 @@
                         />
                         <div class="content-container">
                             <FeedPostList 
-                                :posts="rssArticles.results?.latest_posts"
+                                :posts="rssArticles.results?.latestPosts?.content"
                                 @select-post="selectPost"
                             />
                             <FeedPostContent :url="selectedPostUrl" />
@@ -52,7 +52,7 @@ const selectedPostUrl = ref(null)
 // RSS 피드 아이템 로드
 const loadRssItems = async (rssId) => {
   try {
-    await rssStore.getRssArticles(rssId)
+    await rssStore.getRssArticles(rssId, 0, 10)
   } catch (error) {
     console.error('RSS 아이템 로드 실패:', error)
   }

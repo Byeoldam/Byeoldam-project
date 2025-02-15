@@ -95,7 +95,7 @@ const navigateToCollection = (collection) => {
 
 onMounted(async () => {
     try {
-        await collectionStore.fetchAllCollection();
+        await collectionStore.fetchAllCollections();
     } catch (error) {
         console.error('컬렉션 로딩 실패:', error);
     }

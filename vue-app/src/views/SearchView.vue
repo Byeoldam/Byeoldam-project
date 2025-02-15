@@ -44,17 +44,19 @@
                                 <div v-if="bookmarks.length > 0" class="bookmarks-grid">
                                     <Card
                                         v-for="bookmark in bookmarks"
-                                        :key="bookmark.bookmark_id"
-                                        :bookmarkId="bookmark.bookmark_id"
+                                        :key="bookmark.bookmarkId"
+                                        :bookmarkId="bookmark.bookmarkId"
                                         :url="bookmark.url"
                                         :img="bookmark.img"
                                         :title="bookmark.title"
                                         :description="bookmark.description"
-                                        :tag="bookmark.tag"
+                                        :tag="bookmark.tags"
                                         :priority="bookmark.priority"
-                                        :isPersonal="bookmark.isPersonal"
-                                        :createdAt="bookmark.created_at"
-                                        :updatedAt="bookmark.updated_at"
+                                        :readingTime="bookmark.readingTime"
+                                        :createdAt="bookmark.createdAt"
+                                        :updatedAt="bookmark.updatedAt"
+                                        :is-personal="true"
+                                        :collection-id="bookmark.collectionId"
                                     />
                                 </div>
                                 
@@ -77,7 +79,7 @@
                                         class="recommended-item"
                                     >
                                         <div class="recommended-content-wrapper" @click="goToUrl(bookmark.url)">
-                                            <img :src="bookmark.image" :alt="bookmark.title" class="recommended-image">
+                                            <img :src="bookmark.imageUrl" :alt="bookmark.title" class="recommended-image">
                                             <div class="recommended-content">
                                                 <h3>{{ bookmark.title }}</h3>
                                             </div>
@@ -130,15 +132,18 @@ const hasMore = ref(true)
 const selectedBookmark = ref(null)
 
 const bookmarks = computed(() => {
-    return searchBookmarksByTag.value?.result?.userBookmarkList || []
+    return searchBookmarksByTag.value?.results?.personalBookmarkList || []
 })
 
 const recommendedBookmarks = computed(() => {
-    return searchBookmarksByTag.value?.result?.recommendedBookmarkList || []
+    return searchBookmarksByTag.value?.results?.recommendedUrlList || []
 })
 
 
 const handleSearch = async () => {
+    console.log("검색 시작");
+    console.log("검색어:" + searchTag.value);
+    
     if (!searchTag.value.trim()) return
     
     try {
@@ -147,11 +152,11 @@ const handleSearch = async () => {
         lastCursorId.value = null // 검색 시 커서 초기화
         hasMore.value = true // 검색 시 hasMore 초기화
         
-        await bookmarkStore.getSearchBookmarksByTag(searchTag.value)
+        await bookmarkStore.getSearchBookmarksByTag(searchTag.value,0,10)
         
         // 마지막 북마크의 ID를 커서로 설정
         if (bookmarks.value.length > 0) {
-            lastCursorId.value = bookmarks.value[bookmarks.value.length - 1].bookmark_id
+            lastCursorId.value = bookmarks.value[bookmarks.value.length - 1].bookmarkId
         }
         
         // 받아온 데이터가 페이지 사이즈보다 작으면 더 이상 데이터가 없음
@@ -183,7 +188,7 @@ const loadMoreBookmarks = async () => {
         
         // 새로운 북마크들만 기존 목록에 추가
         if (bookmarks.value.length > 0) {
-            lastCursorId.value = bookmarks.value[bookmarks.value.length - 1].bookmark_id
+            lastCursorId.value = bookmarks.value[bookmarks.value.length - 1].bookmarkId
         }
         
         // 받아온 데이터가 페이지 사이즈보다 작으면 더 이상 데이터가 없음
