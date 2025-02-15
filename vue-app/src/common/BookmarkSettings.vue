@@ -70,6 +70,7 @@
 
   <el-dialog
     v-model="showTagModal"
+    title="태그 관리"
     :modal="true"
     :show-close="true"
     destroy-on-close
@@ -80,7 +81,7 @@
       v-if="isTagSettingOpen"
       :bookmark-id="props.bookmarkId"
       :initial-tags="props.tag"
-      @close="isTagSettingOpen = false"
+      @close="closeTagModal"
     />
   </el-dialog>
 
@@ -175,20 +176,23 @@ const showMoveDialog = () => {
 
 const showTagManagement = () => {
   isVisible.value = false
+  showTagModal.value = true
   isTagSettingOpen.value = true
 }
-
 
 const openDeleteModal = () => {
   isVisible.value = false
   showDeleteModal.value = true
 }
 
-
-
 const handleCopyComplete = () => {
   isVisible.value = false
   showCopyModal.value = false
+}
+
+const closeTagModal = () => {
+  showTagModal.value = false
+  isTagSettingOpen.value = false
 }
 </script>
 
