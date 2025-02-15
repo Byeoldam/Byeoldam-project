@@ -35,6 +35,7 @@ public class ExtensionBookmarkService {
             SharedCollectionResponse response = sharedCollectionService.createSharedCollection(sharedRequest, userId);
             CreateBookmarkRequest bookmarkRequest = request.makeBookmarkRequest(response.getCollectionId());
             bookmarkService.createBookmark(bookmarkRequest, userId);
+            return new ExtensionBookmarkResponse(response.getName());
         }
     }
 }
