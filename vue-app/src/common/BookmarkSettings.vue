@@ -12,7 +12,7 @@
     
     <div class="popover-content">
       <el-button-group vertical class="settings-menu">
-        <el-button link @click="togglePriority" v-if="props.isPersonal">
+        <el-button link @click="togglePriority" v-show="props.isPersonal !== false">
           {{ props.priority ? '중요 북마크 해제' : '중요 북마크로 설정' }}
         </el-button>
         
