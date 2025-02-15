@@ -60,8 +60,8 @@ const selectedCollectionId = ref('')
 
 onMounted(async () => {
   try {
-    // 개인 컬렉션 목록 불러오기
-    await collectionStore.fetchPersonalCollections()
+    // 개인 컬렉션 목록 불러오기 (함수 이름 수정)
+    await collectionStore.fetchPersonalCollection()
   } catch (error) {
     console.error('개인 컬렉션 로드 실패:', error)
     ElMessage.error('개인 컬렉션 목록을 불러오는데 실패했습니다')
