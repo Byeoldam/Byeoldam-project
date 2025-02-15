@@ -100,7 +100,7 @@ public class BookmarkService {
                     .filter(bm -> bm.getPersonalCollection() != null)
                     .findFirst()
                     .ifPresent(bm -> {
-                        throw new CustomException("이미 저장한 url입니다.");
+                        throw new CustomException("개인 컬렉션에 담은 페이지입니다.");
                     });
 
             bookmark = Bookmark.createPersonalBookmark(bookmarkUrl, user, collection);
@@ -109,7 +109,7 @@ public class BookmarkService {
             SharedCollection collection = sharedCollectionRepository.findById(request.getCollectionId())
                     .orElseThrow(() -> new CustomException("해당 공유컬렉션이 없습니다."));
             if(bookmarkRepository.existsByBookmarkUrlAndSharedCollection(bookmarkUrl, collection)) {
-                throw new CustomException("공유컬렉션에 이미 저장한 url입니다.");
+                throw new CustomException("공유컬렉션에 담은 페이지입니다.");
             }
             bookmark = Bookmark.createSharedBookmark(bookmarkUrl, user, collection);
         }
