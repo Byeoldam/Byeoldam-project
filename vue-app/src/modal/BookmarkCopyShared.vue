@@ -79,8 +79,8 @@ const handleCopy = async () => {
       selectedCollection.value
     )
     
-    ElMessage.success('북마크가 공유 컬렉션으로 복사되었습니다')
     emit('close')
+    window.location.reload()
   } catch (error) {
     console.error('북마크 복사 중 오류 발생:', error)
     ElMessage.error('북마크 복사에 실패했습니다')

@@ -77,7 +77,7 @@ const moveBookmark = async () => {
     )
     emit('moveComplete')
     emit('close')
-    ElMessage.success('북마크가 이동되었습니다')
+    window.location.reload()  // 페이지 새로고침 추가
   } catch (error) {
     console.error('북마크 이동 중 오류 발생:', error)
     ElMessage.error('북마크 이동에 실패했습니다')
