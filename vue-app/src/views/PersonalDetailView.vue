@@ -200,74 +200,31 @@ const handleIframeError = () => {
     iframeError.value = true;
 };
 
-// 북마크 데이터 가져오기
-const fetchBookmarkData = async () => {
-    try {
-        console.log('Fetching bookmark data for ID:', bookmarkId.value);
-        const response = await bookmarkStore.getPersonalCollectionBookmarks(bookmarkId.value);
-        console.log('API Response:', response);
-
-        if (response?.results?.bookmarks) {
-            console.log('Bookmarks from API:', response.results.bookmarks);
-            // 첫 번째 북마크의 전체 구조 출력
-            console.log('First bookmark structure:', JSON.stringify(response.results.bookmarks[0], null, 2));
-            
-            // 해당 ID의 북마크 찾기 (bookmarkId 대신 bookmark_id 사용)
-            const foundBookmark = response.results.bookmarks.find(
-                b => String(b.bookmarkId) === String(bookmarkId.value)
-            );
-            console.log('Bookmark ID to find:', bookmarkId.value, 'Type:', typeof bookmarkId.value);
-            console.log('First bookmark ID:', response.results.bookmarks[0]?.bookmarkId);
-            console.log('Found bookmark:', foundBookmark);
-
-            if (foundBookmark) {
-                bookmark.value = {
-                    id: foundBookmark.bookmarkId,
-                    url: foundBookmark.url,
-                    title: foundBookmark.title,
-                    description: foundBookmark.description,
-                    img: foundBookmark.img,
-                    tag: foundBookmark.tag,
-                    priority: foundBookmark.priority,
-                    isPersonal: true,
-                    createdAt: foundBookmark.createdAt,
-                    updatedAt: foundBookmark.updatedAt
-                };
-                console.log('Processed bookmark:', bookmark.value);
-            } else {
-                // 디버깅을 위해 모든 북마크 ID 출력
-                console.log('Available bookmark IDs:', response.results.bookmarks.map(b => b.bookmarkId));
-                console.log('All bookmarks:', response.results.bookmarks);
-                error.value = '해당 북마크를 찾을 수 없습니다.';
-            }
-        } else {
-            console.log('Invalid response structure:', response);
-            error.value = '잘못된 응답 구조입니다.';
-        }
-    } catch (err) {
-        error.value = '북마크 데이터 로딩 실패: ' + err.message;
-        console.error('북마크 데이터 로딩 실패:', err);
-    }
-};
-
 onMounted(async () => {
     try {
         isInitializing.value = true;
         error.value = null;
-        console.log('Component mounted, bookmarkId:', bookmarkId.value);
-
-        await fetchBookmarkData();
         
-        if (bookmark.value) {
-            console.log('Fetching memos for bookmark:', bookmark.value.id);
-            await fetchMemos();
+        console.log('Route query:', route.query);
+        console.log('Route params:', route.params);
+
+        // URL query에서 북마크 데이터 가져오기
+        if (route.query.data) {
+            try {
+                bookmark.value = JSON.parse(route.query.data);
+                console.log('Bookmark data from query:', bookmark.value);
+                await fetchMemos(); // 메모만 가져오기
+            } catch (parseError) {
+                console.error('Failed to parse bookmark data:', parseError);
+                error.value = '북마크 데이터 파싱 실패';
+            }
         } else {
+            console.log('No bookmark data in query');
             error.value = '북마크 데이터를 찾을 수 없습니다.';
-            console.log('No bookmark data found after fetch');
         }
     } catch (err) {
         error.value = '데이터 로딩 실패: ' + err.message;
-        console.error('북마크 데이터 로딩 실패:', err);
+        console.error('메모 로딩 실패:', err);
     } finally {
         if (isComponentMounted.value) {
             isInitializing.value = false;

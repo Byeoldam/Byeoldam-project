@@ -129,11 +129,29 @@ const imageSrc = computed(() => {
 });
 
 const handleImageClick = () => {
-    const route = props.isPersonal === false 
-        ? `/shared-collection/${props.bookmarkId}`
-        : `/personal-collection/${props.bookmarkId}`;
+    const bookmarkData = {
+        id: props.bookmarkId,
+        url: props.url,
+        title: props.title,
+        description: props.description,
+        img: props.img,
+        tag: props.tag,
+        priority: props.priority,
+        isPersonal: props.isPersonal,
+        createdAt: props.createdAt,
+        updatedAt: props.updatedAt
+    };
     
-    router.push(route);
+    // isPersonal 값에 따라 다른 라우트로 이동
+    const route = props.isPersonal 
+        ? `/personal-collection/${props.bookmarkId}`
+        : `/shared-collection/${props.bookmarkId}`;
+    
+    // 북마크 데이터를 query parameter로 전달
+    router.push({
+        path: route,
+        query: { data: JSON.stringify(bookmarkData) }
+    });
 };
 
 const emit = defineEmits(['update:priority']);
