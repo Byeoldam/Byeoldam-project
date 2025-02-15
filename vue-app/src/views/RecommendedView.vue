@@ -28,13 +28,13 @@
 
                     <!-- 추천 북마크 카드 표시 영역 -->
                     <div class="cards-grid" v-if="recommendedBookmarks.length > 0">
-                        <RecommendCard
+                        <CardUnbookmarked
                             v-for="bookmark in recommendedBookmarks"
                             :key="bookmark.url"
                             :url="bookmark.url"
                             :title="bookmark.title"
                             :description="bookmark.description"
-                            :imageUrl="bookmark.imageUrl"
+                            :img="bookmark.imageUrl"
                             :readingTime="bookmark.readingTime"
                         />
                     </div>
@@ -53,7 +53,6 @@ import SideBar from '@/common/SideBar.vue';
 import CardUnbookmarked from '@/common/CardUnbookmarked.vue';
 import { useBookmarkStore } from '@/stores/bookmark';
 import api from '@/utils/api';
-import RecommendCard from '@/common/RecommendCard.vue';
 
 const router = useRouter();
 const bookmarkStore = useBookmarkStore();
@@ -152,6 +151,10 @@ onMounted(async () => {
         const response = await api.get('/tags');
         console.log('Tags response:', response.data, 'hakjun0412');
         tags.value = response.data.results.tagList;
+        if (tags.value && tags.value.length > 0) {
+            selectedTag.value = tags.value[0].tagName;
+            await handleTagClick(selectedTag.value);
+        }
     } catch (error) {
         console.error('태그 로딩 실패:', error, 'hakjun0412');
         tags.value = [];

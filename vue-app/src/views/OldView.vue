@@ -30,11 +30,12 @@
                             :img="bookmark.img"
                             :title="bookmark.title"
                             :description="bookmark.description"
-                            :tag="bookmark.tag"
+                            :tag="bookmark.tags"
                             :priority="bookmark.priority"
                             :isPersonal="bookmark.isPersonal"
                             :createdAt="bookmark.createdAt"
                             :updatedAt="bookmark.updatedAt"
+                            :readingTime="bookmark.readingTime"
                         />
                     </div>
                 </div>
