@@ -34,13 +34,13 @@ public class BookmarkController {
     @Operation(summary = "익스텐션 : 새로운 컬렉션으로 북마크 생성", description = "익스텐션 : 컬렉션과 북마크 추가")
     @ApiResponse(responseCode = "200", description = "컬렉션과 북마크 저장 성공", useReturnTypeSchema = true)
     @PostMapping("/extension/new")
-    public ResponseTemplate<Void> createExtensionBookmarkAndCollection(
+    public ResponseTemplate<ExtensionBookmarkResponse> createExtensionBookmarkAndCollection(
             @Valid @RequestBody CreateBookmarkAndCollectionRequest request,
             @UserId Long userId
     ) {
 
-        extensionBookmarkService.createBookmarkAndCollection(request, userId);
-        return ResponseTemplate.ok();
+        ExtensionBookmarkResponse response = extensionBookmarkService.createBookmarkAndCollection(request, userId);
+        return ResponseTemplate.ok(response, "북마크가 저장되었습니다.");
     }
 
     // 북마크 생성 - 사이트

@@ -23,12 +23,13 @@ public class ExtensionBookmarkService {
     private final BookmarkService bookmarkService;
 
     @Transactional
-    public void createBookmarkAndCollection(@Valid CreateBookmarkAndCollectionRequest request, Long userId) {
+    public ExtensionBookmarkResponse createBookmarkAndCollection(@Valid CreateBookmarkAndCollectionRequest request, Long userId) {
         if (request.isPersonal()) {
             PersonalCollectionRequest personalRequest = request.makePersonalCollection();
             PersonalCollectionResponse response = personalCollectionService.createPersonalCollection(personalRequest, userId);
             CreateBookmarkRequest bookmarkRequest = request.makeBookmarkRequest(response.getCollectionId());
             bookmarkService.createBookmark(bookmarkRequest, userId);
+            return new ExtensionBookmarkResponse(response.getName());
         } else {
             SharedCollectionRequest sharedRequest = request.makeSharedCollectionRequest();
             SharedCollectionResponse response = sharedCollectionService.createSharedCollection(sharedRequest, userId);
