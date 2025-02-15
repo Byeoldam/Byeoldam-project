@@ -55,6 +55,8 @@
                                         :readingTime="bookmark.readingTime"
                                         :createdAt="bookmark.createdAt"
                                         :updatedAt="bookmark.updatedAt"
+                                        :is-personal="true"
+                                        :collection-id="bookmark.collectionId"
                                     />
                                 </div>
                                 

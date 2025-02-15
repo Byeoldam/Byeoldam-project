@@ -1,7 +1,7 @@
 <template>
     <div class="card">
         <div class="card-header">
-            <div class="priority" v-if="props.isPersonal">
+            <div class="priority" v-show="props.isPersonal !== false">
                 <span v-if="props.priority" class="star-icon">★</span>
                 <span v-else class="star-icon empty">☆</span>
             </div>
