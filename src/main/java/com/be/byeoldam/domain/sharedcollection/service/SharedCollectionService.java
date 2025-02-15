@@ -40,7 +40,7 @@ public class SharedCollectionService {
     // 공유컬렉션 생성
     // 예외 1. user_id 확인
     @Transactional
-    public void createSharedCollection(SharedCollectionRequest sharedCollectionRequest, Long userId) {
+    public SharedCollectionResponse createSharedCollection(SharedCollectionRequest sharedCollectionRequest, Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException("사용자를 찾을 수 없습니다."));
         SharedCollection collection = sharedCollectionRequest.toEntity();
@@ -48,6 +48,8 @@ public class SharedCollectionService {
 
         SharedUser sharedUser = SharedUser.create(user, collection, Role.OWNER);
         sharedUserRepository.save(sharedUser);
+
+        return SharedCollectionResponse.of(collection.getId(), collection.getName());
     }
 
     // 공유컬렉션 목록 조회
