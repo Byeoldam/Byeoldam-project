@@ -389,11 +389,23 @@ export const useBookmarkStore = defineStore("bookmark", () => {
       const sharedCollectionBookmarks = ref({});
 
       //공유 컬렉션 별 북마크 불러오는 함수
-      const getSharedCollectionBookmarks = async (sharedCollectionId) => {  
-        const response = await api.get(`/collections/shared/${sharedCollectionId}`);
-        sharedCollectionBookmarks.value = response.data;
-        console.log(response.data);
-      };
+      const getSharedCollectionBookmarks = async (collectionId) => {
+        if (!collectionId) {
+            console.error('CollectionId is undefined', 'hakjun0412');
+            throw new Error('CollectionId is required');
+        }
+
+        try {
+            console.log('Fetching bookmarks for collection:', collectionId, 'hakjun0412');
+            const response = await api.get(`/collections/shared/${collectionId}`);
+            console.log('Bookmarks API Response:', response.data, 'hakjun0412');
+            sharedCollectionBookmarks.value = response.data;
+            return response.data;
+        } catch (error) {
+            console.error('북마크 데이터 가져오기 실패:', error, 'hakjun0412');
+            throw error;
+        }
+    };
 
       //공유 컬렉션 별 북마크 예시 response
       const exampleSharedCollectionBookmarks = ref(

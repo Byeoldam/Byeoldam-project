@@ -67,7 +67,6 @@
 import Header from '@/common/Header.vue'
 import SideBar from '@/common/SideBar.vue'
 import { computed, ref, onMounted } from 'vue';
-import PersonalCollectionList from '@/component/PersonalCollectionList.vue';
 import CreateCollection from '@/modal/CreateCollection.vue';
 import { useCollectionStore } from '@/stores/collection';
 import { useBookmarkStore } from '@/stores/bookmark';
