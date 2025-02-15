@@ -11,6 +11,7 @@
                     :bookmark-id="props.bookmarkId"
                     :is-personal="props.isPersonal"
                     :tag="props.tag"
+                    :collection-id="props.collectionId"
                     @toggle-priority="handlePriorityToggle"
                 />
             </div>

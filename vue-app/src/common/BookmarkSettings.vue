@@ -127,6 +127,10 @@ const props = defineProps({
   isPersonal: {
     type: Boolean,
     required: true
+  },
+  collectionId: {
+    type: Number,
+    default: null
   }
 })
 
@@ -139,7 +143,7 @@ const isTagSettingOpen = ref(false)
 
 const togglePriority = async () => {
   try {
-    const success = await bookmarkStore.changePriority(props.bookmarkId, !props.priority)
+    const success = await bookmarkStore.changePriority(props.bookmarkId, !props.priority, props.collectionId)
     if (success) {
       ElMessage.success(props.priority ? '중요 북마크가 해제되었습니다.' : '중요 북마크로 설정되었습니다.')
       emit('update:priority', !props.priority)
