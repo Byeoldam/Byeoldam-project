@@ -10,6 +10,7 @@ import com.be.byeoldam.domain.common.model.TagBookmarkUrl;
 import com.be.byeoldam.domain.common.repository.BookmarkUrlRepository;
 import com.be.byeoldam.domain.common.repository.TagBookmarkUrlRepository;
 import com.be.byeoldam.domain.memo.MemoRepository;
+import com.be.byeoldam.domain.notification.NotificationRepository;
 import com.be.byeoldam.domain.personalcollection.model.PersonalCollection;
 import com.be.byeoldam.domain.personalcollection.repository.PersonalCollectionRepository;
 import com.be.byeoldam.domain.sharedcollection.model.SharedCollection;
@@ -23,6 +24,7 @@ import com.be.byeoldam.domain.user.model.User;
 import com.be.byeoldam.domain.user.repository.UserRepository;
 import com.be.byeoldam.exception.CustomException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +34,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BookmarkService {
 
     private final BookmarkRepository bookmarkRepository;
@@ -44,6 +47,7 @@ public class BookmarkService {
     private final SharedUserRepository sharedUserRepository;
     private final TagBookmarkUrlRepository tagBookmarkUrlRepository;
     private final MemoRepository memoRepository;
+    private final NotificationRepository notificationRepository;
 
     // 북마크 추가
     // 1. Bookmarks에 추가
@@ -250,6 +254,8 @@ public class BookmarkService {
             }
         }
 
+        notificationRepository.deleteBookmarkNotification(bookmarkId);
+
         // 1. 북마크링크 referenceCount-- or 삭제
         // 삭제 시 북마크링크_태그도 지워줘야 함
         BookmarkUrl url = bookmarkUrlRepository.findById(bookmark.getBookmarkUrl().getId())
@@ -307,6 +313,7 @@ public class BookmarkService {
             PersonalCollection collection = personalCollectionRepository.findById(request.getCollectionId())
                     .orElseThrow(() -> new CustomException("00해당 개인컬렉션이 없습니다."));
 
+            log.info("PersonalCollection: {}", bookmark.getPersonalCollection());
             bookmark.updatePersonalCollection(collection);
             return; // return : 이동시키고 끝
         }
@@ -318,6 +325,8 @@ public class BookmarkService {
         if (!request.isPersonal() && bookmark.getPersonalCollection() != null) {
             SharedCollection collection = sharedCollectionRepository.findById(request.getCollectionId())
                     .orElseThrow(() -> new CustomException("해당 공유컬렉션이 없습니다."));
+
+            log.info("SharedCollection: {}", bookmark.getSharedCollection());
             newBookmark.updatePersonalCollection(null); // 개인 컬렉션 해제
             newBookmark.updateSharedCollection(collection);
 
@@ -325,12 +334,16 @@ public class BookmarkService {
         } else if (!request.isPersonal() && bookmark.getSharedCollection() != null) {
             SharedCollection collection = sharedCollectionRepository.findById(request.getCollectionId())
                     .orElseThrow(() -> new CustomException("해당 개인컬렉션이 없습니다."));
+
+            log.info("SharedCollection: {}", bookmark.getSharedCollection());
             newBookmark.updateSharedCollection(collection);
 
         // 공유 > 개인
         } else {
             PersonalCollection collection = personalCollectionRepository.findById(request.getCollectionId())
                     .orElseThrow(() -> new CustomException("해당 개인컬렉션이 없습니다."));
+
+            log.info("PersonalCollection: {}", bookmark.getPersonalCollection());
             newBookmark.updateSharedCollection(null); // 공유 컬렉션 해제
             newBookmark.updatePersonalCollection(collection);
         }
