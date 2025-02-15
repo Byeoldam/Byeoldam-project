@@ -128,36 +128,8 @@ export const useBookmarkStore = defineStore("bookmark", () => {
     //북마크 메모목록 조회 함수
     const getMemo = async (bookmarkId) => {
         const response = await api.get(`/bookmarks/${bookmarkId}/memos`);
-        console.log(response.data);
+        return response;
     };  
-    //북마크 메모목록 조회 예시 response
-    // const exampleBookmarkMemo = ref(
-    //   {
-    //     "success":true,
-    //     "message":"some message",
-    //     "results": {
-    //       "memos": [
-    //         {
-    //           "memo_id": 1,
-    //           "nickname":"ex",
-    //           "image_url":"",
-    //           "content": "첫 번째 메모입니다.",
-    //           "created_at": "2025-01-17T12:00:00Z",
-    //           "updated_at": "2025-01-17T12:05:00Z"
-    //         },
-    //         {
-    //           "memoId": 2,
-    //           "nickname":"ex",
-    //           "image_url":"",
-    //           "content": "두 번째 메모입니다.",
-    //           "createdAt": "2025-01-17T12:10:00Z",
-    //           "updatedAt": "2025-01-17T12:15:00Z"
-    //         },
-    //       ]
-    //     }
-    //   }
-    // )
-
 
     //북마크 메모 생성
     const createMemo = async (bookmarkId, memo) => {
@@ -165,21 +137,8 @@ export const useBookmarkStore = defineStore("bookmark", () => {
             content: memo
         };
         const response = await api.post(`/bookmarks/${bookmarkId}/memos`, request);
-        console.log(response.data);
+        return response;
     };
-    //북마크 메모 생성 예시 response
-    // const exampleCreateMemo = ref({
-    //   "success":true,
-    //   "message":"some message",
-    //   "results": {
-    //     "memo_id": 1,
-    //     "nickname":"ex",
-    //     "image_url":"",
-    //     "content": "생성된 메모입니다.",
-    //     "created_at": "2025-01-17T12:00:00Z",
-    //     "updated_at": "2025-01-17T12:05:00Z"
-    //   }
-    // })
 
     //북마크 메모 수정
     const updateMemo = async (bookmarkId, memoId, memo) => {
@@ -189,25 +148,13 @@ export const useBookmarkStore = defineStore("bookmark", () => {
         const response = await api.put(`/bookmarks/${bookmarkId}/memos/${memoId}`, request);
         console.log(response.data);
     };
-    //북마크 메모 수정 예시 response
-    // const exampleUpdateMemo = ref({
-    //   "success":true,
-    //   "message":"some message",
-    //   "results": {
-    //     "memoId": 1,
-    //     "nickname":"ex",
-    //     "image_url":"",
-    //     "content": "수정 메모입니다.",
-    //     "createdAt": "2025-01-17T12:00:00Z",
-    //     "updatedAt": "2025-01-17T12:05:00Z"
-    //   },
-    // })
 
     //북마크 메모 삭제
     const deleteMemo = async (bookmarkId, memoId) => {
         const response = await api.delete(`/bookmarks/${bookmarkId}/memos/${memoId}`);
-        console.log(response.data);
+        return response;
     };
+
     ///////////////////////////////////////////////////////////////////////////////////////////////
     //중요 북마크 실제 response
     const importantBookmarks = ref({});
@@ -724,7 +671,6 @@ export const useBookmarkStore = defineStore("bookmark", () => {
         searchBookmarksByTag,
         exampleOldBookmarks,
         oldBookmarks,
-        // exampleBookmarkMemo,
         bookmarkMemo,
         saveUserDefineTags,
         getTopTags,
