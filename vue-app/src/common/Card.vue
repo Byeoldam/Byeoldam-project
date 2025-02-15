@@ -133,24 +133,7 @@ const handleImageClick = () => {
         ? `/personal-collection/${props.bookmarkId}`
         : `/shared-collection/${props.bookmarkId}`;
     
-    router.push({
-        path: route,
-        state: {
-            bookmarkData: {
-                key: props.key,
-                bookmarkId: props.bookmarkId,
-                isPersonal: props.isPersonal,
-                title: props.title,
-                description: props.description,
-                url: props.url,
-                img: props.img,
-                tag: props.tag,
-                priority: props.priority,
-                createdAt: props.createdAt,
-                updatedAt: props.updatedAt
-            }
-        }
-    });
+    router.push(route);
 };
 
 const emit = defineEmits(['update:priority']);
