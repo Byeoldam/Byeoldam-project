@@ -347,7 +347,23 @@ VALUES
 (NULL, NOW(), NOW(), 4, 4, 'INVITE', '영화 팬클럽 추천작 공유 컬렉션에 초대되었습니다.', 'hee'),
 (NULL, NOW(), NOW(), 5, 5, 'INVITE', '독서 토론 그룹 공유 컬렉션에 초대되었습니다.', 'ji');
 
-
+-- 메모
+INSERT INTO `memo` (`bookmark_id`, `created_at`, `updated_at`, `user_id`,`content`) VALUES
+(1, NOW(), NOW(), 1, '네이버 메인에서 다양한 정보와 유용한 컨텐츠를 만나 보세요'),
+(1, NOW(), NOW(), 1, '완전 유용하네용'),
+(1, NOW(), NOW(), 1, '좀 아는 블로거들의 유용한 이야기, 티스토리. 블로그, 포트폴리오, 웹사이트까지 티스토리에서 나를 표현해 보세요'),
+(1, NOW(), NOW(), 1, 'Free shipping on millions of items. Get the best of Shopping and Entertainment with Prime'),
+(1, NOW(), NOW(), 1, 'On Medium, anyone can share insightful perspectives, useful knowledge, and life wisdom with '),
+(1, NOW(), NOW(), 1, 'Reddit is a network of communities where people can dive into their interests,'),
+(1, NOW(), NOW(), 1, 'Wikipedia is a free online encyclopedia, created and edited by volunteers around the world'),
+(1, NOW(), NOW(), 1, 'Stack Overflow | The World’s Largest Online Community for Developers'),
+-- 공유 컬렉션 메모 추가 예정
+(1, NOW(), NOW(), 1, 'YouTube에서 마음에 드는 동영상과 음악을 감상하고, 직접 만든 콘텐츠를 업로드하여 친구,'),
+(2, NOW(), NOW(), 1, 'Free shipping on millions of items. Get the best of Shopping and Entertainment with Prime'),
+(2, NOW(), NOW(), 1, 'Discover the innovative world of Apple and shop everything iPhone, iPad, Apple Watch, Mac, and Apple TV'),
+(2, NOW(), NOW(), 1, 'Visit BBC for trusted reporting on the latest world and US news,'),
+(2, NOW(), NOW(), 1, 'View the latest news and breaking news today for U.S., world, weather, entertainment'),
+(2, NOW(), NOW(), 1, 'Live news, investigations, opinion, photos and video by the journalists of The New York Times')
 
 -- 데이터 담은 테이블들
 -- select * from bookmarks;
