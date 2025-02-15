@@ -32,7 +32,7 @@
                             :description="bookmark.description"
                             :tag="bookmark.tags"
                             :priority="bookmark.priority"
-                            :isPersonal="bookmark.isPersonal"
+                            :isPersonal="true"
                             :createdAt="bookmark.createdAt"
                             :updatedAt="bookmark.updatedAt"
                         />

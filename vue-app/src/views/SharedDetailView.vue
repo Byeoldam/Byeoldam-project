@@ -37,7 +37,7 @@
                             </div>
                         </div>
                     </section>
-                
+            
 
                     <!-- 메모장 섹션 -->
                     <section class="memo-section">
@@ -64,8 +64,11 @@
                         
                         <div v-else class="memo-list">
                             <div v-for="memo in memos" :key="memo.id" class="memo-item">
+                                <div class="memo-header">
+                                    <span class="memo-user">{{ memo.userName }}</span>
+                                    <span class="memo-date">{{ memo.date }}</span>
+                                </div>
                                 <div class="memo-content">{{ memo.content }}</div>
-                                <div class="memo-date">{{ memo.date }}</div>
                                 <button 
                                     @click="deleteMemo(memo.id)" 
                                     class="delete-memo-btn"
@@ -83,7 +86,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useBookmarkStore } from '@/stores/bookmark';
 import Header from '@/common/Header.vue';
@@ -94,7 +97,8 @@ const router = useRouter();
 const bookmarkStore = useBookmarkStore();
 
 // 상태 관리
-const bookmark = ref(router.currentRoute.value.state?.bookmarkData || null);
+const bookmark = ref(null);
+const bookmarkId = computed(() => Number(route.params.id));
 const newMemo = ref('');
 const memos = ref([]);
 const error = ref(null);
@@ -104,10 +108,42 @@ const isInitializing = ref(true);
 const iframeError = ref(false);
 const isComponentMounted = ref(true);
 
-// 현재 사용자 정보 (예시)
-const currentUser = {
-    id: 1,
-    name: '사용자 이름'
+// 메모 목록 조회
+const fetchMemos = async () => {
+    if (!bookmark.value?.id) {
+        console.log('No bookmark ID available for fetching memos');
+        return;
+    }
+    
+    try {
+        isLoading.value = true;
+        error.value = null;
+        
+        console.log('Fetching memos for bookmark ID:', bookmark.value.id);
+        const response = await bookmarkStore.getMemo(bookmark.value.id);
+        console.log('Memos response:', response);
+
+        if (response?.data?.status) {
+            memos.value = response.data.results.map(memo => ({
+                id: memo.memoId,
+                content: memo.content,
+                date: new Date(memo.createdAt).toLocaleString(),
+                userName: memo.nickname,
+                imageUrl: memo.imageUrl
+            }));
+            console.log('Processed memos:', memos.value);
+        } else {
+            console.log('No memos found or invalid response structure');
+            memos.value = [];
+        }
+    } catch (err) {
+        error.value = '메모 로딩 실패: ' + err.message;
+        console.error('메모 로딩 실패:', err);
+    } finally {
+        if (isComponentMounted.value) {
+            isLoading.value = false;
+        }
+    }
 };
 
 // 메모 추가
@@ -119,14 +155,14 @@ const addMemo = async () => {
         error.value = null;
         
         const response = await bookmarkStore.createMemo(bookmark.value.id, newMemo.value);
-        if (response.data.success) {
+        if (response.data.status) {
             const newMemoData = response.data.results;
             memos.value.push({
-                id: newMemoData.memo_id,
+                id: newMemoData.memoId,
                 content: newMemoData.content,
-                date: new Date(newMemoData.created_at).toLocaleString(),
+                date: new Date(newMemoData.createdAt).toLocaleString(),
                 userName: newMemoData.nickname,
-                imageUrl: newMemoData.image_url
+                imageUrl: newMemoData.imageUrl
             });
             newMemo.value = '';
         }
@@ -149,7 +185,7 @@ const deleteMemo = async (memoId) => {
         error.value = null;
         
         const response = await bookmarkStore.deleteMemo(bookmark.value.id, memoId);
-        if (response.data.success) {
+        if (response.data.status) {
             memos.value = memos.value.filter(memo => memo.id !== memoId);
         }
     } catch (err) {
@@ -158,34 +194,6 @@ const deleteMemo = async (memoId) => {
     } finally {
         if (isComponentMounted.value) {
             isSubmitting.value = false;
-        }
-    }
-};
-
-// 메모 목록 조회
-const fetchMemos = async () => {
-    if (!bookmark.value?.id) return;
-    
-    try {
-        isLoading.value = true;
-        error.value = null;
-        
-        const response = await bookmarkStore.getMemo(bookmark.value.id);
-        if (response.data.success) {
-            memos.value = response.data.results.memos.map(memo => ({
-                id: memo.memo_id,
-                content: memo.content,
-                date: new Date(memo.created_at).toLocaleString(),
-                userName: memo.nickname,
-                imageUrl: memo.image_url
-            }));
-        }
-    } catch (err) {
-        error.value = '메모 로딩 실패: ' + err.message;
-        console.error('메모 로딩 실패:', err);
-    } finally {
-        if (isComponentMounted.value) {
-            isLoading.value = false;
         }
     }
 };
@@ -199,33 +207,27 @@ onMounted(async () => {
     try {
         isInitializing.value = true;
         error.value = null;
-
-        if (!bookmark.value) {
-            const bookmarkId = parseInt(route.params.id);
-            const response = await bookmarkStore.getBookmarkDetail(bookmarkId);
-            
-            if (response.data.success) {
-                const bookmarkData = response.data.results;
-                bookmark.value = {
-                    id: bookmarkData.bookmark_id,
-                    title: bookmarkData.title,
-                    description: bookmarkData.description,
-                    url: bookmarkData.url,
-                    img: bookmarkData.img,
-                    tag: bookmarkData.tag,
-                    priority: bookmarkData.priority,
-                    createdAt: bookmarkData.created_at,
-                    updatedAt: bookmarkData.updated_at
-                };
-            }
-        }
         
-        if (bookmark.value) {
-            await fetchMemos();
+        console.log('Route query:', route.query);
+        console.log('Route params:', route.params);
+
+        // URL query에서 북마크 데이터 가져오기
+        if (route.query.data) {
+            try {
+                bookmark.value = JSON.parse(route.query.data);
+                console.log('Bookmark data from query:', bookmark.value);
+                await fetchMemos(); // 메모만 가져오기
+            } catch (parseError) {
+                console.error('Failed to parse bookmark data:', parseError);
+                error.value = '북마크 데이터 파싱 실패';
+            }
+        } else {
+            console.log('No bookmark data in query');
+            error.value = '북마크 데이터를 찾을 수 없습니다.';
         }
     } catch (err) {
         error.value = '데이터 로딩 실패: ' + err.message;
-        console.error('북마크 데이터 로딩 실패:', err);
+        console.error('메모 로딩 실패:', err);
     } finally {
         if (isComponentMounted.value) {
             isInitializing.value = false;
@@ -303,8 +305,49 @@ h2 {
     color: #333;
 }
 
+.main-image {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin: 10px 0;
+}
+
+.description {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin: 10px 0;
+}
+
+.tag {
+    background: #f0f0f0;
+    padding: 4px 8px;
+    border-radius: 20px;
+    margin-right: 8px;
+    font-size: 0.9rem;
+}
+
+.visit-link {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    margin-top: 10px;
+}
+
+/* 메모장 스타일 */
 .memo-input {
     margin-bottom: 20px;
+}
+
+.memo-section {
+    background: white;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    max-width: 400px;
 }
 
 textarea {
@@ -338,17 +381,19 @@ textarea {
 .memo-header {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 4px;
+    align-items: center;
+    margin-bottom: 8px;
 }
 
-.user-name {
-    font-weight: bold;
+.memo-user {
+    font-weight: 500;
     color: #333;
+    font-size: 0.9rem;
 }
 
 .memo-date {
-    font-size: 0.8rem;
     color: #666;
+    font-size: 0.8rem;
 }
 
 .memo-content {
