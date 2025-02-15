@@ -51,6 +51,9 @@
                         +{{ remainingTagsCount }}
                     </span>
                 </div>
+                <div v-if="props.readingTime" class="read-time">
+                    {{ props.readingTime }}분
+                </div>
             </div>
         </div>
     </div>
@@ -114,6 +117,10 @@ const props = defineProps({
     isPersonal: {
         type: Boolean,
         required: true
+    },
+    readingTime: {
+        type: Number,
+        required: false
     }
 });
 

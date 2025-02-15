@@ -35,6 +35,7 @@
                             :isPersonal="true"
                             :createdAt="bookmark.createdAt"
                             :updatedAt="bookmark.updatedAt"
+                            :readingTime="bookmark.readingTime"
                         />
                     </div>
                 </div>

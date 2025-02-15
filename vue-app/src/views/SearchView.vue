@@ -28,13 +28,13 @@
                         </div>
                         
                         <!-- 검색 전 안내 메시지 -->
-                        <!-- <div v-if="!hasSearched" class="initial-message">
+                        <div v-if="!hasSearched" class="initial-message">
                             <div class="message-box">
                                 <i class="fas fa-search search-icon"></i>
-                                <h3>태그로 북마크를 검색해보세요</h3>
-                                <p>원하는 태그를 입력하고 검색하면 관련된 북마크들을 찾을 수 있습니다.</p>
+                                <h3>현재 검색된 태그가 없습니다.</h3>
+                                <p>태그를 통해 검색해보세요</p>
                             </div>
-                        </div> -->
+                        </div>
                     
                         <!-- 검색 결과 -->
                         <div class="search-results-container">
@@ -111,6 +111,10 @@
         @close="selectedBookmark = null"
         @save="handleSave"
     />
+
+    <div v-if="!hasMore && hasSearched && bookmarks.length > 0" class="end-message">
+        모든 검색 결과를 불러왔습니다.
+    </div>
 </template>
 
 <script setup>
@@ -141,9 +145,6 @@ const recommendedBookmarks = computed(() => {
 
 
 const handleSearch = async () => {
-    console.log("검색 시작");
-    console.log("검색어:" + searchTag.value);
-    
     if (!searchTag.value.trim()) return
     
     try {
@@ -152,20 +153,19 @@ const handleSearch = async () => {
         lastCursorId.value = null // 검색 시 커서 초기화
         hasMore.value = true // 검색 시 hasMore 초기화
         
-        await bookmarkStore.getSearchBookmarksByTag(searchTag.value,0,10)
+        // 첫 검색시에는 cursorId를 전달하지 않음
+        await bookmarkStore.getSearchBookmarksByTag(searchTag.value, undefined, 10)
         
-        // 마지막 북마크의 ID를 커서로 설정
-        if (bookmarks.value.length > 0) {
-            lastCursorId.value = bookmarks.value[bookmarks.value.length - 1].bookmarkId
-        }
-        
-        // 받아온 데이터가 페이지 사이즈보다 작으면 더 이상 데이터가 없음
-        if (bookmarks.value.length < 6) {
+        // 받아온 데이터가 10개 미만이면 더 이상 데이터가 없음
+        if (bookmarks.value.length < 10) {
             hasMore.value = false
+        } else {
+            lastCursorId.value = bookmarks.value[bookmarks.value.length - 1].bookmarkId
         }
         
     } catch (error) {
         console.error('검색 중 오류 발생:', error)
+        hasMore.value = false
     } finally {
         loading.value = false
     }
@@ -181,22 +181,29 @@ const loadMoreBookmarks = async () => {
     
     try {
         loading.value = true
+        const currentLength = bookmarks.value.length
+        
+        // cursorId가 있을 때만 전달
         await bookmarkStore.getSearchBookmarksByTag(
             searchTag.value,
-            lastCursorId.value
+            lastCursorId.value,
+            10
         )
         
-        // 새로운 북마크들만 기존 목록에 추가
-        if (bookmarks.value.length > 0) {
+        // 새로운 데이터가 추가되었는지 확인
+        const newLength = bookmarks.value.length
+        const newItemsCount = newLength - currentLength
+        
+        // 새로 받아온 데이터가 10개 미만이면 더 이상 데이터가 없음
+        if (newItemsCount < 10) {
+            hasMore.value = false
+        } else {
             lastCursorId.value = bookmarks.value[bookmarks.value.length - 1].bookmarkId
         }
         
-        // 받아온 데이터가 페이지 사이즈보다 작으면 더 이상 데이터가 없음
-        if (bookmarks.value.length < 6) {
-            hasMore.value = false
-        }
     } catch (error) {
         console.error('추가 북마크 로딩 중 오류 발생:', error)
+        hasMore.value = false
     } finally {
         loading.value = false
     }
@@ -207,8 +214,11 @@ const handleScroll = () => {
     if (!mainContent) return
     
     const { scrollTop, scrollHeight, clientHeight } = mainContent
-    if (scrollTop + clientHeight >= scrollHeight - 300 && hasMore.value) {
-        loadMoreBookmarks()
+    // 스크롤이 바닥에 가까워졌을 때만 추가 로드
+    if (scrollTop + clientHeight >= scrollHeight - 100) {
+        if (hasMore.value && !loading.value) {
+            loadMoreBookmarks()
+        }
     }
 }
 
@@ -319,7 +329,7 @@ onUnmounted(() => {
 }
 
 .recommended-section {
-    width: 300px;
+    width: 280px;
     flex-shrink: 0;
 }
 
@@ -344,14 +354,15 @@ onUnmounted(() => {
 
 .recommended-item {
     display: flex;
-    gap: 12px;
-    padding: 12px;
+    gap: 8px;
+    padding: 8px;
     border: 1px solid #e2e8f0;
     border-radius: 8px;
     cursor: pointer;
     transition: transform 0.2s;
-    height: 100px;
+    height: 80px;
     width: 100%;
+    position: relative;
 }
 
 .recommended-item:hover {
@@ -360,10 +371,16 @@ onUnmounted(() => {
 }
 
 .recommended-image {
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
     object-fit: cover;
     border-radius: 4px;
+}
+
+.recommended-content-wrapper {
+    display: flex;
+    gap: 8px;
+    flex: 1;
 }
 
 .recommended-content {
@@ -374,7 +391,7 @@ onUnmounted(() => {
 }
 
 .recommended-content h3 {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     margin: 0;
     color: #2d3748;
     display: -webkit-box;
@@ -384,13 +401,17 @@ onUnmounted(() => {
 }
 
 .save-button {
-    padding: 4px 12px;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    padding: 2px 8px;
     background-color: transparent;
     border: 1px solid #e2e8f0;
     border-radius: 4px;
     color: #718096;
     cursor: pointer;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
+    z-index: 1;
 }
 
 .save-button:hover {
@@ -498,6 +519,13 @@ onUnmounted(() => {
     line-height: 1.4;
 }
 
+.end-message {
+    text-align: center;
+    padding: 20px;
+    color: #718096;
+    font-style: italic;
+    margin-top: 20px;
+}
 </style>
 
 
