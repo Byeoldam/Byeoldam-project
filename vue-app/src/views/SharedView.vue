@@ -8,25 +8,19 @@
                     <div class="page-header">
                         <div class="header-content">
                             <div class="title-section">
-                                <i class="fas fa-users title-icon"></i>
+                                <i class="fas fa-user title-icon"></i>
                                 <h2 class="title">공유 컬렉션</h2>
                             </div>
-                            <p class="description">다른 사용자들과 함께 북마크를 공유하고 협업할 수 있는 공간입니다</p>
+                            <p class="description">나만의 북마크를 체계적으로 관리하고 정리할 수 있는 공간입니다</p>
                         </div>
                     </div>
                     <div class="top-section">
                         <div class="filter-buttons">
                             <button 
-                                :class="['filter-btn', selectedCollection === 'all' ? 'active' : '']"
-                                @click="selectedCollection = 'all'"
-                            >
-                                전체보기
-                            </button>
-                            <button 
                                 v-for="collection in collections"
-                                :key="collection.collection_id"
-                                :class="['filter-btn', selectedCollection === collection.name ? 'active' : '']"
-                                @click="selectedCollection = collection.name"
+                                :key="collection.collectionId"
+                                :class="['filter-btn', selectedCollectionId === collection.collectionId ? 'active' : '']"
+                                @click="handleCollectionClick(collection.collectionId, collection.name)"
                             >
                                 {{ collection.name }}
                             </button>
@@ -36,23 +30,25 @@
                             새 컬렉션
                         </button>
                     </div>
-                    <div class="collections-wrapper">
-                        <template v-if="selectedCollection === 'all'">
-                            <SharedCollectionList
-                                v-for="collection in collections" 
-                                :key="collection.collection_id" 
-                                :collectionInfo="collection"
-                                class="collection-item"
-                            />
-                        </template>
-                        <template v-else>
-                            <SharedCollectionList
-                                v-for="collection in filteredCollections" 
-                                :key="collection.collection_id" 
-                                :collectionInfo="collection"
-                                class="collection-item"
-                            />
-                        </template>
+                    <div v-if="selectedCollectionId && selectedCollectionBookmarks.length === 0" class="empty-state">
+                        <p class="empty-message">이 컬렉션에는 아직 북마크가 없습니다.</p>
+                        <p class="empty-sub-message">새로운 북마크를 추가해보세요!</p>
+                    </div>
+                    <div v-else-if="selectedCollectionBookmarks.length > 0" class="cards-grid">
+                        <Card
+                            v-for="bookmark in selectedCollectionBookmarks"
+                            :key="bookmark.bookmarkId"
+                            :bookmarkId="bookmark.bookmarkId"
+                            :url="bookmark.url"
+                            :img="bookmark.img"
+                            :title="bookmark.title"
+                            :description="bookmark.description"
+                            :tag="bookmark.tags"
+                            :priority="bookmark.priority"
+                            :createdAt="bookmark.createdAt"
+                            :updatedAt="bookmark.updatedAt"
+                            :isPersonal="false"
+                        />
                     </div>
                 </div>
             </div>
@@ -71,39 +67,57 @@
 import Header from '@/common/Header.vue'
 import SideBar from '@/common/SideBar.vue'
 import { computed, ref, onMounted } from 'vue';
-import SharedCollectionList from '@/component/SharedCollectionList.vue';
 import CreateCollection from '@/modal/CreateCollection.vue';
 import { useCollectionStore } from '@/stores/collection';
+import { useBookmarkStore } from '@/stores/bookmark';
 import { storeToRefs } from 'pinia';
+import Card from '@/common/Card.vue';
 
 const collectionStore = useCollectionStore();
-const { sharedCollections } = storeToRefs(collectionStore);
-const selectedCollection = ref('all');
+const bookmarkStore = useBookmarkStore();
+const selectedCollectionId = ref(null);
+const selectedCollectionName = ref('');
+const selectedCollectionBookmarks = ref([]);
 const showCreateModal = ref(false);
 
-
-const collections = computed(() => {
-    return sharedCollections.value || [];
-});
+const collections = ref([]);
 
 
-const filteredCollections = computed(() => {
-    return collections.value.filter(collection => 
-        collection.name === selectedCollection.value
-    );
+const handleCollectionClick = async (collectionId, collectionName) => {
+    console.log('Selected Collection ID:', collectionId, 'hakjun0412');
+    selectedCollectionId.value = collectionId;
+    selectedCollectionName.value = collectionName;
+    
+    try {
+        const response = await bookmarkStore.getSharedCollectionBookmarks(collectionId);
+        console.log('Bookmarks Response:', response, 'hakjun0412');
+        selectedCollectionBookmarks.value = response.results || [];
+    } catch (error) {
+        console.error('북마크 로딩 실패:', error, 'hakjun0412');
+        selectedCollectionBookmarks.value = [];
+    }
+};
+
+onMounted(async () => {
+    try {
+        const response = await collectionStore.fetchSharedCollection();
+        console.log('Collections Response:', response, 'hakjun0412');
+        collections.value = response.results || [];
+        
+        // 첫 번째 컬렉션 자동 선택 (옵션)
+        if (collections.value.length > 0) {
+            const firstCollection = collections.value[0];
+            handleCollectionClick(firstCollection.collectionId, firstCollection.name);
+        }
+    } catch (error) {
+        console.error('컬렉션 로딩 실패:', error, 'hakjun0412');
+        collections.value = [];
+    }
 });
 
 const createNewCollection = () => {
     showCreateModal.value = true;
 };
-
-onMounted(async () => {
-    try {
-        await collectionStore.fetchAllCollection();
-    } catch (error) {
-        console.error('컬렉션 데이터 로딩 실패:', error);
-    }
-});
 </script>
 
 <style scoped>
@@ -279,5 +293,32 @@ onMounted(async () => {
     color: #666;
     margin: 0;
     line-height: 1.4;
+}
+
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.empty-message {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 8px;
+}
+
+.empty-sub-message {
+    font-size: 1rem;
+    color: #888;
 }
 </style>
