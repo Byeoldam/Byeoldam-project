@@ -26,34 +26,25 @@ export const useBookmarkStore = defineStore("bookmark", () => {
     };
 
     //북마크 중요도 수정 함수
-    const changePriority = async (bookmarkId, priority, collectionId = null) => {
+    const changePriority = async (bookmarkId, priority) => {
         try {
             const response = await api.put(`/bookmarks/${bookmarkId}`, {
-                priority: priority
+                priority: priority,
+                collectionId: currentCollection.value.id,
+                isPersonal: currentCollection.value.isPersonal
             });
             
             if (response.data.status) {
                 console.log('북마크 중요도 변경 완료');
-                // 응답 데이터가 있는 경우 importantBookmarks 업데이트
-                if (response.data.results) {
-                    importantBookmarks.value = {
-                        ...importantBookmarks.value,
-                        results: response.data.results
-                    };
-                }
                 
-                // 현재 컬렉션 페이지도 새로고침
-                if (collectionId) {
-                    const collectionResponse = await getPersonalCollectionBookmarks(collectionId);
-                    personalCollectionBookmarks.value = {
-                        ...personalCollectionBookmarks.value,
-                        results: {
-                            collectionId: collectionId,
-                            bookmarks: collectionResponse.results.bookmarks
-                        }
-                    };
+                // 현재 컬렉션 정보를 사용하여 새로고침
+                if (currentCollection.value.id) {
+                    if (currentCollection.value.isPersonal) {
+                        await getPersonalCollectionBookmarks(currentCollection.value.id);
+                    } else {
+                        await getSharedCollectionBookmarks(currentCollection.value.id);
+                    }
                 }
-                
                 return true;
             } else {
                 console.error('북마크 중요도 변경 실패:', response.data.message);
@@ -349,19 +340,17 @@ export const useBookmarkStore = defineStore("bookmark", () => {
 
       //개인 컬렉션 별 북마크 불러오는 함수
       const getPersonalCollectionBookmarks = async (collectionId) => {
-        if (!collectionId) {
-            console.error('CollectionId is undefined', 'hakjun0412');
-            throw new Error('CollectionId is required');
-        }
-
         try {
-            console.log('Fetching bookmarks for collection:', collectionId, 'hakjun0412');
             const response = await api.get(`/collections/personal/${collectionId}`);
-            console.log('Bookmarks API Response:', response.data, 'hakjun0412');
             personalCollectionBookmarks.value = response.data;
+            // 현재 컬렉션 정보 저장
+            currentCollection.value = {
+                id: collectionId,
+                isPersonal: true
+            };
             return response.data;
         } catch (error) {
-            console.error('북마크 데이터 가져오기 실패:', error, 'hakjun0412');
+            console.error('개인 컬렉션 북마크 로딩 실패:', error);
             throw error;
         }
     };
@@ -410,19 +399,17 @@ export const useBookmarkStore = defineStore("bookmark", () => {
 
       //공유 컬렉션 별 북마크 불러오는 함수
       const getSharedCollectionBookmarks = async (collectionId) => {
-        if (!collectionId) {
-            console.error('CollectionId is undefined', 'hakjun0412');
-            throw new Error('CollectionId is required');
-        }
-
         try {
-            console.log('Fetching bookmarks for collection:', collectionId, 'hakjun0412');
             const response = await api.get(`/collections/shared/${collectionId}`);
-            console.log('Bookmarks API Response:', response.data, 'hakjun0412');
             sharedCollectionBookmarks.value = response.data;
+            // 현재 컬렉션 정보 저장
+            currentCollection.value = {
+                id: collectionId,
+                isPersonal: false
+            };
             return response.data;
         } catch (error) {
-            console.error('북마크 데이터 가져오기 실패:', error, 'hakjun0412');
+            console.error('공유 컬렉션 북마크 로딩 실패:', error);
             throw error;
         }
     };
@@ -684,6 +671,12 @@ export const useBookmarkStore = defineStore("bookmark", () => {
         }
     };
 
+    // 현재 컬렉션 상태 저장
+    const currentCollection = ref({
+        id: null,
+        isPersonal: true
+    });
+
     return {
         changePriority,
         moveToOtherCollection,
@@ -721,5 +714,6 @@ export const useBookmarkStore = defineStore("bookmark", () => {
         getTopTags,
         topTags,
         refreshCurrentPage,
+        currentCollection,
     };
 });
