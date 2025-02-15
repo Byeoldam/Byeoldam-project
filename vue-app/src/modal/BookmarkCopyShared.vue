@@ -17,8 +17,8 @@
         >
           <option value="" disabled>컬렉션을 선택해주세요</option>
           <option 
-            v-for="collection in sharedCollections" 
-            :key="collection.collectionId" 
+            v-for="collection in sharedCollections.results" 
+            :key="collection.collectionId"
             :value="collection.collectionId"
           >
             {{ collection.name }}

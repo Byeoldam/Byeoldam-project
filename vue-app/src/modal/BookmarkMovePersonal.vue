@@ -11,7 +11,7 @@
       >
         <option value="" selected>컬렉션을 선택해주세요</option>
         <option 
-          v-for="collection in personalCollections" 
+          v-for="collection in personalCollections.results" 
           :key="collection.collectionId"
           :value="collection.collectionId"
         >
