@@ -2,6 +2,7 @@ package com.be.byeoldam.domain.bookmark;
 
 import com.be.byeoldam.domain.bookmark.dto.CreateBookmarkAndCollectionRequest;
 import com.be.byeoldam.domain.bookmark.dto.CreateBookmarkRequest;
+import com.be.byeoldam.domain.bookmark.dto.ExtensionBookmarkResponse;
 import com.be.byeoldam.domain.personalcollection.PersonalCollectionService;
 import com.be.byeoldam.domain.personalcollection.dto.PersonalCollectionRequest;
 import com.be.byeoldam.domain.personalcollection.dto.PersonalCollectionResponse;

@@ -2,10 +2,7 @@ package com.be.byeoldam.domain.bookmark;
 
 import com.be.byeoldam.common.ResponseTemplate;
 import com.be.byeoldam.common.annotation.UserId;
-import com.be.byeoldam.domain.bookmark.dto.CreateBookmarkAndCollectionRequest;
-import com.be.byeoldam.domain.bookmark.dto.CreateBookmarkRequest;
-import com.be.byeoldam.domain.bookmark.dto.MoveBookmarkRequest;
-import com.be.byeoldam.domain.bookmark.dto.UpdateBookmarkRequest;
+import com.be.byeoldam.domain.bookmark.dto.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
