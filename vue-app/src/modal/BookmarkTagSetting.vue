@@ -20,7 +20,7 @@
 
         <button @click="saveChanges" class="save-btn">수정완료</button>
     </div>
-</template>
+</template> 
 
 <script setup>
 import { ref } from 'vue'

@@ -77,19 +77,45 @@ export const useBookmarkStore = defineStore("bookmark", () => {
     const moveToOtherCollection = async (bookmarkId, isPersonal, targetCollectionId) => {
         try {
             const request = {
-                targetCollectionId: targetCollectionId,
+                collectionId: targetCollectionId,
                 isPersonal: isPersonal
             };
             const response = await api.post(`/bookmarks/${bookmarkId}/move`, request);
             
-            if (response.data.success) {
-                return true;
+            if (response.data.status) {
+                console.log('북마크 이동/복사 완료');
+                
+                // 중요 북마크 목록 새로고침
+                await getImportantBookmarks();
+                
+                // 현재 컬렉션 페이지 새로고침
+                if (currentCollection.value.id) {
+                    if (currentCollection.value.isPersonal) {
+                        await getPersonalCollectionBookmarks(currentCollection.value.id);
+                    } else {
+                        await getSharedCollectionBookmarks(currentCollection.value.id);
+                    }
+                }
+                
+                // 오래된 북마크 목록 새로고침
+                await getOldBookmarks();
+                
+                // 검색 결과가 있는 경우 검색 결과 새로고침
+                if (searchBookmarksByTag.value) {
+                    await getSearchBookmarksByTag(
+                        searchBookmarksByTag.value.searchTag,
+                        searchBookmarksByTag.value.cursorId,
+                        searchBookmarksByTag.value.size
+                    );
+                }
+                
+                return response;
             } else {
-                console.error('북마크 이동 실패:', response.data.message);
-                return false;
+                console.error('북마크 이동/복사 실패:', response.data.message);
+                return response;
             }
         } catch (error) {
-            console.error('북마크 이동 중 오류 발생:', error);
+            console.error('북마크 이동/복사 중 오류 발생:', error);
             throw error;
         }
     };
@@ -98,7 +124,33 @@ export const useBookmarkStore = defineStore("bookmark", () => {
     const deleteBookmark = async (bookmarkId) => {
         try {
             const response = await api.delete(`/bookmarks/${bookmarkId}`);
-            if (response.data.success) {
+            if (response.data.status) {
+                console.log('북마크 삭제 완료');
+                
+                // 중요 북마크 목록 새로고침
+                await getImportantBookmarks();
+                
+                // 현재 컬렉션 페이지 새로고침
+                if (currentCollection.value.id) {
+                    if (currentCollection.value.isPersonal) {
+                        await getPersonalCollectionBookmarks(currentCollection.value.id);
+                    } else {
+                        await getSharedCollectionBookmarks(currentCollection.value.id);
+                    }
+                }
+                
+                // 오래된 북마크 목록 새로고침
+                await getOldBookmarks();
+                
+                // 검색 결과가 있는 경우 검색 결과 새로고침
+                if (searchBookmarksByTag.value) {
+                    await getSearchBookmarksByTag(
+                        searchBookmarksByTag.value.searchTag,
+                        searchBookmarksByTag.value.cursorId,
+                        searchBookmarksByTag.value.size
+                    );
+                }
+                
                 return true;
             } else {
                 console.error('북마크 삭제 실패:', response.data.message);

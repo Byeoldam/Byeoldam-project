@@ -38,6 +38,7 @@
 
   <el-dialog
     v-model="showCopyModal"
+    title="공유 컬렉션으로 복사"
     :modal="true"
     :show-close="true"
     destroy-on-close
@@ -46,8 +47,9 @@
   >
     <BookmarkCopyShared 
       :bookmark-id="props.bookmarkId"
-      :is-personal="props.isPersonal"
-      @close="showCopyModal = false" 
+      :is-personal="false"
+      @close="showCopyModal = false"
+      @copy-complete="handleCopyComplete"
     />
   </el-dialog>
 
@@ -61,14 +63,14 @@
   >
     <BookmarkMovePersonal 
       :bookmark-id="props.bookmarkId"
-      :is-personal="props.isPersonal"
+      :is-personal="true"
       @close="showMoveModal = false"
-      @move-complete="handleMoveComplete"
     />
   </el-dialog>
 
   <el-dialog
     v-model="showTagModal"
+    title="태그 관리"
     :modal="true"
     :show-close="true"
     destroy-on-close
@@ -79,7 +81,7 @@
       v-if="isTagSettingOpen"
       :bookmark-id="props.bookmarkId"
       :initial-tags="props.tag"
-      @close="isTagSettingOpen = false"
+      @close="closeTagModal"
     />
   </el-dialog>
 
@@ -174,18 +176,23 @@ const showMoveDialog = () => {
 
 const showTagManagement = () => {
   isVisible.value = false
+  showTagModal.value = true
   isTagSettingOpen.value = true
 }
-
 
 const openDeleteModal = () => {
   isVisible.value = false
   showDeleteModal.value = true
 }
 
-const handleMoveComplete = () => {
-  ElMessage.success('북마크가 성공적으로 이동되었습니다.')
-  // TODO: 필요한 경우 부모 컴포넌트에 이동 완료 이벤트 발생
+const handleCopyComplete = () => {
+  isVisible.value = false
+  showCopyModal.value = false
+}
+
+const closeTagModal = () => {
+  showTagModal.value = false
+  isTagSettingOpen.value = false
 }
 </script>
 

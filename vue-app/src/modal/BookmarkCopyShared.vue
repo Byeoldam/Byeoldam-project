@@ -17,8 +17,8 @@
         >
           <option value="" disabled>컬렉션을 선택해주세요</option>
           <option 
-            v-for="collection in sharedCollections" 
-            :key="collection.collectionId" 
+            v-for="collection in sharedCollections.results" 
+            :key="collection.collectionId"
             :value="collection.collectionId"
           >
             {{ collection.name }}
@@ -60,7 +60,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['close'])
+const emit = defineEmits(['close', 'copy-complete'])
 const collectionStore = useCollectionStore()
 const { sharedCollections } = storeToRefs(collectionStore)
 const selectedCollection = ref('')
@@ -73,14 +73,19 @@ const handleCopy = async () => {
       return
     }
     
-    await bookmarkStore.moveToOtherCollection(
+    const response = await bookmarkStore.moveToOtherCollection(
       props.bookmarkId,
-      props.isPersonal,
+      false,
       selectedCollection.value
     )
     
-    ElMessage.success('북마크가 공유 컬렉션으로 복사되었습니다')
-    emit('close')
+    if (response.data.status) {
+      ElMessage.success('북마크가 공유 컬렉션으로 복사되었습니다')
+      emit('copy-complete')
+      emit('close')
+    } else {
+      ElMessage.error('북마크 복사에 실패했습니다')
+    }
   } catch (error) {
     console.error('북마크 복사 중 오류 발생:', error)
     ElMessage.error('북마크 복사에 실패했습니다')
