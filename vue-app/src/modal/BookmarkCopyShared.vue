@@ -75,7 +75,7 @@ const handleCopy = async () => {
     
     await bookmarkStore.moveToOtherCollection(
       props.bookmarkId,
-      props.isPersonal,
+      false,
       selectedCollection.value
     )
     

@@ -77,7 +77,7 @@ export const useBookmarkStore = defineStore("bookmark", () => {
     const moveToOtherCollection = async (bookmarkId, isPersonal, targetCollectionId) => {
         try {
             const request = {
-                targetCollectionId: targetCollectionId,
+                collectionId: targetCollectionId,
                 isPersonal: isPersonal
             };
             const response = await api.post(`/bookmarks/${bookmarkId}/move`, request);

@@ -72,7 +72,7 @@ const moveBookmark = async () => {
   try {
     await bookmarkStore.moveToOtherCollection(
       props.bookmarkId,
-      props.isPersonal,
+      true,
       selectedCollectionId.value
     )
     emit('moveComplete')
