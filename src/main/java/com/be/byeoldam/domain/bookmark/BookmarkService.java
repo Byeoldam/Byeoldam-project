@@ -303,15 +303,16 @@ public class BookmarkService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException("사용자를 찾을 수 없습니다."));
 
-        // 예외 1. 북마크의 userId 와 요청한 userId 일치하지 않으면
-        if (!bookmark.getUser().getId().equals(user.getId())) {
-            throw new CustomException("해당 북마크를 가지고 있지 않습니다.");
-        }
 
         // 개인 > 개인: 이동
         if (request.isPersonal() && bookmark.getPersonalCollection() != null) {
             PersonalCollection collection = personalCollectionRepository.findById(request.getCollectionId())
-                    .orElseThrow(() -> new CustomException("00해당 개인컬렉션이 없습니다."));
+                    .orElseThrow(() -> new CustomException("해당 개인컬렉션이 없습니다."));
+
+            // 예외 1. 북마크의 userId 와 요청한 userId 일치하지 않으면
+            if (!bookmark.getUser().getId().equals(user.getId())) {
+                throw new CustomException("해당 북마크에 대한 권한이 없습니다ㅣ.");
+            }
 
             log.info("PersonalCollection: {}", bookmark.getPersonalCollection());
             bookmark.updatePersonalCollection(collection);
