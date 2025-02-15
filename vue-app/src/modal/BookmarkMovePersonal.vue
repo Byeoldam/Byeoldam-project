@@ -70,14 +70,19 @@ onMounted(async () => {
 
 const moveBookmark = async () => {
   try {
-    await bookmarkStore.moveToOtherCollection(
+    const response = await bookmarkStore.moveToOtherCollection(
       props.bookmarkId,
-      true,
+      props.isPersonal,
       selectedCollectionId.value
     )
-    emit('moveComplete')
-    emit('close')
-    window.location.reload()  // 페이지 새로고침 추가
+    
+    if (response.data.status) {
+      ElMessage.success('북마크가 이동되었습니다')
+      emit('moveComplete')  // 이동 완료 이벤트 emit
+      emit('close')
+    } else {
+      ElMessage.error('북마크 이동에 실패했습니다')
+    }
   } catch (error) {
     console.error('북마크 이동 중 오류 발생:', error)
     ElMessage.error('북마크 이동에 실패했습니다')
