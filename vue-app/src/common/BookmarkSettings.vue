@@ -47,7 +47,7 @@
   >
     <BookmarkCopyShared 
       :bookmark-id="props.bookmarkId"
-      :is-personal="props.isPersonal"
+      :is-personal="false"
       @close="showCopyModal = false"
       @copy-complete="handleCopyComplete"
     />
@@ -63,7 +63,7 @@
   >
     <BookmarkMovePersonal 
       :bookmark-id="props.bookmarkId"
-      :is-personal="props.isPersonal"
+      :is-personal="true"
       @close="showMoveModal = false"
     />
   </el-dialog>
