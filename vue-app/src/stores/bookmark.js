@@ -37,7 +37,10 @@ export const useBookmarkStore = defineStore("bookmark", () => {
             if (response.data.status) {
                 console.log('북마크 중요도 변경 완료');
                 
-                // 현재 컬렉션 정보를 사용하여 새로고침
+                // 중요 북마크 목록 새로고침
+                await getImportantBookmarks();
+                
+                // 현재 컬렉션 페이지 새로고침
                 if (currentCollection.value.id) {
                     if (currentCollection.value.isPersonal) {
                         await getPersonalCollectionBookmarks(currentCollection.value.id);
@@ -45,6 +48,19 @@ export const useBookmarkStore = defineStore("bookmark", () => {
                         await getSharedCollectionBookmarks(currentCollection.value.id);
                     }
                 }
+                
+                // 오래된 북마크 목록 새로고침
+                await getOldBookmarks();
+                
+                // 검색 결과가 있는 경우 검색 결과 새로고침
+                if (searchBookmarksByTag.value) {
+                    await getSearchBookmarksByTag(
+                        searchBookmarksByTag.value.searchTag,
+                        searchBookmarksByTag.value.cursorId,
+                        searchBookmarksByTag.value.size
+                    );
+                }
+                
                 return true;
             } else {
                 console.error('북마크 중요도 변경 실패:', response.data.message);
