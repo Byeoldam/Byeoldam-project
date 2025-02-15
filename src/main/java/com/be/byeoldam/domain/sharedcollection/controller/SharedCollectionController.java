@@ -60,7 +60,7 @@ public class SharedCollectionController {
     @Operation(summary = "공유컬렉션 북마크 조회", description = "공유컬렉션의 북마크 조회")
     @ApiResponse(responseCode = "200", description = "공유컬렉션 북마크 조회 성공", useReturnTypeSchema = true)
     @GetMapping("/{sharedCollectionId}")
-    public ResponseTemplate<List<SharedBookmarkResponse>> getSharedBookmark(
+    public ResponseTemplate<SharedBookmarkListResponse> getSharedBookmark(
             @PathVariable Long sharedCollectionId,
             @UserId Long userId
     ) {

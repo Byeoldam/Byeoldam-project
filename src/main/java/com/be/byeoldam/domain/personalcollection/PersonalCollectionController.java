@@ -2,6 +2,7 @@ package com.be.byeoldam.domain.personalcollection;
 
 import com.be.byeoldam.common.ResponseTemplate;
 import com.be.byeoldam.common.annotation.UserId;
+import com.be.byeoldam.domain.personalcollection.dto.PersonalBookmarkListResponse;
 import com.be.byeoldam.domain.personalcollection.dto.PersonalBookmarkResponse;
 import com.be.byeoldam.domain.personalcollection.dto.PersonalCollectionRequest;
 import com.be.byeoldam.domain.personalcollection.dto.PersonalCollectionResponse;
@@ -73,7 +74,7 @@ public class PersonalCollectionController {
     @Operation(summary = "개인컬렉션 북마크 목록 조회", description = "개인컬렉션의 북마크 목록 조회")
     @ApiResponse(responseCode = "200", description = "개인컬렉션 북마크 목록 조회 성공", useReturnTypeSchema = true)
     @GetMapping("/{personalCollectionId}")
-    public ResponseTemplate<List<PersonalBookmarkResponse>> getPersonalBookmark(
+    public ResponseTemplate<PersonalBookmarkListResponse> getPersonalBookmark(
             @UserId Long userId,
             @PathVariable Long personalCollectionId
 
