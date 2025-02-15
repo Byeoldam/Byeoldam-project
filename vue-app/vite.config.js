@@ -24,5 +24,6 @@ export default defineConfig({
     watch: {
       usePolling: true, // 파일 변경 감지를 위한 설정 (Docker 환경에서 필요할 수 있음)
     },
+    allowedHosts: ['byeoldam.store', 'www.byeoldam.store', 'localhost', '0.0.0.0']
   }
 })
