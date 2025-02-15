@@ -19,12 +19,12 @@ public class PersonalBookmarkResponse {
     private String img;
     private String title;
     private String description;
-
     private int readingTime;
+    private List<TagDto> tags;
+
     private boolean priority;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private List<TagDto> tags;
 
     public static PersonalBookmarkResponse of(Bookmark bookmark, List<TagDto> tagDtos) {
         return PersonalBookmarkResponse.builder()

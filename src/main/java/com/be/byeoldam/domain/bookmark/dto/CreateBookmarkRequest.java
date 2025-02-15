@@ -21,5 +21,6 @@ public class CreateBookmarkRequest {
 
     @JsonProperty("isPersonal")
     private boolean personal;
+
     private int readingTime;
 }

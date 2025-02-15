@@ -5,14 +5,13 @@ import com.be.byeoldam.domain.bookmark.dto.TagDto;
 import com.be.byeoldam.domain.bookmark.model.Bookmark;
 import com.be.byeoldam.domain.bookmark.repository.BookmarkRepository;
 import com.be.byeoldam.domain.bookmark.repository.BookmarkTagRepository;
+import com.be.byeoldam.domain.personalcollection.dto.PersonalBookmarkListResponse;
 import com.be.byeoldam.domain.personalcollection.dto.PersonalBookmarkResponse;
 import com.be.byeoldam.domain.personalcollection.dto.PersonalCollectionRequest;
 import com.be.byeoldam.domain.personalcollection.dto.PersonalCollectionResponse;
 import com.be.byeoldam.domain.personalcollection.model.PersonalCollection;
 import com.be.byeoldam.domain.personalcollection.repository.PersonalCollectionRepository;
 import com.be.byeoldam.domain.tag.model.Tag;
-import com.be.byeoldam.domain.tag.util.JsoupUtil;
-import com.be.byeoldam.domain.tag.util.UrlPreview;
 import com.be.byeoldam.domain.user.model.User;
 import com.be.byeoldam.domain.user.repository.UserRepository;
 import com.be.byeoldam.exception.CustomException;
@@ -34,14 +33,15 @@ public class PersonalCollectionService {
     private final BookmarkService bookmarkService;
 
     @Transactional
-    public void createPersonalCollection(PersonalCollectionRequest request, Long userId) {
+    public PersonalCollectionResponse createPersonalCollection(PersonalCollectionRequest request, Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException("사용자를 찾을 수 없습니다."));
 
         validate(user, request.getName());
         PersonalCollection collection = request.toEntity(user);
 
-        personalCollectionRepository.save(collection);
+        PersonalCollection collection1 = personalCollectionRepository.save(collection);
+        return PersonalCollectionResponse.of(collection1.getId(), collection1.getName());
     }
 
     // 개인컬렉션 목록 조회
@@ -95,13 +95,20 @@ public class PersonalCollectionService {
 
     // 컬렉션에서 북마크 조회
     @Transactional(readOnly = true)
-    public List<PersonalBookmarkResponse> getCollectionBookmark(Long userId, Long collectionId) {
+    public PersonalBookmarkListResponse getCollectionBookmark(Long userId, Long collectionId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException("사용자를 찾을 수 없습니다."));
+
         PersonalCollection collection = personalCollectionRepository.findById(collectionId)
                 .orElseThrow(() -> new CustomException("컬렉션을 찾을 수 없습니다."));
+
+        if (!collection.getUser().getId().equals(userId)) {
+            throw new CustomException("해당 컬렉션에 대한 권한이 없습니다.");
+        }
+
         List<Bookmark> bookmarks = bookmarkRepository.findByUserAndPersonalCollection(user, collection);
-        return makeBookmarkResponse(bookmarks);
+
+        return PersonalBookmarkListResponse.of(collectionId, makeBookmarkResponse(bookmarks));
     }
 
     // 개인 컬렉션 기능 - 30일 이상 보지 않은 컬렉션 조회
