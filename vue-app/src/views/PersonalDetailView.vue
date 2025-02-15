@@ -83,7 +83,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useBookmarkStore } from '@/stores/bookmark';
 import Header from '@/common/Header.vue';
@@ -94,7 +94,8 @@ const router = useRouter();
 const bookmarkStore = useBookmarkStore();
 
 // 상태 관리
-const bookmark = ref(router.currentRoute.value.state?.bookmarkData || null);
+const bookmark = ref(null);
+const bookmarkId = computed(() => Number(route.params.id));
 const newMemo = ref('');
 const memos = ref([]);
 const error = ref(null);
@@ -103,6 +104,44 @@ const isSubmitting = ref(false);
 const isInitializing = ref(true);
 const iframeError = ref(false);
 const isComponentMounted = ref(true);
+
+// 메모 목록 조회
+const fetchMemos = async () => {
+    if (!bookmark.value?.id) {
+        console.log('No bookmark ID available for fetching memos');
+        return;
+    }
+    
+    try {
+        isLoading.value = true;
+        error.value = null;
+        
+        console.log('Fetching memos for bookmark ID:', bookmark.value.id);
+        const response = await bookmarkStore.getMemo(bookmark.value.id);
+        console.log('Memos response:', response);
+
+        if (response?.data?.status) {
+            memos.value = response.data.results.map(memo => ({
+                id: memo.memoId,
+                content: memo.content,
+                date: new Date(memo.createdAt).toLocaleString(),
+                userName: memo.nickname,
+                imageUrl: memo.imageUrl
+            }));
+            console.log('Processed memos:', memos.value);
+        } else {
+            console.log('No memos found or invalid response structure');
+            memos.value = [];
+        }
+    } catch (err) {
+        error.value = '메모 로딩 실패: ' + err.message;
+        console.error('메모 로딩 실패:', err);
+    } finally {
+        if (isComponentMounted.value) {
+            isLoading.value = false;
+        }
+    }
+};
 
 // 메모 추가
 const addMemo = async () => {
@@ -113,14 +152,14 @@ const addMemo = async () => {
         error.value = null;
         
         const response = await bookmarkStore.createMemo(bookmark.value.id, newMemo.value);
-        if (response.data.success) {
+        if (response.data.status) {
             const newMemoData = response.data.results;
             memos.value.push({
-                id: newMemoData.memo_id,
+                id: newMemoData.memoId,
                 content: newMemoData.content,
-                date: new Date(newMemoData.created_at).toLocaleString(),
+                date: new Date(newMemoData.createdAt).toLocaleString(),
                 userName: newMemoData.nickname,
-                imageUrl: newMemoData.image_url
+                imageUrl: newMemoData.imageUrl
             });
             newMemo.value = '';
         }
@@ -143,7 +182,7 @@ const deleteMemo = async (memoId) => {
         error.value = null;
         
         const response = await bookmarkStore.deleteMemo(bookmark.value.id, memoId);
-        if (response.data.success) {
+        if (response.data.status) {
             memos.value = memos.value.filter(memo => memo.id !== memoId);
         }
     } catch (err) {
@@ -156,66 +195,75 @@ const deleteMemo = async (memoId) => {
     }
 };
 
-// 메모 목록 조회
-const fetchMemos = async () => {
-    if (!bookmark.value?.id) return;
-    
-    try {
-        isLoading.value = true;
-        error.value = null;
-        
-        const response = await bookmarkStore.getMemo(bookmark.value.id);
-        if (response.data.success) {
-            memos.value = response.data.results.memos.map(memo => ({
-                id: memo.memo_id,
-                content: memo.content,
-                date: new Date(memo.created_at).toLocaleString(),
-                userName: memo.nickname,
-                imageUrl: memo.image_url
-            }));
-        }
-    } catch (err) {
-        error.value = '메모 로딩 실패: ' + err.message;
-        console.error('메모 로딩 실패:', err);
-    } finally {
-        if (isComponentMounted.value) {
-            isLoading.value = false;
-        }
-    }
-};
-
 // iframe 에러 처리
 const handleIframeError = () => {
     iframeError.value = true;
+};
+
+// 북마크 데이터 가져오기
+const fetchBookmarkData = async () => {
+    try {
+        console.log('Fetching bookmark data for ID:', bookmarkId.value);
+        const response = await bookmarkStore.getPersonalCollectionBookmarks(bookmarkId.value);
+        console.log('API Response:', response);
+
+        if (response?.results?.bookmarks) {
+            console.log('Bookmarks from API:', response.results.bookmarks);
+            // 첫 번째 북마크의 전체 구조 출력
+            console.log('First bookmark structure:', JSON.stringify(response.results.bookmarks[0], null, 2));
+            
+            // 해당 ID의 북마크 찾기 (bookmarkId 대신 bookmark_id 사용)
+            const foundBookmark = response.results.bookmarks.find(
+                b => String(b.bookmarkId) === String(bookmarkId.value)
+            );
+            console.log('Bookmark ID to find:', bookmarkId.value, 'Type:', typeof bookmarkId.value);
+            console.log('First bookmark ID:', response.results.bookmarks[0]?.bookmarkId);
+            console.log('Found bookmark:', foundBookmark);
+
+            if (foundBookmark) {
+                bookmark.value = {
+                    id: foundBookmark.bookmarkId,
+                    url: foundBookmark.url,
+                    title: foundBookmark.title,
+                    description: foundBookmark.description,
+                    img: foundBookmark.img,
+                    tag: foundBookmark.tag,
+                    priority: foundBookmark.priority,
+                    isPersonal: true,
+                    createdAt: foundBookmark.createdAt,
+                    updatedAt: foundBookmark.updatedAt
+                };
+                console.log('Processed bookmark:', bookmark.value);
+            } else {
+                // 디버깅을 위해 모든 북마크 ID 출력
+                console.log('Available bookmark IDs:', response.results.bookmarks.map(b => b.bookmarkId));
+                console.log('All bookmarks:', response.results.bookmarks);
+                error.value = '해당 북마크를 찾을 수 없습니다.';
+            }
+        } else {
+            console.log('Invalid response structure:', response);
+            error.value = '잘못된 응답 구조입니다.';
+        }
+    } catch (err) {
+        error.value = '북마크 데이터 로딩 실패: ' + err.message;
+        console.error('북마크 데이터 로딩 실패:', err);
+    }
 };
 
 onMounted(async () => {
     try {
         isInitializing.value = true;
         error.value = null;
+        console.log('Component mounted, bookmarkId:', bookmarkId.value);
 
-        if (!bookmark.value) {
-            const bookmarkId = parseInt(route.params.id);
-            const response = await bookmarkStore.getBookmarkDetail(bookmarkId);
-            
-            if (response.data.success) {
-                const bookmarkData = response.data.results;
-                bookmark.value = {
-                    id: bookmarkData.bookmark_id,
-                    title: bookmarkData.title,
-                    description: bookmarkData.description,
-                    url: bookmarkData.url,
-                    img: bookmarkData.img,
-                    tag: bookmarkData.tag,
-                    priority: bookmarkData.priority,
-                    createdAt: bookmarkData.created_at,
-                    updatedAt: bookmarkData.updated_at
-                };
-            }
-        }
+        await fetchBookmarkData();
         
         if (bookmark.value) {
+            console.log('Fetching memos for bookmark:', bookmark.value.id);
             await fetchMemos();
+        } else {
+            error.value = '북마크 데이터를 찾을 수 없습니다.';
+            console.log('No bookmark data found after fetch');
         }
     } catch (err) {
         error.value = '데이터 로딩 실패: ' + err.message;
