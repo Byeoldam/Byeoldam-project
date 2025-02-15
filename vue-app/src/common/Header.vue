@@ -19,6 +19,8 @@
                 alt="프로필 사진" 
                 class="profile-image"
             />
+            <!-- 로그아웃 버튼 추가 -->
+            <button @click="logout" class="logout-button">로그아웃</button>
         </div>
     </header>
 </template>
@@ -27,11 +29,15 @@
 import { ref } from 'vue';
 import { useUserStore } from '@/stores/user';
 
-
 const userStore = useUserStore();
 const usernickname = ref(userStore.user?.nickname || '');
 const defaultProfileImage = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png';
 const userProfile = ref(null);
+
+// 로그아웃 함수
+const logout = () => {
+    userStore.logout();  // 스토어의 logout() 호출
+};
 </script>
 
 <style scoped>
@@ -96,5 +102,19 @@ const userProfile = ref(null);
     font-size: 1.2rem;  /* 크기 조정 */
     color: #666;
     letter-spacing: 0.5px;
+}
+
+.logout-button {
+    padding: 5px 10px;
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.logout-button:hover {
+    background-color: #c0392b;
 }
 </style>
