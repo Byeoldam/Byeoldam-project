@@ -91,7 +91,7 @@ const handleCollectionClick = async (collectionId, collectionName) => {
     try {
         const response = await bookmarkStore.getSharedCollectionBookmarks(collectionId);
         console.log('Bookmarks Response:', response, 'hakjun0412');
-        selectedCollectionBookmarks.value = response.results || [];
+        selectedCollectionBookmarks.value = response.results.bookmarks || [];
     } catch (error) {
         console.error('북마크 로딩 실패:', error, 'hakjun0412');
         selectedCollectionBookmarks.value = [];
