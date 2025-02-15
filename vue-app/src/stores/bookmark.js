@@ -26,14 +26,16 @@ export const useBookmarkStore = defineStore("bookmark", () => {
     };
 
     //북마크 중요도 수정 함수
-    const changePriority = async (bookmarkId, priority) => {
+    const changePriority = async (bookmarkId, priority, collectionId = null) => {
         try {
             const response = await api.put(`/bookmarks/${bookmarkId}`, {
                 priority: priority
             });
             
-            if (response.data.success) {
+            if (response.data.status) {
                 console.log('북마크 중요도 변경 완료');
+                // collectionId를 전달하여 새로고침
+                await refreshCurrentPage(collectionId);
                 return true;
             } else {
                 console.error('북마크 중요도 변경 실패:', response.data.message);
@@ -633,6 +635,25 @@ export const useBookmarkStore = defineStore("bookmark", () => {
         topTags.value = response.data;
     };
 
+    // 현재 페이지의 북마크 목록을 새로고침하는 함수들
+    const refreshCurrentPage = async (collectionId = null) => {
+        try {
+            // 중요 북마크 새로고침
+            await getImportantBookmarks();
+            
+            // 개인 컬렉션 북마크 새로고침
+            if (collectionId) {
+                await getPersonalCollectionBookmarks(collectionId);
+            }
+            
+            // 오래된 북마크 새로고침
+            await getOldBookmarks();
+            
+        } catch (error) {
+            console.error('북마크 목록 새로고침 중 오류 발생:', error);
+        }
+    };
+
     return {
         changePriority,
         moveToOtherCollection,
@@ -668,6 +689,7 @@ export const useBookmarkStore = defineStore("bookmark", () => {
         bookmarkMemo,
         saveUserDefineTags,
         getTopTags,
-        topTags
+        topTags,
+        refreshCurrentPage,
     };
 });
