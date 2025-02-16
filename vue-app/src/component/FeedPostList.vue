@@ -1,11 +1,11 @@
 <template>
 <div class="posts-list">
-    <template v-if="posts?.length">
+    <template v-if="localPosts?.length">
     <div 
-        v-for="post in posts" 
+        v-for="post in localPosts" 
         :key="post.url"
         :class="['post-item', { 'read': post.read }]"
-        @click="$emit('select-post', post.url)"
+        @click="handlePostSelect(post)"
     >
         <h3>{{ post.title }}</h3>
         <div v-if="!post.read" class="unread-dot"></div>
@@ -18,7 +18,9 @@
 </template>
 
 <script setup>
-defineProps({
+import { ref, watchEffect } from 'vue'
+
+const props = defineProps({
     posts: {
         type: Array,
         default: () => [],
@@ -26,7 +28,20 @@ defineProps({
     }
 })
 
-defineEmits(['select-post'])
+const emit = defineEmits(['select-post'])
+
+// 로컬 상태로 posts 복사
+const localPosts = ref([])
+
+watchEffect(() => {
+    localPosts.value = props.posts.map(post => ({...post}))
+})
+
+const handlePostSelect = (post) => {
+    // 선택된 포스트의 read 상태를 true로 변경
+    post.read = true
+    emit('select-post', post.url)
+}
 </script>
 
 <style scoped>
