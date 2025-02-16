@@ -1,10 +1,10 @@
 <template>
 <div class="feed-tabs">
     <div 
-    v-for="feed in feeds" 
+    v-for="feed in localFeeds" 
     :key="feed.rssId"
     :class="['tab', { active: selectedFeed === feed.rssId }]"
-    @click="$emit('select-feed', feed.rssId)"
+    @click="handleFeedSelect(feed.rssId)"
     >
     {{ feed.name }}
     <span v-if="!feed.read" class="unread-badge"></span>
@@ -13,7 +13,9 @@
 </template>
 
 <script setup>
-defineProps({
+import { ref, watchEffect } from 'vue'
+
+const props = defineProps({
     feeds: {
         type: Array,
         required: true,
@@ -25,7 +27,23 @@ defineProps({
     }
 })
 
-defineEmits(['select-feed'])
+const emit = defineEmits(['select-feed'])
+
+// 로컬 상태로 feeds 복사
+const localFeeds = ref([])
+
+watchEffect(() => {
+    localFeeds.value = props.feeds.map(feed => ({...feed}))
+})
+
+const handleFeedSelect = (rssId) => {
+    // 선택된 피드의 read 상태를 true로 변경
+    const selectedFeed = localFeeds.value.find(feed => feed.rssId === rssId)
+    if (selectedFeed) {
+        selectedFeed.read = true
+    }
+    emit('select-feed', rssId)
+}
 </script>
 
 <style scoped>
