@@ -7,14 +7,23 @@
         </RouterLink>
         <RouterLink :to="{ name: 'alarm' }" class="nav-item">
           <span class="nav-text">알림</span>
-          <span class="notification-badge">5</span>
+          <span
+            v-if="bookmarkStore.badges.notificationCnt > 0"
+            class="notification-badge"
+          >
+            {{ bookmarkStore.badges.notificationCnt }}
+          </span>
         </RouterLink>
         <RouterLink :to="{ name: 'feed' }" class="nav-item">
           <span class="nav-text">피드</span>
-          <span class="notification-badge">N</span>
+          <span
+            v-if="bookmarkStore.badges.hasNewFeed"
+            class="notification-badge"
+            >N</span
+          >
         </RouterLink>
       </div>
-      <button class="link-button">
+      <button class="link-button" @click="goToByeoldam">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -38,14 +47,68 @@
 <script setup>
 import { RouterView } from "vue-router";
 import { onMounted } from "vue";
+import api from "@/utils/api";
 import { useBookmarkStore } from "./stores/bookmarkStore";
 
 const bookmarkStore = useBookmarkStore();
 
-onMounted(() => {
+onMounted(async () => {
   // 확장 아이콘 클릭 시 백그라운드로 사용자 정보 Extension Storage 저장 요청 보내기
   chrome.runtime.sendMessage({ action: "popupOpened" });
+
+  // 알림/피드 데이터 로드 API 요청
+  try {
+    // 알림/피드 데이터 로드 API 요청
+    const [feedResponse, alarmResponse] = await Promise.allSettled([
+      api.get("/subscriptions"),
+      api.get("/notifications"),
+    ]);
+
+    // 피드 데이터 처리
+    if (feedResponse.status === "fulfilled" && feedResponse.value.data.status) {
+      const feedData = feedResponse.value.data.results.map((feed) => ({
+        rssId: feed.rssId,
+        name: feed.name,
+        isRead: feed.isRead,
+      }));
+      console.log("feedData : ", feedData); // isRead 안넘어옴 확인!!
+      bookmarkStore.setFeedList(feedData);
+    } else {
+      console.error(
+        "피드 데이터 가져오기 실패 : ",
+        feedResponse.reason?.response?.data?.message || feedResponse.reason
+      );
+    }
+
+    // 알림 데이터 처리
+    if (
+      alarmResponse.status === "fulfilled" &&
+      alarmResponse.value.data.status
+    ) {
+      const alarmData = alarmResponse.value.data.results.map((alarm) => ({
+        notificationId: alarm.notificationId,
+        type: alarm.type,
+        title: alarm.title,
+        message: alarm.message,
+        url: alarm.url,
+        createdAt: alarm.createdAt,
+      }));
+      console.log("alarmData : ", alarmData);
+      bookmarkStore.setAlarmList(alarmData);
+    } else {
+      console.error(
+        "알림 데이터 가져오기 실패 : ",
+        alarmResponse.reason?.response?.data?.message || alarmResponse.reason
+      );
+    }
+  } catch (error) {
+    console.error("API 요청 중 예기치 않은 오류 발생: ", error.message);
+  }
 });
+
+const goToByeoldam = () => {
+  chrome.tabs.create({ url: "별담사이트주소" });
+};
 </script>
 
 <style scoped>
@@ -59,15 +122,16 @@ nav {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   position: relative;
-  margin-bottom: 16px;
+  margin-bottom: 8px; /* 12px에서 8px로 줄임 */
   align-items: center;
+  padding-bottom: 1px; /* 언더라인을 위한 최소 패딩 추가 */
 }
 
 /* 하단 언더라인 */
 nav::after {
   content: "";
   position: absolute;
-  bottom: 0;
+  bottom: -1px; /* 0에서 -1px로 변경하여 nav 바로 아래에 붙도록 */
   left: 0;
   width: 100%;
   height: 1px;
@@ -100,7 +164,7 @@ nav::after {
 }
 
 .nav-item.router-link-active {
-  color: #4169e1;
+  color: #818cf8;
   font-weight: bold;
 }
 
@@ -108,18 +172,18 @@ nav::after {
 .nav-item.router-link-active .nav-text::after {
   content: "";
   position: absolute;
-  bottom: -8px;
+  bottom: -9px;
   left: 50%;
   transform: translateX(-50%);
   width: calc(100% + 10px);
-  height: 2px;
-  background-color: #4169e1;
+  height: 3px;
+  background-color: #818cf8;
 }
 
 .notification-badge {
   position: absolute;
   /* top: -1px; */
-  right: -6px;
+  right: -12px; /* 배지 위치 조정*/
   display: inline-flex;
   align-items: center;
   justify-content: center;

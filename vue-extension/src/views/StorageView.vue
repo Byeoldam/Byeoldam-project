@@ -5,127 +5,267 @@
     class="fixed inset-0 flex items-center justify-center z-50"
   >
     <div
-      class="w-10 h-10 border-4 border-gray-200 border-t-4 border-t-blue-500 rounded-full animate-spin mt-[50px]"
+      class="w-10 h-10 border-4 border-gray-200 border-t-4 border-t-indigo-500 rounded-full animate-spin mt-[50px]"
     ></div>
   </div>
   <!-- 저장 완료 후 결과 뷰 -->
-  <div v-else-if="isSaved" class="p-3">
-    <!-- 결과메시지 -->
-    <div class="guide-text-with-icon mb-5">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke-width="1.5"
-        stroke="currentColor"
-        class="w-4 h-4 text-blue-500"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-        />
-      </svg>
-      <span class="guide-text text-blue-700">
-        {{ savedResult.message }}
-      </span>
-    </div>
-
-    <div class="bg-gray-50 p-4 rounded-lg mb-4">
-      <h3 class="font-medium text-base mb-1">{{ webpage.title }}</h3>
-      <a
-        :href="webpage.siteUrl"
-        class="text-sm text-blue-600 hover:underline break-all"
-      >
-        {{ webpage.siteUrl }}
-      </a>
-    </div>
-  </div>
-
-  <!-- 기본 뷰-->
-  <div v-else class="p-3">
-    <div class="space-y-6">
-      <!-- RSS 피드 구독-->
-      <div class="flex items-center justify-between">
-        <div
-          :class="
-            bookmarkOptions.canSubscribeRss
-              ? 'flex items-center gap-2 bg-blue-50 text-blue-700 px-3 py-2 rounded-md'
-              : 'flex items-center gap-2 bg-red-100 text-red-700 px-3 py-2 rounded-md'
-          "
-        >
+  <div v-else-if="isSaved" class="p-4">
+    <div
+      class="bg-white border border-gray-100 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow duration-200"
+    >
+      <div class="flex items-start gap-3">
+        <div class="flex-shrink-0">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            fill="none"
+            fill="currentColor"
             viewBox="0 0 24 24"
             stroke-width="1.5"
             stroke="currentColor"
-            class="w-4 h-4"
+            class="w-5 h-5 text-indigo-500"
           >
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
-              d="M12.75 19.5v-.75a7.5 7.5 0 00-7.5-7.5H4.5m0-6.75h.75c7.87 0 14.25 6.38 14.25 14.25v.75M6 18.75a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
+              d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z"
             />
           </svg>
-          <span class="text-sm">
-            {{
-              bookmarkOptions.canSubscribeRss
-                ? "이 포스트는 RSS 피드 구독이 가능합니다."
-                : "이 포스트는 RSS 피드 구독이 불가능합니다."
-            }}
-          </span>
         </div>
-        <label class="relative inline-flex items-center cursor-pointer">
-          <input
-            type="checkbox"
-            class="sr-only peer"
-            v-model="subscribeRssResult"
-          />
-          <div
-            class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"
-          ></div>
-        </label>
+        <div class="flex-1 min-w-0">
+          <!-- min-w-0은 텍스트 줄임을 위해 필요 -->
+          <h3 class="font-medium text-gray-900 mb-1">{{ webpage.title }}</h3>
+          <a
+            :href="webpage.siteUrl"
+            class="text-sm text-indigo-600 hover:text-indigo-700 block truncate"
+            :title="webpage.siteUrl"
+          >
+            {{ webpage.siteUrl }}
+          </a>
+        </div>
       </div>
-
-      <!-- 가이드라인 -->
-      <div
-        class="guide-text-with-icon mb-5 p-3 bg-blue-50 rounded-lg flex items-center gap-2 text-gray-700 transition-all duration-300 ease-in-out hover:bg-blue-100 hover:shadow-sm"
-        :class="{ 'scale-[1.02]': isHovered }"
-        @mouseenter="isHovered = true"
-        @mouseleave="isHovered = false"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
-          stroke="currentColor"
-          class="w-4 h-4 transition-transform duration-300"
-          :class="{ 'rotate-12': isHovered }"
+    </div>
+  </div>
+  <!-- 기본 뷰-->
+  <div v-else class="p-3">
+    <div class="space-y-3">
+      <!-- RSS 피드 구독 -->
+      <div class="bg-white rounded-lg">
+        <div
+          v-if="bookmarkOptions.canSubscribeRss"
+          class="p-3 bg-indigo-50 border border-indigo-100 rounded-lg space-y-3"
         >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
-          />
-        </svg>
-        <span class="guide-text text-sm font-medium">
-          저장할
-          <span
-            class="text-blue-600 hover:text-blue-700 transition-colors duration-200 mx-1"
-            >컬렉션</span
-          >과
-          <span
-            class="text-blue-600 hover:text-blue-700 transition-colors duration-200 mx-1"
-            >태그</span
-          >를 설정해주세요
-        </span>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div
+                class="h-7 w-7 bg-white rounded-full flex items-center justify-center shadow-sm"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="w-4 h-4 text-indigo-600"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M12.75 19.5v-.75a7.5 7.5 0 00-7.5-7.5H4.5m0-6.75h.75c7.87 0 14.25 6.38 14.25 14.25v.75M6 18.75a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
+                  />
+                </svg>
+              </div>
+              <div>
+                <h3 class="font-medium text-sm text-indigo-900">
+                  RSS 구독 가능
+                </h3>
+                <p class="text-xs text-indigo-700 mt-0.5">
+                  업데이트를 실시간으로 받아보세요
+                </p>
+              </div>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                class="sr-only peer"
+                v-model="subscribeRssResult"
+              />
+              <div
+                class="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"
+              ></div>
+            </label>
+          </div>
+        </div>
+        <div v-else class="p-2.5 bg-gray-50 border border-gray-100 rounded-lg">
+          <div class="flex items-center gap-3">
+            <div
+              class="h-6 w-6 bg-white rounded-full flex items-center justify-center shadow-sm"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-3.5 h-3.5 text-gray-400"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M12.75 19.5v-.75a7.5 7.5 0 00-7.5-7.5H4.5m0-6.75h.75c7.87 0 14.25 6.38 14.25 14.25v.75M6 18.75a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
+                />
+              </svg>
+            </div>
+            <p class="text-sm text-gray-500">
+              RSS 구독을 지원하지 않는 사이트입니다
+            </p>
+          </div>
+        </div>
       </div>
 
-      <!-- 컬렉션 -->
-      <div class="border-b border-gray-100">
-        <div class="mb-4 space-y-2">
+      <div v-if="!subscribeRssResult">
+        <!-- 가이드라인 -->
+        <div class="bg-white rounded-lg">
+          <div
+            class="p-2.5 flex items-center gap-3 bg-gradient-to-r from-indigo-50 to-white border border-indigo-100 rounded-lg"
+          >
+            <div class="bg-white p-1.5 rounded-md shadow-sm">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-4 h-4 text-indigo-500"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
+                />
+              </svg>
+            </div>
+            <p class="text-sm text-gray-700">
+              저장할 <span class="font-medium text-indigo-600">컬렉션</span>과
+              <span class="font-medium text-indigo-600">태그</span>를
+              설정해주세요
+            </p>
+          </div>
+        </div>
+
+        <!-- 컬렉션 -->
+        <div class="border-b border-gray-100 pt-7 pb-2">
+          <div class="mb-4 space-y-2">
+            <div class="flex items-center gap-2 mb-3">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-5 h-5 text-gray-600"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z"
+                />
+              </svg>
+              <label class="text-sm font-medium text-gray-700">컬렉션</label>
+
+              <span v-if="errorMessage" class="text-red-500 text-sm ml-auto">{{
+                errorMessage
+              }}</span>
+            </div>
+            <div class="flex flex-col gap-2">
+              <select
+                v-model="selectedCollection"
+                :class="[
+                  'p-2 border rounded-md focus:outline-none',
+                  isCollectionError
+                    ? 'border-blue-400 bg-blue-50 ring-2 ring-blue-200'
+                    : 'focus:border-gray-400',
+                ]"
+                @change="onCollectionChange"
+              >
+                <option value="" disabled>컬렉션을 선택하세요</option>
+
+                <!-- 개인 컬렉션 -->
+                <optgroup
+                  v-if="bookmarkOptions.personalCollections.length > 0"
+                  label="개인 컬렉션"
+                >
+                  <option
+                    v-for="collection in bookmarkOptions.personalCollections"
+                    :key="collection.collectionId"
+                    :value="{
+                      collectionId: collection.collectionId,
+                      isPersonal: collection.isPersonal,
+                    }"
+                  >
+                    {{ collection.name }}
+                  </option>
+                </optgroup>
+
+                <!-- 공유 컬렉션 -->
+                <optgroup
+                  v-if="bookmarkOptions.sharedCollections.length > 0"
+                  label="공유 컬렉션"
+                >
+                  <option
+                    v-for="collection in bookmarkOptions.sharedCollections"
+                    :key="collection.collectionId"
+                    :value="{
+                      collectionId: collection.collectionId,
+                      isPersonal: collection.isPersonal,
+                    }"
+                  >
+                    {{ collection.name }}
+                  </option>
+                </optgroup>
+              </select>
+
+              <!--새로운 컬렉션 생성-->
+              <div class="flex gap-2 items-center">
+                <div class="inline-flex rounded-md shadow-sm" role="group">
+                  <button
+                    type="button"
+                    @click="setCollectionType(true)"
+                    :class="[
+                      'px-4 py-1 text-sm rounded-l-md border focus:outline-none',
+                      newCollectionType
+                        ? 'bg-indigo-50 text-indigo-600 border-indigo-500'
+                        : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50',
+                    ]"
+                  >
+                    개인
+                  </button>
+                  <button
+                    type="button"
+                    @click="setCollectionType(false)"
+                    :class="[
+                      'px-4 py-1 text-sm rounded-r-md border-t border-r border-b border-l-0 focus:outline-none',
+                      !newCollectionType
+                        ? 'bg-indigo-50 text-indigo-600 border-indigo-500'
+                        : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50',
+                    ]"
+                  >
+                    공유
+                  </button>
+                </div>
+                <input
+                  v-model="newInputCollection"
+                  type="text"
+                  maxlength="20"
+                  placeholder="새로 생성할 컬렉션명을 입력하세요"
+                  class="flex-1 p-2 border rounded-md focus:outline-none focus:border-gray-400"
+                  @focus="onNewCollectionNameFocus"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 태그 선택 -->
+        <div class="mb-4 space-y-2 pt-3">
           <div class="flex items-center gap-2 mb-3">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -138,217 +278,139 @@
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z"
+                d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"
               />
-            </svg>
-            <label class="text-sm font-medium text-gray-700">컬렉션</label>
-          </div>
-          <div class="flex flex-col gap-2">
-            <select
-              v-model="selectedCollection"
-              :class="[
-                'p-2 border rounded-md focus:outline-none',
-                isCollectionError
-                  ? 'border-blue-400 bg-blue-50 ring-2 ring-blue-200'
-                  : 'focus:border-gray-400',
-              ]"
-              @change="onCollectionChange"
-            >
-              <option value="" disabled>컬렉션을 선택하세요</option>
-
-              <!-- 개인 컬렉션 -->
-              <optgroup
-                v-if="bookmarkOptions.personalCollections.length > 0"
-                label="개인 컬렉션"
-              >
-                <option
-                  v-for="collection in bookmarkOptions.personalCollections"
-                  :key="collection.collectionId"
-                  :value="{
-                    collectionId: collection.collectionId,
-                    isPersonal: collection.isPersonal,
-                  }"
-                >
-                  {{ collection.name }}
-                </option>
-              </optgroup>
-
-              <!-- 공유 컬렉션 -->
-              <optgroup
-                v-if="bookmarkOptions.sharedCollections.length > 0"
-                label="공유 컬렉션"
-              >
-                <option
-                  v-for="collection in bookmarkOptions.sharedCollections"
-                  :key="collection.collectionId"
-                  :value="{
-                    collectionId: collection.collectionId,
-                    isPersonal: collection.isPersonal,
-                  }"
-                >
-                  {{ collection.name }}
-                </option>
-              </optgroup>
-            </select>
-
-            <!-- 에러 메시지 표시 -->
-            <div v-if="errorMessage" class="guide-text-with-icon text-red-500">
-              <span class="text-sm">{{ errorMessage }}</span>
-            </div>
-
-            <!--새로운 컬렉션 생성-->
-            <div class="flex gap-2 items-center">
-              <div class="inline-flex rounded-md shadow-sm" role="group">
-                <button
-                  type="button"
-                  @click="setCollectionType(true)"
-                  :class="[
-                    'px-4 py-1 text-sm rounded-l-md border focus:outline-none',
-                    newCollectionType
-                      ? 'bg-blue-50 text-blue-600 border-blue-500'
-                      : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50',
-                  ]"
-                >
-                  개인
-                </button>
-                <button
-                  type="button"
-                  @click="setCollectionType(false)"
-                  :class="[
-                    'px-4 py-1 text-sm rounded-r-md border-t border-r border-b border-l-0 focus:outline-none',
-                    !newCollectionType
-                      ? 'bg-blue-50 text-blue-600 border-blue-500'
-                      : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50',
-                  ]"
-                >
-                  공유
-                </button>
-              </div>
-              <input
-                v-model="newInputCollection"
-                type="text"
-                maxlength="20"
-                placeholder="새로 생성할 컬렉션명을 입력하세요"
-                class="flex-1 p-2 border rounded-md focus:outline-none focus:border-gray-400"
-                @focus="onNewCollectionNameFocus"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 태그 선택 -->
-      <div class="mb-4 space-y-2">
-        <div class="flex items-center gap-2 mb-3">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            class="w-5 h-5 text-gray-600"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"
-            />
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M6 6h.008v.008H6V6z"
-            />
-          </svg>
-          <label class="text-sm font-medium text-gray-700">태그</label>
-        </div>
-        <div class="flex flex-wrap gap-2 mb-2" id="tag-container">
-          <!-- GPT 태그 표시 -->
-          <span
-            v-for="(tag, index) in gptTags"
-            :key="'gpt-' + index"
-            :style="{
-              backgroundColor: tag.tagColor,
-              borderColor: tag.tagBorderColor,
-            }"
-            class="border px-3 py-1 rounded-full text-sm flex items-center text-gray-800"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              :style="{ color: tag.tagBorderColor }"
-              class="w-3.5 h-3.5 mr-1.5"
-            >
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456z"
+                d="M6 6h.008v.008H6V6z"
               />
             </svg>
-            {{ "# " + tag.tagName }}
-            <button
-              class="ml-2 text-gray-500 hover:text-gray-700"
-              @click="removeTag(index, 'gpt')"
+            <label class="text-sm font-medium text-gray-700">태그</label>
+          </div>
+          <div class="flex flex-wrap gap-2 mb-2" id="tag-container">
+            <!-- GPT 태그 표시 -->
+            <span
+              v-for="(tag, index) in gptTags"
+              :key="'gpt-' + index"
+              :style="{
+                backgroundColor: tag.tagColor,
+                borderColor: tag.tagBorderColor,
+              }"
+              class="border px-3 py-1 rounded-full text-sm flex items-center text-gray-800"
             >
-              &times;
-            </button>
-          </span>
-          <!-- 사용자 추가 태그 표시 -->
-          <span
-            v-for="(tag, index) in newTags"
-            :key="'new-' + index"
-            :style="{
-              backgroundColor: tag.tagColor,
-              borderColor: tag.tagBorderColor,
-            }"
-            class="border px-3 py-1 rounded-full text-sm flex items-center"
-          >
-            {{ "# " + tag.tagName }}
-            <button
-              class="ml-2"
-              :style="{ color: tag.tagTextColor }"
-              @click="removeTag(index, 'custom')"
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                :style="{ color: tag.tagBorderColor }"
+                class="w-3.5 h-3.5 mr-1.5"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456z"
+                />
+              </svg>
+              {{ "# " + tag.tagName }}
+              <button
+                class="ml-2 text-gray-500 hover:text-gray-700"
+                @click="removeTag(index, 'gpt')"
+              >
+                &times;
+              </button>
+            </span>
+            <!-- 사용자 추가 태그 표시 -->
+            <span
+              v-for="(tag, index) in newTags"
+              :key="'new-' + index"
+              :style="{
+                backgroundColor: tag.tagColor,
+                borderColor: tag.tagBorderColor,
+              }"
+              class="border px-3 py-1 rounded-full text-sm flex items-center"
             >
-              &times;
+              {{ "# " + tag.tagName }}
+              <button
+                class="ml-2"
+                :style="{ color: tag.tagTextColor }"
+                @click="removeTag(index, 'custom')"
+              >
+                &times;
+              </button>
+            </span>
+          </div>
+          <div class="flex gap-2">
+            <input
+              type="text"
+              v-model="newTag"
+              @keyup.enter="addTag"
+              placeholder="북마크를 설명할 태그를 입력해보세요"
+              class="flex-1 p-2 border rounded-md focus:outline-none focus:border-gray-400"
+            />
+            <button
+              class="flex items-center justify-center w-10 h-10 rounded-md bg-white text-indigo-500 border border-indigo-500 shadow-sm hover:shadow-md active:shadow-inner transition-all duration-200"
+              @click="addTag"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="2.5"
+                stroke="currentColor"
+                class="w-5 h-5 text-indigo-500"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M12 4.5v15m7.5-7.5h-15"
+                />
+              </svg>
             </button>
-          </span>
+          </div>
         </div>
-        <div class="flex gap-2">
-          <input
-            type="text"
-            v-model="newTag"
-            @keyup.enter="addTag"
-            placeholder="북마크를 설명할 태그를 입력해보세요"
-            class="flex-1 p-2 border rounded-md focus:outline-none focus:border-gray-400"
-          />
+
+        <!-- 저장 버튼 -->
+        <div class="flex justify-end">
           <button
-            class="flex items-center justify-center w-10 h-10 rounded-md bg-gradient-to-r from-indigo-500 to-indigo-600 text-white shadow-sm hover:shadow-md hover:from-indigo-600 hover:to-indigo-700 active:shadow-inner transition-all duration-200"
-            @click="addTag"
+            @click="saveBookmark"
+            class="group px-6 py-2.5 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white rounded-md hover:from-indigo-600 hover:to-indigo-700 shadow-sm hover:shadow-md active:shadow-inner transition-all duration-200 flex items-center gap-2"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
-              stroke-width="2.5"
+              stroke-width="2"
               stroke="currentColor"
-              class="w-5 h-5"
+              class="w-5 h-5 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
             >
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                d="M12 4.5v15m7.5-7.5h-15"
+                d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z"
               />
             </svg>
+            <span class="font-medium">저장</span>
           </button>
         </div>
       </div>
 
-      <!-- 저장 버튼 -->
-      <div class="flex justify-end">
+      <!-- 구독 버튼 -->
+      <div v-if="subscribeRssResult" class="flex items-center justify-between">
+        <!-- 에러 메시지 -->
+        <p
+          v-if="errorMessage"
+          class="text-sm text-red-500 flex items-center gap-2"
+        >
+          {{ errorMessage }}
+        </p>
+        <p v-else class="flex-1"></p>
+        <!-- 에러 메시지가 없을 때 공간 유지 -->
+
         <button
-          @click="saveBookmark"
+          @click="scribeRSS"
           class="group px-6 py-2.5 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white rounded-md hover:from-indigo-600 hover:to-indigo-700 shadow-sm hover:shadow-md active:shadow-inner transition-all duration-200 flex items-center gap-2"
         >
           <svg
@@ -362,10 +424,10 @@
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
-              d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z"
+              d="M12.75 19.5v-.75a7.5 7.5 0 00-7.5-7.5H4.5m0-6.75h.75c7.87 0 14.25 6.38 14.25 14.25v.75M6 18.75a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
             />
           </svg>
-          <span class="font-medium">저장</span>
+          <span class="font-medium">구독</span>
         </button>
       </div>
     </div>
@@ -376,10 +438,12 @@
 import { ref, onMounted, computed } from "vue";
 import api from "@/utils/api";
 import { generatePastelColors } from "@/utils/colorUtils";
+import { useBookmarkStore } from "@/stores/bookmarkStore";
+
+const bookmarkStore = useBookmarkStore();
 
 // 상태 변수
 const isLoading = ref(true);
-const isHovered = ref(false); // 가이드라인 호버 상태
 const isSaved = ref(false);
 const savedResult = ref("");
 const errorMessage = ref("");
@@ -417,7 +481,7 @@ const onCollectionChange = () => {
 
 const onNewCollectionNameFocus = () => {
   selectedCollection.value = "";
-  rrorMessage.value = ""; // 에러 메시지 초기화
+  errorMessage.value = ""; // 에러 메시지 초기화
   isCollectionError.value = false; // 에러 상태 초기화
 };
 
@@ -488,7 +552,7 @@ onMounted(async () => {
       readingTime: pageData.readingTime,
     };
 
-    // 초기 데이터 로드 API 요청
+    // 북마크 데이터 로드 API 요청
     const response = await api.post("/popup/load", {
       siteUrl: webpage.value.siteUrl,
       title: webpage.value.title,
@@ -500,21 +564,44 @@ onMounted(async () => {
         JSON.stringify(bookmarkOptions, null, 2)
       );
 
+      // 배지 데이터 저장
+      bookmarkStore.setBadges({
+        notificationCnt: response.data.results.notificationCnt,
+        hasNewFeed: response.data.results.hasNewFeed,
+      });
+      chrome.storage.local.set({
+        notificationCount: response.data.results.notificationCnt,
+      });
+
       // bookmarkOptions가 업데이트된 후에 gptTags 업데이트
-      gptTags.value = bookmarkOptions.value.keywords
-        .slice(0, 3)
-        .map((keyword, index) => ({
-          tagName:
-            index === 0 || index === 2
-              ? keyword.replace(/[\[\]]/g, "")
-              : keyword,
-          ...generatePastelColors(),
-        }));
+      if (
+        !bookmarkOptions.value.keywords ||
+        bookmarkOptions.value.keywords === null
+      ) {
+        // keywords가 null일 때 '기타' 추가
+        gptTags.value = [
+          {
+            tagName: "기타",
+            ...generatePastelColors(),
+          },
+        ];
+      } else {
+        // keywords가 있을 경우 기존 로직대로 처리
+        gptTags.value = bookmarkOptions.value.keywords
+          .slice(0, 3) // 최대 3개까지
+          .map((keyword, index) => ({
+            tagName:
+              index === 0 || index === 2
+                ? keyword.replace(/[\[\]]/g, "")
+                : keyword,
+            ...generatePastelColors(),
+          }));
+      }
     } else {
-      console.error("에러 발생:", response.data.message);
+      console.log("에러 발생:", response.data.message);
     }
   } catch (error) {
-    console.error("데이터 로딩 실패:", error);
+    console.error("데이터 로딩 실패:", error.response.data.message);
   } finally {
     isLoading.value = false;
   }
@@ -569,6 +656,7 @@ const saveBookmark = async () => {
   console.log("전송될 데이터 : ", JSON.stringify(bookmarkData, null, 2));
 
   try {
+    errorMessage.value = "";
     const response = await api.post(apiUrl, bookmarkData);
     if (response.data.status) {
       console.log("북마크 저장 성공!!!!");
@@ -576,29 +664,33 @@ const saveBookmark = async () => {
       isSaved.value = true;
     } else {
       errorMessage.value = response.data.message;
-      if (response.data.message.includes("이미 저장한 url입니다")) {
+      if (response.data.message.includes("개인 컬렉션에 담은 페이지입니다.")) {
         isCollectionError.value = true; // select 강조 효과
       }
     }
   } catch (error) {
-    console.error("API 요청 실패:", error);
-    if (error.response?.data?.message?.includes("이미 저장한 url입니다")) {
-      errorMessage.value = "이미 저장한 url입니다.";
-      isCollectionError.value = true; // select 강조 효과
-    } else {
-      errorMessage.value = "저장 중 오류가 발생했습니다.";
-    }
+    console.log("북마크 저장 요청 실패:", error.response.data.message);
+    errorMessage.value = error.response.data.message;
   }
 };
 
 // RSS 구독 API 요청
 const scribeRSS = async () => {
   try {
+    errorMessage.value = "";
     const response = await api.post("/subscriptions", webpage.value.siteUrl);
     if (response.data.status) {
-      console.log("RSS구독 성공!!");
+      // console.log("RSS구독에 성공했습니다.);
+      isSaved.value = true;
     }
-  } catch (err) {}
+  } catch (error) {
+    console.log("RSS구독 요청 실패:", error.response.data.message);
+    errorMessage.value = error.response.data.message;
+    // 3초 후 에러 메시지 자동 제거 (선택사항)
+    setTimeout(() => {
+      errorMessage.value = "";
+    }, 3000);
+  }
 };
 </script>
 

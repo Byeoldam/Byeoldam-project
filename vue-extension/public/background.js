@@ -1,11 +1,38 @@
-// <+> 컨텍스트 메뉴 - 우클릭시 나타나는 '별담에 저장' 메뉴 생성
-chrome.runtime.onInstalled.addListener(() => {
-  chrome.contextMenus.create({
-    id: "saveToByeoldam",
-    title: "별담에 저장",
-    contexts: ["page", "selection", "link", "image"],
+// 뱃지 업데이트
+chrome.storage.onChanged.addListener((changes, namespace) => {
+  // 로컬 스토리지에서 notificationCount 가져오기
+  chrome.storage.local.get(["notificationCount"], (result) => {
+    const notificationCount = result.notificationCount || 0;
+
+    // 알림 카운트 변경 감지 및 뱃지 업데이트
+    if (notificationCount > 0) {
+      chrome.action.setBadgeText({ text: notificationCount.toString() });
+      chrome.action.setBadgeBackgroundColor({ color: "#FF0000" });
+    } else {
+      chrome.action.setBadgeText({ text: "" }); // 알림 카운트가 없으면 뱃지 비우기
+    }
+
+    // 새 피드 여부 감지 및 뱃지 업데이트
+    if (hasNewFeed) {
+      chrome.action.setBadgeText({ text: "N" }); // N은 새 피드를 의미
+      chrome.action.setBadgeBackgroundColor({ color: "#FF0000" });
+    }
   });
+
+  // 둘 다 없는 경우 뱃지 제거
+  if (!changes.notificationCount?.newValue && !changes.hasNewFeed?.newValue) {
+    chrome.action.setBadgeText({ text: "" });
+  }
 });
+
+// 테스트를 위한 초기 실행
+// chrome.runtime.onInstalled.addListener(() => {
+//   // 초기 상태 설정
+//   chrome.storage.local.set({
+//     notificationCount: 5,
+//     hasNewFeed: true,
+//   });
+// });
 
 // ===============================================================================================
 // [로그인 상태 관리 및 응답 처리]
@@ -33,9 +60,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       const testLoginData = {
         userId: "jun@naver.com",
         access_token:
-          "eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInVzZXJJZCI6MSwiZW1haWwiOiJqdW5AbmF2ZXIuY29tIiwicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTczOTcxNTA4MSwiZXhwIjoxNzM5NzIxMDgxfQ.UU7TLZTw0HJV8xrF5Us8FwIj7_veMkbqeOqP8wL6Vc8",
+          "eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInVzZXJJZCI6MSwiZW1haWwiOiJqdW5AbmF2ZXIuY29tIiwicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTczOTc0MDAyMiwiZXhwIjoxNzM5NzQ2MDIyfQ.FYzz6VO2ulFXsw83ea35Bkaa7nIU3J20xA6Tk3DS9Jc",
       };
       saveLoginData(testLoginData);
+
+      // chrome.tabs.create({ url: "https://your-byeoldam-site.com" });
     }
   }
 });
