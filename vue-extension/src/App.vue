@@ -38,29 +38,13 @@
 <script setup>
 import { RouterView } from "vue-router";
 import { onMounted } from "vue";
-import { useUserStore } from "./stores/userStore";
+import { useBookmarkStore } from "./stores/bookmarkStore";
 
-const userStore = useUserStore();
+const bookmarkStore = useBookmarkStore();
 
 onMounted(() => {
-  // 확장 아이콘 클릭 시 백그라운드 스크립트로 메시지 보내기
-  chrome.runtime.sendMessage({ action: "popupOpened" }, (response) => {
-    if (response && response.status === "success") {
-      // popupOpened 처리 후, extension Storage에서 사용자 로그인 정보가져오기
-      chrome.storage.local.get(["userId", "access_token"], (result) => {
-        if (result.userId && result.access_token) {
-          console.log(
-            "App.vue로 데이터 가져오기 성공 : ",
-            result.userId,
-            result.access_token
-          );
-          userStore.setUser(result.userId, result.access_token);
-        } else {
-          console.log("extension Storage에 저장된 사용자 정보 없음");
-        }
-      });
-    }
-  });
+  // 확장 아이콘 클릭 시 백그라운드로 사용자 정보 Extension Storage 저장 요청 보내기
+  chrome.runtime.sendMessage({ action: "popupOpened" });
 });
 </script>
 

@@ -68,10 +68,10 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import { useUserStore } from "@/stores/userStore";
+import { useBookmarkStore } from "@/stores/bookmarkStore";
 
-const userStore = useUserStore();
-const access_token = userStore.accessToken;
+const bookmarkStore = useBookmarkStore();
+const access_token = bookmarkStore.accessToken;
 onMounted(() => {
   console.log("access_token :", access_token);
 });
