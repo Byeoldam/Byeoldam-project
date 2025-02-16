@@ -377,7 +377,7 @@ import { ref, onMounted, computed } from "vue";
 import api from "@/utils/api";
 import { generatePastelColors } from "@/utils/colorUtils";
 
-// 상태 변수수
+// 상태 변수
 const isLoading = ref(true);
 const isHovered = ref(false); // 가이드라인 호버 상태
 const isSaved = ref(false);

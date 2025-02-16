@@ -33,7 +33,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       const testLoginData = {
         userId: "jun@naver.com",
         access_token:
-          "eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInVzZXJJZCI6MSwiZW1haWwiOiJqdW5AbmF2ZXIuY29tIiwicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTczOTcwODgzNCwiZXhwIjoxNzM5NzE0ODM0fQ.Ym02lddpDbKmQPogMW-kb8RHJEyqtNF7oUd1lpohpDc",
+          "eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInVzZXJJZCI6MSwiZW1haWwiOiJqdW5AbmF2ZXIuY29tIiwicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTczOTcxNTA4MSwiZXhwIjoxNzM5NzIxMDgxfQ.UU7TLZTw0HJV8xrF5Us8FwIj7_veMkbqeOqP8wL6Vc8",
       };
       saveLoginData(testLoginData);
     }
