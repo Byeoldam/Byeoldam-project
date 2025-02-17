@@ -5,7 +5,7 @@
     class="fixed inset-0 flex items-center justify-center z-50"
   >
     <div
-      class="w-10 h-10 border-4 border-gray-200 border-t-4 border-t-indigo-500 rounded-full animate-spin mt-[50px]"
+      class="w-10 h-10 border-4 border-gray-200 border-t-4 border-t-indigo-800 rounded-full animate-spin mt-[50px]"
     ></div>
   </div>
   <!-- 저장 완료 후 결과 뷰 -->
@@ -21,7 +21,7 @@
             viewBox="0 0 24 24"
             stroke-width="1.5"
             stroke="currentColor"
-            class="w-5 h-5 text-indigo-500"
+            class="w-5 h-5 text-indigo-800"
           >
             <path
               stroke-linecap="round"
@@ -64,7 +64,7 @@
                   viewBox="0 0 24 24"
                   stroke-width="1.5"
                   stroke="currentColor"
-                  class="w-4 h-4 text-indigo-600"
+                  class="w-4 h-4 text-indigo-800"
                 >
                   <path
                     stroke-linecap="round"
@@ -77,7 +77,7 @@
                 <h3 class="font-medium text-sm text-indigo-900">
                   RSS 구독 가능
                 </h3>
-                <p class="text-xs text-indigo-700 mt-0.5">
+                <p class="text-xs text-indigo-800 mt-0.5">
                   업데이트를 실시간으로 받아보세요
                 </p>
               </div>
@@ -131,10 +131,10 @@
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
-                viewBox="0 0 24 24"
+                viewBox="0 0 24 24"컬컬
                 stroke-width="1.5"
                 stroke="currentColor"
-                class="w-4 h-4 text-indigo-500"
+                class="w-4 h-4 text-indigo-800"
               >
                 <path
                   stroke-linecap="round"
@@ -144,8 +144,8 @@
               </svg>
             </div>
             <p class="text-sm text-gray-700">
-              저장할 <span class="font-medium text-indigo-600">컬렉션</span>과
-              <span class="font-medium text-indigo-600">태그</span>를
+              저장할 <span class="font-medium text-indigo-800">컬렉션</span>과
+              <span class="font-medium text-indigo-800">태그</span>를
               설정해주세요
             </p>
           </div>
@@ -232,7 +232,7 @@
                     :class="[
                       'px-4 py-1 text-sm rounded-l-md border focus:outline-none',
                       newCollectionType
-                        ? 'bg-indigo-50 text-indigo-600 border-indigo-500'
+                        ? 'bg-indigo-200 text-indigo-800 border-indigo-800'
                         : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50',
                     ]"
                   >
@@ -244,7 +244,7 @@
                     :class="[
                       'px-4 py-1 text-sm rounded-r-md border-t border-r border-b border-l-0 focus:outline-none',
                       !newCollectionType
-                        ? 'bg-indigo-50 text-indigo-600 border-indigo-500'
+                        ? 'bg-indigo-200 text-indigo-800 border-indigo-500'
                         : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50',
                     ]"
                   >
@@ -354,7 +354,7 @@
               class="flex-1 p-2 border rounded-md focus:outline-none focus:border-gray-400"
             />
             <button
-              class="flex items-center justify-center w-10 h-10 rounded-md bg-white text-indigo-500 border border-indigo-500 shadow-sm hover:shadow-md active:shadow-inner transition-all duration-200"
+              class="flex items-center justify-center w-10 h-10 rounded-md bg-white text-indigo-600 border border-indigo-500 shadow-sm hover:shadow-md active:shadow-inner transition-all duration-200"
               @click="addTag"
             >
               <svg
@@ -363,7 +363,7 @@
                 viewBox="0 0 24 24"
                 stroke-width="2.5"
                 stroke="currentColor"
-                class="w-5 h-5 text-indigo-500"
+                class="w-5 h-5 text-indigo-600"
               >
                 <path
                   stroke-linecap="round"
@@ -377,62 +377,62 @@
 
         <!-- 저장 버튼 -->
         <div class="flex justify-end">
-          <button
-            @click="saveBookmark"
-            class="group px-6 py-2.5 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white rounded-md hover:from-indigo-600 hover:to-indigo-700 shadow-sm hover:shadow-md active:shadow-inner transition-all duration-200 flex items-center gap-2"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="2"
-              stroke="currentColor"
-              class="w-5 h-5 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z"
-              />
-            </svg>
-            <span class="font-medium">저장</span>
-          </button>
-        </div>
+  <button
+    @click="saveBookmark"
+    class="px-6 py-2.5 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 shadow-sm transition-colors duration-200 flex items-center gap-2"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="2"
+      stroke="currentColor"
+      class="w-5 h-5"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z"
+      />
+    </svg>
+    <span class="font-medium">저장</span>
+  </button>
+</div>
       </div>
 
       <!-- 구독 버튼 -->
-      <div v-if="subscribeRssResult" class="flex items-center justify-between">
-        <!-- 에러 메시지 -->
-        <p
-          v-if="errorMessage"
-          class="text-sm text-red-500 flex items-center gap-2"
-        >
-          {{ errorMessage }}
-        </p>
-        <p v-else class="flex-1"></p>
-        <!-- 에러 메시지가 없을 때 공간 유지 -->
+<div v-if="subscribeRssResult" class="flex items-center justify-between">
+  <!-- 에러 메시지 -->
+  <p
+    v-if="errorMessage"
+    class="text-sm text-red-500 flex items-center gap-2"
+  >
+    {{ errorMessage }}
+  </p>
+  <p v-else class="flex-1"></p>
+  <!-- 에러 메시지가 없을 때 공간 유지 -->
 
-        <button
-          @click="scribeRSS"
-          class="group px-6 py-2.5 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white rounded-md hover:from-indigo-600 hover:to-indigo-700 shadow-sm hover:shadow-md active:shadow-inner transition-all duration-200 flex items-center gap-2"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="2"
-            stroke="currentColor"
-            class="w-5 h-5 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M12.75 19.5v-.75a7.5 7.5 0 00-7.5-7.5H4.5m0-6.75h.75c7.87 0 14.25 6.38 14.25 14.25v.75M6 18.75a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
-            />
-          </svg>
-          <span class="font-medium">구독</span>
-        </button>
-      </div>
+  <button
+    @click="scribeRSS"
+    class="px-6 py-2.5 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 shadow-sm transition-colors duration-200 flex items-center gap-2"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="2"
+      stroke="currentColor"
+      class="w-5 h-5"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M12.75 19.5v-.75a7.5 7.5 0 00-7.5-7.5H4.5m0-6.75h.75c7.87 0 14.25 6.38 14.25 14.25v.75M6 18.75a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
+      />
+    </svg>
+    <span class="font-medium">구독</span>
+  </button>
+</div>
     </div>
   </div>
 </template>
@@ -660,7 +660,9 @@ const saveBookmark = async () => {
 
   try {
     errorMessage.value = "";
+    console.log("지금테스트 북마크 저장 요청전!!!!! : ", bookmarkData);
     const response = await api.post(apiUrl, bookmarkData);
+    console.log("지금테스트 북마크 저장 요청완료!!!!! : ", bookmarkData);
     if (response.data.status) {
       console.log("북마크 저장 성공!!!!");
       savedResult.value = response.data; // 전체 응답 데이터를 저장

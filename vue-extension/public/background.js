@@ -57,11 +57,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       const testLoginData = {
         userId: "jun@naver.com",
         access_token:
-          "eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInVzZXJJZCI6MSwiZW1haWwiOiJqdW5AbmF2ZXIuY29tIiwicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTczOTc2Nzc1NywiZXhwIjoxNzQwMzY3NzU3fQ.kMwwCuU5KgjN4s5JmUPbJk2ixNXMsR2PeagZiD17Oww",
+          "eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInVzZXJJZCI6MSwiZW1haWwiOiJqdW5AbmF2ZXIuY29tIiwicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTczOTc3ODM3MSwiZXhwIjoxNzQwMzc4MzcxfQ.wFdrBIwfTlaaqu5cQZg_M0LLn-51gFA_7jVaOn1dgAo",
       };
       saveLoginData(testLoginData);
 
-      // chrome.tabs.create({ url: "http://www.byeoldam.store/login" });
+      // chrome.tabs.create({ url: "http://byeoldam.store/login" });
     }
   }
 });

@@ -107,7 +107,7 @@ onMounted(async () => {
 });
 
 const goToByeoldam = () => {
-  chrome.tabs.create({ url: "별담사이트주소" });
+  chrome.tabs.create({ url: "http://byeoldam.store/main" });
 };
 </script>
 
@@ -164,7 +164,7 @@ nav::after {
 }
 
 .nav-item.router-link-active {
-  color: #818cf8;
+  color: #3730A3;
   font-weight: bold;
 }
 
@@ -177,7 +177,7 @@ nav::after {
   transform: translateX(-50%);
   width: calc(100% + 10px);
   height: 3px;
-  background-color: #818cf8;
+  background-color: #3730A3;
 }
 
 .notification-badge {
