@@ -220,7 +220,7 @@ const closeTagModal = () => {
 }
 
 .settings-menu .delete-button {
-  color: #f56c6c;
+  color: #ce3e3ebc;
   border: none;
   background: none;
 }
