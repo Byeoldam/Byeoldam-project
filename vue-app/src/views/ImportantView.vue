@@ -89,6 +89,8 @@ watch(bookmarkResults, (newResults) => {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    background-color: #F5F5F5;
+
 }
 
 .header {
@@ -126,7 +128,7 @@ watch(bookmarkResults, (newResults) => {
 }
 
 .page-header {
-    background: linear-gradient(to right, #f8f9fa, #ffffff);
+    /* background: linear-gradient(to right, #f8f9fa, #ffffff); */
     padding: 16px 24px;
     border-radius: 12px;
     margin-bottom: 24px;

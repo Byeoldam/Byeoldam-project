@@ -188,7 +188,7 @@ const createNewCollection = () => {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
 }
 
 .filter-buttons {
@@ -196,6 +196,7 @@ const createNewCollection = () => {
     gap: 10px;
     flex-wrap: wrap;
     flex: 1;
+    padding: 0 20px;
 }
 
 .filter-btn {

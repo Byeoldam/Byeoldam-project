@@ -174,6 +174,7 @@ onMounted(async () => {
     display: flex;
     gap: 12px;
     margin-bottom: 24px;
+    padding: 0 20px;
 }
 
 .empty-state {
