@@ -181,7 +181,7 @@
                 :class="[
                   'p-2 border rounded-md focus:outline-none',
                   isCollectionError
-                    ? 'border-blue-400 bg-blue-50 ring-2 ring-blue-200'
+                    ? 'border-red-400 bg-red-50 ring-2 ring-red-200'
                     : 'focus:border-gray-400',
                 ]"
                 @change="onCollectionChange"
@@ -256,7 +256,10 @@
                   type="text"
                   maxlength="20"
                   placeholder="새로 생성할 컬렉션명을 입력하세요"
-                  class="flex-1 p-2 border rounded-md focus:outline-none focus:border-gray-400"
+                  class="flex-1 p-2 border rounded-md focus:outline-none"
+                  :class="isCollectionError 
+                    ? 'border-red-400 bg-red-50 ring-2 ring-red-200' 
+                    : 'focus:border-gray-400'"
                   @focus="onNewCollectionNameFocus"
                 />
               </div>
@@ -316,7 +319,7 @@
               </svg>
               {{ "# " + tag.tagName }}
               <button
-                class="ml-2 text-gray-500 hover:text-gray-700"
+                class="ml-2 text-black-500 hover:text-black-700"
                 @click="removeTag(index, 'gpt')"
               >
                 &times;

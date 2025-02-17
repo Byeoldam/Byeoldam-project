@@ -1,4 +1,7 @@
-// 뱃지 업데이트
+// ===============================================================================================
+// [알림 뱃지 업데이트]
+// ===============================================================================================
+
 chrome.storage.onChanged.addListener((changes, namespace) => {
   // 로컬 스토리지에서 notificationCount 가져오기
   chrome.storage.local.get(["notificationCount"], (result) => {
@@ -11,16 +14,10 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
     } else {
       chrome.action.setBadgeText({ text: "" }); // 알림 카운트가 없으면 뱃지 비우기
     }
-
-    // 새 피드 여부 감지 및 뱃지 업데이트
-    if (hasNewFeed) {
-      chrome.action.setBadgeText({ text: "N" }); // N은 새 피드를 의미
-      chrome.action.setBadgeBackgroundColor({ color: "#FF0000" });
-    }
   });
 
-  // 둘 다 없는 경우 뱃지 제거
-  if (!changes.notificationCount?.newValue && !changes.hasNewFeed?.newValue) {
+  // 알림 없는 경우 뱃지 제거
+  if (!changes.notificationCount?.newValue) {
     chrome.action.setBadgeText({ text: "" });
   }
 });
@@ -60,11 +57,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       const testLoginData = {
         userId: "jun@naver.com",
         access_token:
-          "eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInVzZXJJZCI6MSwiZW1haWwiOiJqdW5AbmF2ZXIuY29tIiwicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTczOTc0MDAyMiwiZXhwIjoxNzM5NzQ2MDIyfQ.FYzz6VO2ulFXsw83ea35Bkaa7nIU3J20xA6Tk3DS9Jc",
+          "eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInVzZXJJZCI6MSwiZW1haWwiOiJqdW5AbmF2ZXIuY29tIiwicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTczOTc2Nzc1NywiZXhwIjoxNzQwMzY3NzU3fQ.kMwwCuU5KgjN4s5JmUPbJk2ixNXMsR2PeagZiD17Oww",
       };
       saveLoginData(testLoginData);
 
-      // chrome.tabs.create({ url: "https://your-byeoldam-site.com" });
+      // chrome.tabs.create({ url: "http://www.byeoldam.store/login" });
     }
   }
 });
