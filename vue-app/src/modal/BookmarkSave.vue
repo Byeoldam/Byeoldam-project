@@ -38,10 +38,9 @@
                             v-model="newTag"
                             type="text"
                             class="tag-input"
-                            placeholder="태그를 입력하세요"
+                            placeholder="태그를 입력후 엔터를 눌러주세요"
                             @keyup.enter="addTag"
                         >
-                        <button class="add-button" @click="addTag">+</button>
                     </div>
                 </div>
             </div>

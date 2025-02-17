@@ -483,6 +483,10 @@ export const useBookmarkStore = defineStore("bookmark", () => {
         console.log(response.data);
       };
 
+      // 검색 결과 초기화 함수 추가
+      const clearSearchResults = () => {
+        searchBookmarksByTag.value = {};
+      };
 
       //태그 기반 검색 예시 response
       const exampleSearchedBookmarksByTag = ref({
@@ -718,5 +722,6 @@ export const useBookmarkStore = defineStore("bookmark", () => {
         topTags,
         refreshCurrentPage,
         currentCollection,
+        clearSearchResults,
     };
 });
