@@ -141,7 +141,7 @@ const handleCreate = async () => {
 
 .collection-input:focus {
     outline: none;
-    border-color: #4CAF50;
+    border-color: #3730A3;
 }
 
 .type-selector {
@@ -160,9 +160,9 @@ const handleCreate = async () => {
 }
 
 .type-button.active {
-    background: #4CAF50;
+    background: #6366F1;
     color: white;
-    border-color: #4CAF50;
+    border-color: #6366F1   ;
 }
 
 .type-button:hover:not(.active) {
@@ -172,7 +172,7 @@ const handleCreate = async () => {
 .create-button {
     width: 100%;
     padding: 12px;
-    background: #4CAF50;
+    background: #6366F1;
     color: white;
     border: none;
     border-radius: 6px;
@@ -182,7 +182,7 @@ const handleCreate = async () => {
 }
 
 .create-button:hover:not(:disabled) {
-    background: #45a049;
+    background: #4F46E5;
 }
 
 .create-button:disabled {
