@@ -145,7 +145,7 @@ watch(bookmarkResults, (newResults) => {
 
 .title-icon {
     font-size: 1.5rem;
-    color: #ffd700;
+    color: #ffd900f5;
 }
 
 .title {

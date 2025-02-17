@@ -308,7 +308,7 @@ const handlePriorityToggle = () => {
 }
 
 .star-icon {
-    color: #FFD700;
+    color: #ffd900f5;
     font-size: 1.2rem;
     /* cursor: pointer; */
 }
