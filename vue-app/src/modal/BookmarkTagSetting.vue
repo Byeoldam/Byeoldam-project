@@ -54,25 +54,79 @@ const props = defineProps({
 const tags = ref([...props.initialTags])
 const newTag = ref('')
 
-// 랜덤 RGB 색상 생성 함수
-const generateRandomColor = () => {
-    const r = Math.floor(Math.random() * 256);
-    const g = Math.floor(Math.random() * 256);
-    const b = Math.floor(Math.random() * 256);
-    return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+// 이전 색상들을 저장할 배열
+const previousHues = ref([]);
+const MIN_HUE_DIFFERENCE = 30;
+
+// HSL을 HEX로 변환하는 함수
+const hslToHex = (h, s, l) => {
+    s /= 100;
+    l /= 100;
+    const c = (1 - Math.abs(2 * l - 1)) * s;
+    const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+    const m = l - c / 2;
+    let r = 0, g = 0, b = 0;
+
+    if (0 <= h && h < 60) { r = c; g = x; b = 0; }
+    else if (60 <= h && h < 120) { r = x; g = c; b = 0; }
+    else if (120 <= h && h < 180) { r = 0; g = c; b = x; }
+    else if (180 <= h && h < 240) { r = 0; g = x; b = c; }
+    else if (240 <= h && h < 300) { r = x; g = 0; b = c; }
+    else if (300 <= h && h < 360) { r = c; g = 0; b = x; }
+
+    const toHex = (value) => {
+        const hex = Math.round((value + m) * 255).toString(16);
+        return hex.length === 1 ? "0" + hex : hex;
+    };
+
+    return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
 };
 
-// 더 진한 색상 생성 (border용)
-const generateDarkerColor = (color) => {
-    const r = parseInt(color.slice(1, 3), 16);
-    const g = parseInt(color.slice(3, 5), 16);
-    const b = parseInt(color.slice(5, 7), 16);
-    
-    const darkerR = Math.max(0, r - 30);
-    const darkerG = Math.max(0, g - 30);
-    const darkerB = Math.max(0, b - 30);
-    
-    return `#${darkerR.toString(16).padStart(2, '0')}${darkerG.toString(16).padStart(2, '0')}${darkerB.toString(16).padStart(2, '0')}`;
+// 새로운 색상이 이전 색상들과 충분히 다른지 확인
+const isDistinctHue = (hue) => {
+    return previousHues.value.every((prevHue) => {
+        const diff = Math.abs(hue - prevHue);
+        return Math.min(diff, 360 - diff) >= MIN_HUE_DIFFERENCE;
+    });
+};
+
+// 구분되는 새로운 색상 생성
+const getDistinctHue = () => {
+    let attempts = 0;
+    let hue;
+
+    do {
+        hue = Math.floor(Math.random() * 359);
+        attempts++;
+        if (attempts > 100) {
+            previousHues.value = [];
+            break;
+        }
+    } while (!isDistinctHue(hue));
+
+    if (previousHues.value.length >= 10) {
+        previousHues.value.shift();
+    }
+    previousHues.value.push(hue);
+
+    return hue;
+};
+
+// 태그 색상 생성 함수
+const generateRandomColor = () => {
+    const hue = getDistinctHue();
+    const saturation = 85 + Math.random() * 10;
+    const lightness = 92 + Math.random() * 3;
+    return hslToHex(hue, saturation - 50, lightness);
+};
+
+// 테두리 색상 생성 함수
+const generateDarkerColor = (baseColor) => {
+    // HSL 변환 로직을 사용하여 더 진한 색상 생성
+    const hue = getDistinctHue();
+    const saturation = 85 + Math.random() * 10;
+    const lightness = 92 + Math.random() * 3;
+    return hslToHex(hue, saturation - 20, lightness - 25);
 };
 
 // 태그 추가 함수
