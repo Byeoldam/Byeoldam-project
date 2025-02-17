@@ -62,8 +62,9 @@
                                             />
                                         </div>
                                         
-                                        <div v-if="loading" class="loading">
-                                            데이터를 불러오는 중...
+                                        <div v-if="loading" class="loading-spinner">
+                                            <div class="spinner"></div>
+                                            <p>로딩 중...</p>
                                         </div>
                                         
                                         <div v-if="hasSearched && bookmarks.length === 0 && !loading" class="no-results">
@@ -164,13 +165,11 @@ const handleSearch = async () => {
     try {
         loading.value = true
         hasSearched.value = true
-        lastCursorId.value = null // 검색 시 커서 초기화
-        hasMore.value = true // 검색 시 hasMore 초기화
+        lastCursorId.value = null
+        hasMore.value = true
         
-        // 첫 검색시에는 cursorId를 전달하지 않음
         await bookmarkStore.getSearchBookmarksByTag(searchTag.value, undefined, 10)
         
-        // 받아온 데이터가 10개 미만이면 더 이상 데이터가 없음
         if (bookmarks.value.length < 10) {
             hasMore.value = false
         } else {
@@ -263,6 +262,13 @@ onUnmounted(() => {
     if (mainContent) {
         mainContent.removeEventListener('scroll', handleScroll)
     }
+    
+    // 컴포넌트 언마운트 시 검색 관련 상태 초기화
+    bookmarkStore.clearSearchResults()  // store에 이 메서드를 추가해야 합니다
+    hasSearched.value = false
+    searchTag.value = ''
+    lastCursorId.value = null
+    hasMore.value = true
 })
 </script>
 
@@ -549,6 +555,30 @@ onUnmounted(() => {
     color: #718096;
     font-style: italic;
     margin-top: 20px;
+}
+
+.loading-spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    padding-top: 200px;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3730A3;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 16px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 </style>
 
