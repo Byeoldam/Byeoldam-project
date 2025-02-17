@@ -134,7 +134,7 @@ const createNewCollection = () => {
     left: 0;
     right: 0;
     z-index: 100;
-    background: white;
+    /* background: white; */
 }
 
 .content-wrapper {
@@ -149,7 +149,7 @@ const createNewCollection = () => {
     top: 60px; /* 헤더 높이만큼 떨어뜨림 */
     bottom: 0;
     width: 240px; /* 사이드바 너비 */
-    background: white;
+    /* background: white; */
     z-index: 99;
 }
 

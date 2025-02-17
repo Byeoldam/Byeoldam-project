@@ -115,7 +115,7 @@ onMounted(async () => {
     left: 0;
     right: 0;
     z-index: 100;
-    background: white;
+    /* background: white; */
 }
 
 .content-wrapper {
@@ -130,7 +130,7 @@ onMounted(async () => {
     top: 60px;
     bottom: 0;
     width: 240px;
-    background: white;
+    /* background: white; */
     z-index: 99;
 }
 
@@ -152,15 +152,15 @@ onMounted(async () => {
     padding: 8px 16px;
     border: none;
     border-radius: 20px;
-    background: #007bff;
-    color: white;
+    background: #FFD700;
+    color: #1A237E;
     cursor: pointer;
     transition: all 0.3s ease;
     font-weight: 500;
 }
 
 .new-collection-btn:hover {
-    background: #0056b3;
+    background: #FFD700;
 }
 
 .plus-icon {
