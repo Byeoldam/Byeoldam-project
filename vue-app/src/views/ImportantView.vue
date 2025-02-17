@@ -89,6 +89,8 @@ watch(bookmarkResults, (newResults) => {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    background-color: #F5F5F5;
+
 }
 
 .header {
@@ -126,10 +128,10 @@ watch(bookmarkResults, (newResults) => {
 }
 
 .page-header {
-    background: linear-gradient(to right, #f8f9fa, #ffffff);
+    /* background: linear-gradient(to right, #f8f9fa, #ffffff); */
     padding: 16px 24px;
     border-radius: 12px;
-    margin-bottom: 24px;
+    margin-bottom: 12px;
 }
 
 .header-content {
@@ -145,7 +147,7 @@ watch(bookmarkResults, (newResults) => {
 
 .title-icon {
     font-size: 1.5rem;
-    color: #ffd700;
+    color: #ffd900f5;
 }
 
 .title {
@@ -200,6 +202,6 @@ watch(bookmarkResults, (newResults) => {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     gap: 24px;
-    padding: 20px 0;
+    padding: 20px 20px;
 }
 </style>

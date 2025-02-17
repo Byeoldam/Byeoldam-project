@@ -271,6 +271,7 @@ onUnmounted(() => {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    background-color: #F5F5F5;
 }
 
 .header {
@@ -330,12 +331,16 @@ onUnmounted(() => {
 
 .search-button {
     padding: 0 24px;
-    background-color: #3182ce;
-    color: white;
+    background-color: #3730A3;
+    color: rgba(255, 255, 255, 0.901);
     border: none;
     border-radius: 8px;
     cursor: pointer;
     font-weight: bold;
+}
+
+.search-button:hover {
+    background-color: #3830a3c5;
 }
 
 .search-results-container {
@@ -462,7 +467,7 @@ onUnmounted(() => {
     align-items: center;
     justify-content: center;
     padding: 60px 20px;
-    background-color: #f8f9fa;
+    /* background-color: #f8f9fa; */
     border-radius: 12px;
     text-align: center;
 }
@@ -470,7 +475,7 @@ onUnmounted(() => {
 .message-box {
     text-align: center;
     padding: 20px;
-    background-color: #f8fafc;
+    /* background-color: #f8fafc; */
     border-radius: 12px;
     max-width: 500px;
 }
@@ -502,10 +507,10 @@ onUnmounted(() => {
 }
 
 .page-header {
-    background: linear-gradient(to right, #f8f9fa, #ffffff);
+    /* background: linear-gradient(to right, #f8f9fa, #ffffff); */
     padding: 16px 24px;
     border-radius: 12px;
-    margin-bottom: 24px;
+    margin-bottom: 12px;
 }
 
 .header-content {
@@ -521,7 +526,7 @@ onUnmounted(() => {
 
 .title-icon {
     font-size: 1.5rem;
-    color: #007bff;
+    color: #3730A3;
 }
 
 .title {

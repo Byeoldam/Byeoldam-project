@@ -132,6 +132,7 @@ const createNewCollection = () => {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    background-color: #F5F5F5;
 }
 
 .header {
@@ -181,13 +182,13 @@ const createNewCollection = () => {
 .top-section {
     position: sticky;
     top: 0;
-    /* background: white; */
-    padding: 10px 0;
+    background-color: #F5F5F5;
+    padding: 10px 20px;
     z-index: 98;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 40px;
+    margin-bottom: 12px;
 }
 
 .filter-buttons {
@@ -195,6 +196,7 @@ const createNewCollection = () => {
     gap: 10px;
     flex-wrap: wrap;
     flex: 1;
+    /* padding: 0 20px; */
 }
 
 .filter-btn {
@@ -211,9 +213,9 @@ const createNewCollection = () => {
 }
 
 .filter-btn.active {
-    background: #007bff;
-    color: white;
-    border-color: #007bff;
+    background: #3730A3;
+    color: rgba(255, 255, 255, 0.901);
+    border-color: #3730A3;
 }
 
 .new-collection-btn {
@@ -223,15 +225,15 @@ const createNewCollection = () => {
     padding: 8px 16px;
     border: none;
     border-radius: 20px;
-    background: #007bff;
-    color: white;
+    background: #3730A3;
+    color: rgba(255, 255, 255, 0.901);
     cursor: pointer;
     transition: all 0.3s ease;
     font-weight: 500;
 }
 
 .new-collection-btn:hover {
-    background: #0056b3;
+    background: #3830a3c5;
 }
 
 .plus-icon {
@@ -264,10 +266,10 @@ const createNewCollection = () => {
 }
 
 .page-header {
-    background: linear-gradient(to right, #f8f9fa, #ffffff);
+    /* background: linear-gradient(to right, #ffffff, #f8f9fa); */
     padding: 16px 24px;
     border-radius: 12px;
-    margin-bottom: 24px;
+    margin-bottom: 12px;
 }
 
 .header-content {
@@ -283,7 +285,7 @@ const createNewCollection = () => {
 
 .title-icon {
     font-size: 1.5rem;
-    color: #007bff;
+    color: #3730A3;
 }
 
 .title {
@@ -314,6 +316,7 @@ const createNewCollection = () => {
     justify-content: center;
     padding: 60px 20px;
     text-align: center;
+
 }
 
 .empty-message {

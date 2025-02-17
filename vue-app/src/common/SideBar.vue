@@ -44,7 +44,7 @@
 <style scoped>
 .sidebar {
     width: 240px;
-    background-color: #312E81;  /* 베이스 컬러 */
+    background-color: #1E1B4B;  /* 베이스 컬러 */
     color: white;
     height: 100%;
     padding: 20px;
@@ -64,12 +64,12 @@
 
 .nav-item:hover {
     background-color: rgba(255, 255, 255, 0.1);
-    color: #FFD700;  /* 키 컬러로 변경 */
+    color: #ffd900bf;  /* 키 컬러로 변경 */
 }
 
 .nav-item.router-link-active {
     background-color: rgba(255, 255, 255, 0.1);
-    color: #FFD700;  /* 키 컬러로 변경 */
+    color: #ffd900f5;  /* 키 컬러로 변경 */
     font-weight: bold;
 }
 
