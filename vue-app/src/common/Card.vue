@@ -170,156 +170,147 @@ const handlePriorityToggle = () => {
 
 <style scoped>
 .card {
-    border-radius: 8px;
-    background: white;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    overflow: hidden;
-    transition: transform 0.2s;
-    width: 240px;
-    position: relative;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  width: 240px;
+  position: relative;
 }
 
 .card:hover {
-    transform: translateY(-4px);
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
 }
 
 .card-image {
-    width: 100%;
-    height: 140px;
-    object-fit: cover;
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.card:hover .card-image {
+  transform: scale(1.05);
 }
 
 .card-content {
-    padding: 12px;
-    height: 140px;
-    display: flex;
-    flex-direction: column;
+  padding: 16px;
+  height: 160px;
+  display: flex;
+  flex-direction: column;
 }
 
 .card-title {
-    margin: 0 0 8px 0;
-    font-size: 1.1rem;
-    color: #333;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  margin: 0 0 8px 0;
+  font-size: 1.2rem;
+  color: #333;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .card-description {
-    color: #666;
-    font-size: 0.9rem;
-    line-height: 1.4;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin-bottom: 6px;
+  color: #666;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 8px;
 }
 
 .card-url {
-    font-size: 0.8rem;
-    color: #666;
-    margin-bottom: 6px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  font-size: 0.8rem;
+  color: #999;
+  margin-bottom: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .card-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
 }
 
 .tags-container {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    flex-wrap: nowrap;
-    overflow: hidden;
-    max-width: 70%;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: nowrap;
+  overflow: hidden;
+  max-width: 70%;
 }
 
 .tag {
-    padding: 2px 6px;
-    border-radius: 12px;
-    white-space: nowrap;
-    border: 1px solid;
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap;
+  border: none;
+  color: rgb(95, 93, 93);;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: all 0.2s ease;
+}
+
+.tag:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 6px rgba(0,0,0,0.15);
 }
 
 .remaining-count {
-    color: #888;
-    font-size: 0.8rem;
-    position: relative;
-    cursor: pointer;
+  color: #888;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
 }
 
 .read-time {
-    white-space: nowrap;
-    color: #666;
-    font-size: 0.8rem;
-}
-
-.tooltip {
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #333;
-    color: white;
-    padding: 8px;
-    border-radius: 4px;
-    font-size: 0.8rem;
-    white-space: nowrap;
-    z-index: 1000;
-    margin-bottom: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-
-.tooltip::after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border-width: 4px;
-    border-style: solid;
-    border-color: #333 transparent transparent transparent;
-}
-
-.tooltip-tag {
-    margin-right: 8px;
-}
-
-.tooltip-tag:last-child {
-    margin-right: 0;
+  white-space: nowrap;
+  color: #666;
+  font-size: 0.8rem;
+  font-weight: 500;
 }
 
 .card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  background-color: #f8f9fa;
 }
 
 .priority {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .star-icon {
-    color: #FFD700;
-    font-size: 1.2rem;
-    /* cursor: pointer; */
+  color: #ffd700;
+  font-size: 1.2rem;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: all 0.2s ease;
 }
 
 .star-icon.empty {
-    color: #ccc;
+  color: #e0e0e0;
+}
+
+.star-icon:hover {
+  transform: scale(1.1);
 }
 
 .settings {
-    position: relative;
-    margin-left: auto;
+  position: relative;
+  margin-left: auto;
 }
 
 
