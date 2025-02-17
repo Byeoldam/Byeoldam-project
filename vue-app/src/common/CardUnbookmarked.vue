@@ -5,7 +5,7 @@
                 <!-- 빈 공간 유지 -->
             </div>
             <div class="settings">
-                <button class="save-button" @click="showSaveModal = true">
+                <button class="save-button" @click="openModal">
                     Save
                 </button>
             </div>
@@ -54,17 +54,24 @@
         </div>
     </div>
 
-    <!-- 북마크 저장 모달 추가 -->
-    <BookmarkSave 
-        v-if="showSaveModal" 
-        :key="props.url"
-        :url="props.url"
-        :title="props.title"
-        :description="props.description"
-        :img="props.img"
-        @close="showSaveModal = false"
-        @save="showSaveModal = false"
-    />
+    <!-- Suspense 컴포넌트로 BookmarkSave 감싸기 -->
+    <Suspense>
+        <template #default>
+            <BookmarkSave 
+                v-if="showSaveModal" 
+                :url="props.url"
+                :title="props.title"
+                :description="props.description"
+                :img="imageSrc"
+                :readingTime="props.readingTime"
+                @close="showSaveModal = false"
+                @save="showSaveModal = false"
+            />
+        </template>
+        <template #fallback>
+            <div>로딩 중...</div>
+        </template>
+    </Suspense>
 </template>
 
 <script setup>
@@ -72,10 +79,6 @@ import { ref, computed } from 'vue';
 import BookmarkSave from '@/modal/BookmarkSave.vue';
 
 const props = defineProps({
-    key: {
-        type: String,
-        required: true
-    },
     url: {
         type: String,
         required: true
@@ -124,6 +127,19 @@ const imageSrc = computed(() => {
 
 const handleImageClick = () => {
     window.open(props.url, '_blank', 'noopener,noreferrer');
+};
+
+const openModal = () => {
+    console.log('이전 showSaveModal 값:', showSaveModal.value);
+    showSaveModal.value = true;
+    console.log('변경된 showSaveModal 값:', showSaveModal.value);
+    console.log('북마크 정보:', {
+        url: props.url,
+        title: props.title,
+        description: props.description,
+        readingTime: props.readingTime,
+        img: imageSrc.value
+    });
 };
 </script>
 

@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
     <div class="card">
         <div class="card-image">
             <img :src="props.imageUrl || '/default-image.png'" :alt="props.title">
@@ -119,4 +119,4 @@ const props = defineProps({
 .url-link:hover {
     color: #0056b3;
 }
-</style> 
+</style>  -->
