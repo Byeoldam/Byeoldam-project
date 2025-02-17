@@ -46,7 +46,7 @@ const handlePostSelect = (post) => {
 
 <style scoped>
 .posts-list {
-width: 300px;
+width: 280px;
 overflow-y: auto;
 border-right: 1px solid #ddd;
 }
@@ -63,7 +63,19 @@ background-color: #f8f9fa;
 }
 
 .post-item.read {
-opacity: 0.7;
+opacity: 0.5;
+}
+
+.post-item h3 {
+  margin: 0;
+  margin-right: 20px;
+  display: -webkit-box;              /* 웹킷 기반 브라우저 지원 */
+  -webkit-line-clamp: 2;            /* 최대 2줄까지 표시 */
+  -webkit-box-orient: vertical;      /* 수직 방향으로 텍스트 배치 */
+  overflow: hidden;                  /* 넘치는 텍스트 숨김 */
+  text-overflow: ellipsis;          /* 말줄임표 표시 */
+  line-height: 1.3;                 /* 줄 간격 설정 */
+  max-height: 2.6em;                /* 최대 높이 설정 (line-height * 2) */
 }
 
 .unread-dot {

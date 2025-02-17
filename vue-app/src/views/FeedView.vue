@@ -67,6 +67,7 @@ const loadRssItems = async (rssId) => {
 // 피드 선택 시 해당 피드의 아이템 로드
 const selectFeed = async (rssId) => {
   selectedFeed.value = rssId
+  selectedPostUrl.value = null  // 피드 변경 시 선택된 포스트 URL 초기화
   await loadRssItems(rssId)
 }
 
