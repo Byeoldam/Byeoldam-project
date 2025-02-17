@@ -4,7 +4,7 @@
       <p class="warning-text">삭제된 컬렉션은 되돌릴 수 없습니다.</p>
       <div class="button-group">
         <el-button @click="$emit('close')">아니오</el-button>
-        <el-button type="danger" @click="handleDelete">예, 삭제하겠습니다</el-button>
+        <el-button type="danger" @click="handleDelete" class="delete-button">예, 삭제하겠습니다</el-button>
       </div>
     </div>
   </template>
@@ -66,4 +66,13 @@
     justify-content: center;
     gap: 12px;
   }
+
+    :deep(.delete-button) {
+    --el-button-bg-color: #ce3e3ebc;
+    --el-button-border-color: #ce3e3ebc;
+    --el-button-hover-bg-color: #f56c6ce0;
+    --el-button-hover-border-color: #f56c6ce0;
+}
+
+
   </style>

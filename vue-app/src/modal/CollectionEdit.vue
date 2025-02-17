@@ -8,8 +8,13 @@
         show-word-limit
       />
       <div class="button-group">
-        <el-button @click="$emit('close')">취소</el-button>
-        <el-button type="primary" @click="handleUpdate" :disabled="!isValid">
+        <el-button @click="$emit('close')" class="cancel-button">취소</el-button>
+        <el-button 
+          type="primary" 
+          @click="handleUpdate" 
+          :disabled="!isValid"
+          class="edit-button"
+        >
           수정
         </el-button>
       </div>
@@ -81,4 +86,30 @@
     gap: 12px;
     margin-top: 20px;
   }
+  
+  .cancel-button {
+    color: #606266;
+    background: #ffffff;
+    border-color: #dcdfe6;
+  }
+  
+  .cancel-button:hover {
+    color: #818CF8;
+    background: #EEF2FF;
+    border-color: #C7D2FE;
+  }
+  
+  :deep(.edit-button) {
+    --el-button-bg-color: #6366F1;
+    --el-button-border-color: #6366F1;
+    
+    --el-button-hover-bg-color: #6366F1;
+    --el-button-hover-border-color: #6366F1;
+
+    --el-button-disabled-bg-color: #A5B4FC;  /* 비활성화 시 배경색 */
+    --el-button-disabled-border-color: #A5B4FC;  /* 비활성화 시 테두리색 */
+    --el-button-disabled-text-color: #ffffff;  /* 비활성화 시 텍스트색 */
+
+}
+  
   </style>
