@@ -46,7 +46,7 @@ const logout = () => {
     justify-content: space-between;
     align-items: center;
     padding: 1rem 2rem;
-    background-color: #312E81;  /* 베이스 컬러 */
+    background-color: #1E1B4B;  /* 베이스 컬러 */
     /* box-shadow: 0 2px 4px rgba(0,0,0,0.1); */
     height: 60px;  /* 헤더 높이 고정 */
     color: white;
@@ -95,7 +95,7 @@ const logout = () => {
 .logo-title {
     font-size: 1.8rem;
     font-weight: 700;
-    color: #FFD700;  /* 키 컬러로 변경 */
+    color: #ffd900f5;  /* 키 컬러로 변경 */
     letter-spacing: 0.5px;
 }
 
