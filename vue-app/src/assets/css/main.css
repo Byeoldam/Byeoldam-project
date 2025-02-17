@@ -1,11 +1,11 @@
 @font-face {
-    font-family: 'Pretendard Variable';
-    font-weight: 100 900; /* 100에서 900까지 가변 굵기 */
+    font-family: 'JalnanGothic';
+    src: url('../font/NanumSquareR.ttf') format('truetype');
+    font-weight: normal;
     font-style: normal;
     font-display: swap;
-    src: local('Pretendard Variable'),
-         url('../font/PretendardGOVVariable.woff2') format('woff2-variations');
-  }
-  * {
-    font-family: 'Pretendard Variable', sans-serif;
-  }
+}
+
+* {
+    font-family: 'JalnanGothic', 'Pretendard Variable', sans-serif;
+}
