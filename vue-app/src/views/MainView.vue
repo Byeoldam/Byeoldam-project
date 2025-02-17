@@ -107,6 +107,8 @@ onMounted(async () => {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    background-color: #F5F5F5;
+
 }
 
 .header {
@@ -152,15 +154,15 @@ onMounted(async () => {
     padding: 8px 16px;
     border: none;
     border-radius: 20px;
-    background: #FFD700;
-    color: #1A237E;
+    background: #3730A3;
+    color: rgba(255, 255, 255, 0.901);
     cursor: pointer;
     transition: all 0.3s ease;
     font-weight: 500;
 }
 
 .new-collection-btn:hover {
-    background: #FFD700;
+    background: #3830a3c5;
 }
 
 .plus-icon {
@@ -208,7 +210,7 @@ onMounted(async () => {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     gap: 24px;
-    padding: 20px 0;
+    padding: 20px 20px;
 }
 
 .modal-overlay {
@@ -234,7 +236,7 @@ onMounted(async () => {
 }
 
 .page-header {
-    background: linear-gradient(to right, #f8f9fa, #ffffff);
+    /* background: linear-gradient(to right, #f8f9fa, #ffffff); */
     padding: 16px 24px;
     border-radius: 12px;
     margin-bottom: 24px;
@@ -253,7 +255,7 @@ onMounted(async () => {
 
 .title-icon {
     font-size: 1.5rem;
-    color: #007bff;
+    color: #3730A3;
 }
 
 .title {

@@ -200,6 +200,6 @@ watch(bookmarkResults, (newResults) => {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     gap: 24px;
-    padding: 20px 0;
+    padding: 20px 20px;
 }
 </style>
