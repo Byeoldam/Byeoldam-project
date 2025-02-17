@@ -92,7 +92,9 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(List.of(
         "chrome-extension://djiemmdlekojnbiclbgdepjapkoejddm",
         "https://byeoldam.store",
-        "https://www.byeoldam.store"
+        "https://www.byeoldam.store",
+        "http://localhost:5173",
+        "http://localhost:5174"
         ));
         configuration.addAllowedMethod("*"); // ✅ 모든 HTTP 메서드 허용 (GET, POST, PUT, DELETE 등)
         configuration.addAllowedHeader("*"); // ✅ 모든 헤더 허용
