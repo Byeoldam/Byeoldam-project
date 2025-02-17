@@ -5,7 +5,11 @@
   "manifest_version": 3,
   "action": {
     "default_popup": "index.html",
-    "default_icon": "favicon.ico"
+    "default_icon": {
+      "16": "byeoldam16x16.png",
+      "48": "byeoldam48x48.png",
+      "128": "byeoldam128x128.png"
+    }
   },
   "permissions": ["storage", "activeTab", "tabs"],
   "background": {
@@ -17,5 +21,12 @@
       "js": ["contentScript.js"]
     }
   ],
-  "icons": {}
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; connect-src https://byeoldam.store"
+  },
+  "icons": {
+    "16": "byeoldam16x16.png",
+    "48": "byeoldam48x48.png",
+    "128": "byeoldam128x128.png"
+  }
 }

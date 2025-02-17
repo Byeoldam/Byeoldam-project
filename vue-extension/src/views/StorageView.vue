@@ -131,7 +131,8 @@
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
-                viewBox="0 0 24 24"컬컬
+                viewBox="0 0 24 24"
+                컬컬
                 stroke-width="1.5"
                 stroke="currentColor"
                 class="w-4 h-4 text-indigo-800"
@@ -232,8 +233,8 @@
                     :class="[
                       'px-4 py-1 text-sm rounded-l-md border focus:outline-none',
                       newCollectionType
-                        ? 'bg-indigo-200 text-indigo-800 border-indigo-800'
-                        : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50',
+                        ? 'bg-indigo-200 text-indigo-800 border-indigo-400'
+                        : 'bg-indigo-50 text-indigo-600 border-indigo-100 hover:bg-indigo-100',
                     ]"
                   >
                     개인
@@ -244,8 +245,8 @@
                     :class="[
                       'px-4 py-1 text-sm rounded-r-md border-t border-r border-b border-l-0 focus:outline-none',
                       !newCollectionType
-                        ? 'bg-indigo-200 text-indigo-800 border-indigo-500'
-                        : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50',
+                        ? 'bg-indigo-200 text-indigo-800 border-indigo-400'
+                        : 'bg-indigo-50 text-indigo-600 border-indigo-100 hover:bg-indigo-100',
                     ]"
                   >
                     공유
@@ -257,9 +258,11 @@
                   maxlength="20"
                   placeholder="새로 생성할 컬렉션명을 입력하세요"
                   class="flex-1 p-2 border rounded-md focus:outline-none"
-                  :class="isCollectionError 
-                    ? 'border-red-400 bg-red-50 ring-2 ring-red-200' 
-                    : 'focus:border-gray-400'"
+                  :class="
+                    isCollectionError
+                      ? 'border-red-400 bg-red-50 ring-2 ring-red-200'
+                      : 'focus:border-gray-400'
+                  "
                   @focus="onNewCollectionNameFocus"
                 />
               </div>
@@ -377,62 +380,62 @@
 
         <!-- 저장 버튼 -->
         <div class="flex justify-end">
-  <button
-    @click="saveBookmark"
-    class="px-6 py-2.5 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 shadow-sm transition-colors duration-200 flex items-center gap-2"
-  >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke-width="2"
-      stroke="currentColor"
-      class="w-5 h-5"
-    >
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z"
-      />
-    </svg>
-    <span class="font-medium">저장</span>
-  </button>
-</div>
+          <button
+            @click="saveBookmark"
+            class="px-6 py-2.5 bg-indigo-100 text-indigo-700 rounded-md hover:bg-indigo-200 shadow-sm transition-all duration-200 flex items-center gap-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke="currentColor"
+              class="w-5 h-5"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z"
+              />
+            </svg>
+            <span class="font-medium">저장</span>
+          </button>
+        </div>
       </div>
 
       <!-- 구독 버튼 -->
-<div v-if="subscribeRssResult" class="flex items-center justify-between">
-  <!-- 에러 메시지 -->
-  <p
-    v-if="errorMessage"
-    class="text-sm text-red-500 flex items-center gap-2"
-  >
-    {{ errorMessage }}
-  </p>
-  <p v-else class="flex-1"></p>
-  <!-- 에러 메시지가 없을 때 공간 유지 -->
+      <div v-if="subscribeRssResult" class="flex items-center justify-between">
+        <!-- 에러 메시지 -->
+        <p
+          v-if="errorMessage"
+          class="text-sm text-red-500 flex items-center gap-2"
+        >
+          {{ errorMessage }}
+        </p>
+        <p v-else class="flex-1"></p>
+        <!-- 에러 메시지가 없을 때 공간 유지 -->
 
-  <button
-    @click="scribeRSS"
-    class="px-6 py-2.5 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 shadow-sm transition-colors duration-200 flex items-center gap-2"
-  >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke-width="2"
-      stroke="currentColor"
-      class="w-5 h-5"
-    >
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        d="M12.75 19.5v-.75a7.5 7.5 0 00-7.5-7.5H4.5m0-6.75h.75c7.87 0 14.25 6.38 14.25 14.25v.75M6 18.75a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
-      />
-    </svg>
-    <span class="font-medium">구독</span>
-  </button>
-</div>
+        <button
+          @click="scribeRSS"
+          class="px-6 py-2.5 bg-indigo-100 text-indigo-700 rounded-md hover:bg-indigo-200 shadow-sm transition-all duration-200 flex items-center gap-2"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="2"
+            stroke="currentColor"
+            class="w-5 h-5"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <span class="font-medium">구독</span>
+        </button>
+      </div>
     </div>
   </div>
 </template>

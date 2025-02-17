@@ -164,7 +164,7 @@ nav::after {
 }
 
 .nav-item.router-link-active {
-  color: #3730A3;
+  color: #3730a3;
   font-weight: bold;
 }
 
@@ -176,8 +176,8 @@ nav::after {
   left: 50%;
   transform: translateX(-50%);
   width: calc(100% + 10px);
-  height: 3px;
-  background-color: #3730A3;
+  height: 2px;
+  background-color: #3730a3;
 }
 
 .notification-badge {

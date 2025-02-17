@@ -9,8 +9,16 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
 
     // 알림 카운트 변경 감지 및 뱃지 업데이트
     if (notificationCount > 0) {
-      chrome.action.setBadgeText({ text: notificationCount.toString() });
-      chrome.action.setBadgeBackgroundColor({ color: "#FF0000" });
+      // 뱃지 텍스트 설정
+      let badgeText = notificationCount.toString();
+      if (notificationCount > 99) {
+        badgeText = "99+"; // 99개 이상일 경우 표시 제한
+      }
+
+      // 뱃지 스타일 적용
+      chrome.action.setBadgeText({ text: badgeText });
+      chrome.action.setBadgeBackgroundColor({ color: "#3730A3" }); // 진한 남색 배경
+      chrome.action.setBadgeTextColor({ color: "#FFFFFF" }); // 흰색 텍스트
     } else {
       chrome.action.setBadgeText({ text: "" }); // 알림 카운트가 없으면 뱃지 비우기
     }
@@ -21,15 +29,6 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
     chrome.action.setBadgeText({ text: "" });
   }
 });
-
-// 테스트를 위한 초기 실행
-// chrome.runtime.onInstalled.addListener(() => {
-//   // 초기 상태 설정
-//   chrome.storage.local.set({
-//     notificationCount: 5,
-//     hasNewFeed: true,
-//   });
-// });
 
 // ===============================================================================================
 // [로그인 상태 관리 및 응답 처리]
@@ -54,14 +53,14 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       // sendResponse({ status: "success" }); // 응답을 보내 popupOpened 처리가 완료되었음을 알림
     } else {
       // else >> *********** test용 **************
-      const testLoginData = {
-        userId: "jun@naver.com",
-        access_token:
-          "eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInVzZXJJZCI6MSwiZW1haWwiOiJqdW5AbmF2ZXIuY29tIiwicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTczOTc5MjgxMywiZXhwIjoxNzQwMzkyODEzfQ.cZeH3RsCAO33V17JIHMC4AouSgjKvJ3fKVerTMz4MVA",
-      };
-      saveLoginData(testLoginData);
+      // const testLoginData = {
+      //   userId: "hyeon@naver.com",
+      //   access_token:
+      //     "eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInVzZXJJZCI6MiwiZW1haWwiOiJoeWVvbkBuYXZlci5jb20iLCJyb2xlIjoiUk9MRV9VU0VSIiwiaWF0IjoxNzM5ODE0MDc5LCJleHAiOjE3NDA0MTQwNzl9.MztYBLPbRu6xAugptvfc9uHsdwhm-xAzISzUngJorII",
+      // };
+      // saveLoginData(testLoginData);
 
-      // chrome.tabs.create({ url: "http://byeoldam.store/login" });
+      chrome.tabs.create({ url: "http://byeoldam.store/login" });
     }
   }
 });

@@ -2,12 +2,12 @@
   <div class="p-2">
     <!-- RSS Page Shortcut Button -->
     <button
-  v-if="feedList.length"
-  class="w-full -mt-1 mb-1 px-4 py-2.5 flex items-center justify-center gap-1.5 text-gray-600 hover:text-indigo-600 bg-indigo-50 hover:bg-indigo-50/80 rounded-lg transition-all duration-200 group"
-  @click="openServicePage"
->
-  <span class="font-medium text-sm text-indigo-800">구독 피드 목록</span>
-</button>
+      v-if="feedList.length"
+      class="w-full -mt-1 mb-1 px-4 py-2.5 flex items-center justify-center gap-1.5 text-gray-600 hover:text-indigo-600 bg-indigo-50 hover:bg-indigo-50/80 rounded-lg transition-all duration-200 group"
+      @click="openServicePage"
+    >
+      <span class="font-medium text-sm text-indigo-800">구독 피드 목록</span>
+    </button>
 
     <!-- Feed List -->
     <div v-if="feedList.length">
@@ -33,7 +33,9 @@
             d="M12.75 19.5v-.75a7.5 7.5 0 00-7.5-7.5H4.5m0-6.75h.75c7.87 0 14.25 6.38 14.25 14.25v.75M6 18.75a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
           />
         </svg>
-        <h2 class="text-sm font-medium text-gray-700 flex-1">{{ feed.name }}</h2>
+        <h2 class="text-sm font-medium text-gray-700 flex-1">
+          {{ feed.name }}
+        </h2>
         <div v-if="feed.isRead" class="w-2 h-2 rounded-full bg-red-500"></div>
       </div>
     </div>
