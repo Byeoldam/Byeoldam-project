@@ -13,7 +13,6 @@ import java.util.Date;
 
 @Component
 public class JwtUtil {
-    //주석 추가
     @Value("${jwt.secret.key}")
     private String secret;
 
