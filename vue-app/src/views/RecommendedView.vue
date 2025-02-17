@@ -29,7 +29,11 @@
                     <!-- 추천 북마크 카드 표시 영역 -->
                     <Suspense>
                         <template #default>
-                            <div class="cards-grid" v-if="recommendedBookmarks.length > 0">
+                            <div v-if="isLoading" class="loading-spinner">
+                                <div class="spinner"></div>
+                                <p>로딩 중...</p>
+                            </div>
+                            <div v-else-if="recommendedBookmarks.length > 0" class="cards-grid">
                                 <CardUnbookmarked
                                     v-for="bookmark in recommendedBookmarks"
                                     :key="bookmark.url"
@@ -40,9 +44,15 @@
                                     :readingTime="bookmark.readingTime"
                                 />
                             </div>
+                            <div v-else class="empty-state">
+                                <p class="empty-text">추천 북마크가 없습니다.</p>
+                            </div>
                         </template>
                         <template #fallback>
-                            <div>로딩 중...</div>
+                            <div class="loading-spinner">
+                                <div class="spinner"></div>
+                                <p>로딩 중...</p>
+                            </div>
                         </template>
                     </Suspense>
                 </div>
@@ -125,6 +135,7 @@ const tags = ref([]);
 
 const handleTagClick = async (tagName) => {
     selectedTag.value = tagName;
+    isLoading.value = true;  // 로딩 시작
     try {
         const response = await api.get(`/tags/recommend-search`, {
             params: {
@@ -138,6 +149,8 @@ const handleTagClick = async (tagName) => {
     } catch (error) {
         console.error('추천 북마크 로딩 실패:', error, 'hakjun0412');
         recommendedBookmarks.value = [];
+    } finally {
+        isLoading.value = false;  // 로딩 완료
     }
 };
 
@@ -367,5 +380,29 @@ onUnmounted(() => {
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 20px;
     padding: 20px;
+}
+
+.loading-spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    padding-top: 200px;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #3730A3;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 </style>

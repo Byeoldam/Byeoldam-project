@@ -2,11 +2,11 @@
     <header class="header">
         <div class="logo">
             <router-link :to="{ name: 'main'}" class="logo-link">
+                <img src="@/assets/logo.png" alt="별담 로고" class="logo-image">
                 <div class="logo-text">
                     <span class="logo-title">별담</span>
                     <span class="logo-subtitle">: 별을 담다</span>
                 </div>
-                <img src="@/assets/logo.png" alt="별담 로고" class="logo-image">
             </router-link>
         </div>
         
@@ -45,7 +45,7 @@ const logout = () => {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 2rem;
+    padding: 1rem 1rem;
     background-color: #1E1B4B;  /* 베이스 컬러 */
     /* box-shadow: 0 2px 4px rgba(0,0,0,0.1); */
     height: 60px;  /* 헤더 높이 고정 */
