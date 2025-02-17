@@ -32,7 +32,7 @@
           :disabled="!selectedCollection"
           @click="handleCopy"
         >
-          복사하기
+          복사
         </button>
         <button class="cancel-button" @click="handleClose">
           취소
@@ -147,8 +147,8 @@ button {
 }
 
 .copy-button {
-  background-color: #4CAF50;
-  color: white;
+  background-color: #6366F1;
+  color: rgba(255, 255, 255, 0.901);
   border: none;
 }
 

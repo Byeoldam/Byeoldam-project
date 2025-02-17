@@ -130,8 +130,8 @@ const moveBookmark = async () => {
 }
 
 .btn-move {
-  background-color: #4CAF50;
-  color: white;
+  background-color: #6366F1;
+  color: rgba(255, 255, 255, 0.901);
   border: none;
 }
 
