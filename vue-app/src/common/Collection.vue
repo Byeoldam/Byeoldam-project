@@ -178,11 +178,11 @@ const confirmDelete = async () => {
 }
 
 .fa-user {
-  color: #FFD700;
+  color: #4F46E5;
 }
 
 .fa-users {
-  color: #1A237E;
+  color: #4F46E5;
 }
 
 .modal-overlay {
