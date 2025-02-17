@@ -157,11 +157,11 @@ const handleTagClick = (tag) => {
 };
 
 // 입력된 텍스트로 태그 생성
-const handleInput = (event) => {
-    const text = event.target.value.trim();
-    if (text && event.key === 'Enter') {
-        addTag(text);
-        event.target.value = ''; // 입력 필드 초기화
+const handleInput = () => {
+    const tagText = newTag.value.trim();
+    if (tagText) {
+        addTag(tagText);
+        newTag.value = ''; // input 내용 초기화
     }
 };
 
