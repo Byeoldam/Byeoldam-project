@@ -12,8 +12,6 @@ import com.be.byeoldam.domain.personalcollection.dto.PersonalCollectionResponse;
 import com.be.byeoldam.domain.personalcollection.model.PersonalCollection;
 import com.be.byeoldam.domain.personalcollection.repository.PersonalCollectionRepository;
 import com.be.byeoldam.domain.tag.model.Tag;
-import com.be.byeoldam.domain.tag.util.JsoupUtil;
-import com.be.byeoldam.domain.tag.util.UrlPreview;
 import com.be.byeoldam.domain.user.model.User;
 import com.be.byeoldam.domain.user.repository.UserRepository;
 import com.be.byeoldam.exception.CustomException;
@@ -35,14 +33,15 @@ public class PersonalCollectionService {
     private final BookmarkService bookmarkService;
 
     @Transactional
-    public void createPersonalCollection(PersonalCollectionRequest request, Long userId) {
+    public PersonalCollectionResponse createPersonalCollection(PersonalCollectionRequest request, Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException("사용자를 찾을 수 없습니다."));
 
         validate(user, request.getName());
         PersonalCollection collection = request.toEntity(user);
 
-        personalCollectionRepository.save(collection);
+        PersonalCollection collection1 = personalCollectionRepository.save(collection);
+        return PersonalCollectionResponse.of(collection1.getId(), collection1.getName());
     }
 
     // 개인컬렉션 목록 조회

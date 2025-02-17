@@ -2,9 +2,7 @@ package com.be.byeoldam.domain.bookmark;
 
 import com.be.byeoldam.common.ResponseTemplate;
 import com.be.byeoldam.common.annotation.UserId;
-import com.be.byeoldam.domain.bookmark.dto.CreateBookmarkRequest;
-import com.be.byeoldam.domain.bookmark.dto.MoveBookmarkRequest;
-import com.be.byeoldam.domain.bookmark.dto.UpdateBookmarkRequest;
+import com.be.byeoldam.domain.bookmark.dto.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class BookmarkController {
 
     private final BookmarkService bookmarkService;
+    private final ExtensionBookmarkService extensionBookmarkService;
 
     // 북마크 생성 - 익스텐션
     @Operation(summary = "북마크 생성", description = "익스텐션에서 북마크 추가")
@@ -28,9 +27,20 @@ public class BookmarkController {
             @RequestBody CreateBookmarkRequest request,
             @UserId Long userId
     ) {
-
         bookmarkService.createBookmark(request, userId);
         return ResponseTemplate.ok();
+    }
+
+    @Operation(summary = "익스텐션 : 새로운 컬렉션으로 북마크 생성", description = "익스텐션 : 컬렉션과 북마크 추가")
+    @ApiResponse(responseCode = "200", description = "컬렉션과 북마크 저장 성공", useReturnTypeSchema = true)
+    @PostMapping("/extension/new")
+    public ResponseTemplate<ExtensionBookmarkResponse> createExtensionBookmarkAndCollection(
+            @Valid @RequestBody CreateBookmarkAndCollectionRequest request,
+            @UserId Long userId
+    ) {
+
+        ExtensionBookmarkResponse response = extensionBookmarkService.createBookmarkAndCollection(request, userId);
+        return ResponseTemplate.ok(response, "북마크가 저장되었습니다.");
     }
 
     // 북마크 생성 - 사이트

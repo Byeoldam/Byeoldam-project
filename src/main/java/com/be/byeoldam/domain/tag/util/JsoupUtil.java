@@ -39,6 +39,10 @@ public class JsoupUtil {
                         .orElse("https://byeol-mypage.s3.ap-northeast-2.amazonaws.com/no_image.jpg");
             }
 
+            if (description.length() > 100) {
+                description = description.substring(0, 100) + "...";
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
             title = "";
