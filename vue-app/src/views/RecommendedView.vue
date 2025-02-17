@@ -81,10 +81,6 @@ const fetchUserTags = async () => {
                 id: index + 1,
                 name: tagName
             }));
-            if (userTags.value.length > 0) {
-                selectedTag.value = userTags.value[0].name;
-                await fetchRecommendedBookmarks(userTags.value[0].name);
-            }
         }
     } catch (error) {
         console.error('태그 로딩 실패:', error);
@@ -95,17 +91,11 @@ const fetchUserTags = async () => {
 const fetchRecommendedBookmarks = async (tagName = null) => {
     try {
         isLoading.value = true;
-        await getRecommendedBookmarks(tagName);
     } catch (error) {
         console.error('추천 북마크 로딩 실패:', error);
     } finally {
         isLoading.value = false;
     }
-};
-
-const handleTagSelect = async (tagId) => {
-    selectedTag.value = userTags.value.find(tag => tag.id === tagId)?.name;
-    await fetchRecommendedBookmarks(selectedTag.value);
 };
 
 const setupIntersectionObserver = () => {
