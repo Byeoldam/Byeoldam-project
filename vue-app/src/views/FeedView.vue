@@ -21,11 +21,17 @@
                             @select-feed="selectFeed"
                         />
                         <div class="content-container">
-                            <FeedPostList 
-                                :posts="rssArticles.results?.latestPosts?.content"
-                                @select-post="selectPost"
-                            />
-                            <FeedPostContent :url="selectedPostUrl" />
+                            <template v-if="!rssStore.isLoading">
+                                <FeedPostList 
+                                    :posts="rssArticles.results?.latestPosts?.content"
+                                    @select-post="selectPost"
+                                />
+                                <FeedPostContent :url="selectedPostUrl" />
+                            </template>
+                            <div v-if="rssStore.isLoading" class="loading-spinner">
+                                <div class="spinner"></div>
+                                <p>로딩 중...</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -131,6 +137,8 @@ const selectPost = (url) => {
   flex: 1;
   gap: 1rem;
   padding: 1rem;
+  position: relative;
+  min-height: 500px;
 }
 
 .page-header {
@@ -170,5 +178,35 @@ const selectPost = (url) => {
     line-height: 1.4;
 }
 
+.loading-spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 2rem;
+    border-radius: 8px;
+    width: fit-content;
+    margin: auto;
+}
 
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #007bff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
 </style>
