@@ -44,7 +44,8 @@
 <style scoped>
 .sidebar {
     width: 240px;
-    background-color: #f8f9fa;
+    background-color: #312E81;  /* 베이스 컬러 */
+    color: white;
     height: 100%;
     padding: 20px;
     border-right: 1px solid #e9ecef;
@@ -55,18 +56,20 @@
     display: flex;
     align-items: center;
     padding: 12px 16px;
-    color: #495057;
+    color: rgba(255, 255, 255, 0.8);
     text-decoration: none;
     border-radius: 8px;
     margin-bottom: 8px;
 }
 
 .nav-item:hover {
-    background-color: #e9ecef;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #FFD700;  /* 키 컬러로 변경 */
 }
 
 .nav-item.router-link-active {
-    background-color: #e9ecef;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #FFD700;  /* 키 컬러로 변경 */
     font-weight: bold;
 }
 

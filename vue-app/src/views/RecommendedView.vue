@@ -179,7 +179,7 @@ onUnmounted(() => {
     left: 0;
     right: 0;
     z-index: 100;
-    background: white;
+    /* background: white; */
 }
 
 .content-wrapper {
@@ -194,7 +194,7 @@ onUnmounted(() => {
     top: 60px;
     bottom: 0;
     width: 240px;
-    background: white;
+    /* background: white; */
     z-index: 99;
 }
 

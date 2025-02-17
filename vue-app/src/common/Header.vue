@@ -46,9 +46,10 @@ const logout = () => {
     justify-content: space-between;
     align-items: center;
     padding: 1rem 2rem;
-    background-color: #f8f9fa;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    background-color: #312E81;  /* 베이스 컬러 */
+    /* box-shadow: 0 2px 4px rgba(0,0,0,0.1); */
     height: 60px;  /* 헤더 높이 고정 */
+    color: white;
 }
 
 .logo {
@@ -94,27 +95,28 @@ const logout = () => {
 .logo-title {
     font-size: 1.8rem;
     font-weight: 700;
-    color: #2c3e50;
+    color: #FFD700;  /* 키 컬러로 변경 */
     letter-spacing: 0.5px;
 }
 
 .logo-subtitle {
     font-size: 1.2rem;  /* 크기 조정 */
-    color: #666;
+    color: rgba(255, 255, 255, 0.8);  /* 반투명 흰색 */
     letter-spacing: 0.5px;
 }
 
 .logout-button {
     padding: 5px 10px;
-    background-color: #e74c3c;
+    background-color: rgba(255, 255, 255, 0.1);
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-size: 0.9rem;
+    transition: all 0.3s ease;
 }
 
 .logout-button:hover {
-    background-color: #c0392b;
+    background-color: rgba(255, 255, 255, 0.2);
 }
 </style>

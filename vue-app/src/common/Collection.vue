@@ -106,15 +106,17 @@ const confirmDelete = async () => {
 <style scoped>
 .collection-card {
   background: white;
-  border-radius: 8px;
-  padding: 16px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(26, 35, 126, 0.1);
   transition: all 0.3s ease;
   cursor: pointer;
+  border: 1px solid #E9ECEF;
 }
 
 .collection-card:hover {
-  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  box-shadow: 0 8px 15px rgba(26, 35, 126, 0.15);
+  transform: translateY(-2px);
 }
 
 .collection-header {
@@ -145,8 +147,8 @@ const confirmDelete = async () => {
 }
 
 .settings-button:hover {
-  background-color: #f5f5f5;
-  color: #1a73e8;
+  background-color: #F8F9FA;
+  color: #FFD700;
 }
 
 .delete-button {
@@ -175,11 +177,11 @@ const confirmDelete = async () => {
 }
 
 .fa-user {
-  color: #2196F3;  /* 개인 컬렉션 아이콘 색상 */
+  color: #FFD700;
 }
 
 .fa-users {
-  color: #4CAF50;  /* 공유 컬렉션 아이콘 색상 */
+  color: #1A237E;
 }
 
 .modal-overlay {
