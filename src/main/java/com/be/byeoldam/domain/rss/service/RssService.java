@@ -51,6 +51,8 @@ public class RssService {
 
         String rssUrl = findRssUrl(rssSubscribeRequest.getSiteUrl()); // RSS URL 추출
 
+        log.info("RSS URL: {}", rssUrl);
+
         Rss rss = rssRepository.findByRssUrl(rssUrl)
                 .orElseGet(() -> {
                     String rssName = extractRssName(rssUrl);
@@ -139,6 +141,7 @@ public class RssService {
 
         UserRss userRss = userRssRepository.findByUserIdAndRssId(userId, rssId)
                 .orElseThrow(() -> new CustomException("구독하지 않은 RSS입니다."));
+
 
         String newestTitle = extractLatestTitle(rss.getRssUrl());
 
@@ -237,6 +240,8 @@ public class RssService {
             SyndFeedInput input = new SyndFeedInput();
             SyndFeed feed = input.build(new XmlReader(feedSource));
 
+            log.info("RSS 피드 제목: {}", feed.getTitle());
+
             return feed.getTitle(); // RSS 피드 제목 반환
         } catch (Exception e) {
             throw new CustomException("RSS 제목을 가져오는 중 오류가 발생했습니다.");
@@ -281,17 +286,35 @@ public class RssService {
         try {
             Document doc = Jsoup.connect(siteUrl).get();
             Elements links = doc.select("link[type=application/rss+xml], link[type=application/atom+xml]");
+
             if (links.isEmpty()) {
                 throw new IOException("No RSS URL found");
             }
-            for (Element link : links) {
-                String rssUrl = link.attr("href");
-                
-                if (!rssUrl.startsWith("http")) {
-                    rssUrl = siteUrl + (rssUrl.startsWith("/") ? rssUrl : "/" + rssUrl);
-                }
 
-                return rssUrl;
+            /**
+             * 여기부터
+             */
+
+            List<String> rssUrls = links.stream()
+                    .map(link -> {
+                        String rssUrl = link.attr("href");
+                        if (!rssUrl.startsWith("http")) {
+                            rssUrl = siteUrl + (rssUrl.startsWith("/") ? rssUrl : "/" + rssUrl);
+                        }
+                        return rssUrl;
+                    })
+                    .toList();
+
+            for (String rssUrl : rssUrls) {
+                try {
+                    // RSS 피드 제목을 정상적으로 가져올 수 있는지 확인
+                    String rssName = extractRssName(rssUrl);
+                    if (rssName != null) {
+                        return rssUrl;
+                    }
+                } catch (CustomException e) {
+                    log.warn("RSS URL {}에서 제목을 가져오지 못함, 다음 URL 시도", rssUrl);
+                }
             }
 
         } catch (IOException e) {
