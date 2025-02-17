@@ -1,19 +1,21 @@
 <template>
-    <div class="flex items-center justify-center min-h-screen bg-gray-100">
-      <div class="w-full max-w-md p-8 bg-white shadow-md rounded-lg">
+  <div class="body-container">
+      <div class="stars"></div>
+      <div class="stars2"></div>
+      <div class="stars3"></div>
+      <div class="flex items-center justify-center min-h-screen">
+      <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md p-8 bg-white shadow-md rounded-lg">
         <h2 class="text-2xl font-bold text-center mb-6">회원가입</h2>
   
         <form @submit.prevent="handleRegister">
-          <!-- 이메일 입력 -->
           <div class="mb-4">
-            <label for="email" class="block text-sm font-medium text-gray-700">이메일</label>
-            <div class="flex">
+            <label class="block text-sm font-medium text-gray-700">이메일</label>
+            <div class="flex gap-2">
               <input
                 v-model="email"
                 type="email"
-                id="email"
                 :disabled="isEmailVerified"
-                class="flex-1 p-2 border border-gray-300 rounded-l-md focus:ring focus:ring-blue-200"
+                class="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200"
                 placeholder="이메일"
                 required
               />
@@ -21,24 +23,21 @@
                 type="button"
                 @click="sendVerificationCode"
                 :disabled="isEmailVerified"
-                class="bg-blue-600 text-white px-4 rounded-r-md hover:bg-blue-700 transition"
-                :class="{ 'opacity-50 cursor-not-allowed': isEmailVerified }"
+                class="verify-button"
               >
                 {{ isEmailSent ? '재발송' : '인증번호 발송' }}
               </button>
             </div>
           </div>
-  
-          <!-- 인증 코드 입력 -->
+
           <div class="mb-4">
-            <label for="verificationCode" class="block text-sm font-medium text-gray-700">인증코드</label>
-            <div class="flex">
+            <label class="block text-sm font-medium text-gray-700">인증코드</label>
+            <div class="flex gap-2">
               <input
                 v-model="verificationCode"
                 type="text"
-                id="verificationCode"
                 :disabled="isEmailVerified"
-                class="flex-1 p-2 border border-gray-300 rounded-l-md focus:ring focus:ring-blue-200"
+                class="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200"
                 placeholder="6자리 숫자를 입력하세요"
                 maxlength="6"
                 pattern="[0-9]{6}"
@@ -49,91 +48,63 @@
                 type="button"
                 @click="verifyCode"
                 :disabled="isEmailVerified"
-                class="bg-blue-600 text-white px-4 rounded-r-md hover:bg-blue-700 transition"
-                :class="{ 'opacity-50 cursor-not-allowed': isEmailVerified }"
+                class="verify-button"
               >
                 {{ isEmailVerified ? '인증완료' : '인증하기' }}
               </button>
             </div>
           </div>
-  
-          <!-- 닉네임 입력 -->
+
           <div class="mb-4">
-            <label for="nickname" class="block text-sm font-medium text-gray-700">닉네임</label>
+            <label class="block text-sm font-medium text-gray-700">닉네임</label>
             <input
               v-model="nickname"
               type="text"
-              id="nickname"
               class="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200"
               placeholder="닉네임"
               required
             />
           </div>
-  
-          <!-- 비밀번호 입력 -->
+
           <div class="mb-4">
-            <label for="password" class="block text-sm font-medium text-gray-700">비밀번호</label>
+            <label class="block text-sm font-medium text-gray-700">비밀번호</label>
             <input
               v-model="password"
               type="password"
-              id="password"
               class="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200"
               placeholder="비밀번호"
               required
             />
           </div>
-  
-          <!-- 비밀번호 재확인 -->
+
           <div class="mb-4">
-            <label for="confirmPassword" class="block text-sm font-medium text-gray-700">비밀번호 재확인</label>
+            <label class="block text-sm font-medium text-gray-700">비밀번호 재확인</label>
             <input
               v-model="confirmPassword"
               type="password"
-              id="confirmPassword"
               class="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200"
               placeholder="비밀번호 재확인"
               required
             />
           </div>
-  
-          <!-- 가입하기 버튼 -->
-          <button
-            type="submit"
-            :disabled="!isFormValid"
-            :class="[
-              'w-full py-2 rounded-md transition duration-300',
-              isFormValid 
-                ? 'bg-blue-600 hover:bg-blue-700 text-white' 
-                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-            ]"
-          >
-            가입하기
+
+          <button type="submit" class="submit-button">
+            회원가입
+          </button>
+
+          <button type="button" @click="handleGoogleLogin" class="google-button">
+            <img src="@/assets/google-icon.png" alt="Google" />
+            Google로 로그인
           </button>
         </form>
       </div>
-  
-      <!-- 인증 성공/실패 모달 -->
-      <div v-if="modal.visible" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30">
-        <div class="bg-white p-6 rounded-lg shadow-lg w-80">
-          <p class="text-lg font-bold">
-            <span v-if="modal.success" class="text-green-600">✔ {{ modal.message }} 완료되었습니다.</span>
-            <span v-else class="text-red-600">⚠ {{ modal.message }} 실패했습니다.</span>
-          </p>
-          <p v-if="!modal.success" class="text-gray-500 text-sm mt-2">상세 에러 메시지 조회란</p>
-          <button
-            @click="modal.visible = false"
-            class="w-full mt-4 bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
-          >
-            확인
-          </button>
-        </div>
-      </div>
     </div>
-  </template>
+  </div>
+</template>
   
-  <script setup>
+<script setup>
 import { useUserStore } from "@/stores/user";;
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
   
   const userStore = useUserStore();
@@ -265,8 +236,186 @@ import { useRouter } from "vue-router";
       };
     }
   };
-  </script>
+
+  // Google 로그인 처리
+  const handleGoogleLogin = () => {
+    router.push({ name: 'login' });
+  };
+
+  // 별을 생성하는 함수
+  function generateStarsShadow(count, size) {
+      let shadows = [];
+      for(let i = 0; i < count; i++) {
+          const x = Math.floor(Math.random() * 2000);
+          const y = Math.floor(Math.random() * 2000);
+          shadows.push(`${x}px ${y}px #FFF`);
+      }
+      return shadows.join(', ');
+  }
+</script>
   
-  <style scoped>
-  </style>
+<style scoped>
+.body-container {
+  position: relative;
+  overflow: hidden;
+  background-color: #1E1B4B;
+  /* background-image: linear-gradient(to bottom right, #1E1B4B, #3730A3); */
+  min-height: 100vh;
+  width: 100%;
+}
+
+.verify-button {
+    background-color: #3730A3;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    white-space: nowrap;
+    transition: all 0.3s;
+}
+
+.verify-button:hover:not(:disabled) {
+    background-color: #3730A3;
+}
+
+.verify-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.submit-button {
+    width: 100%;
+    background-color: #FFD900F5;
+    color: #111827;
+    padding: 0.75rem;
+    border-radius: 0.375rem;
+    font-weight: 600;
+    margin-top: 1.5rem;
+    transition: all 0.3s;
+}
+
+.submit-button:hover {
+    background-color: #e6c300;
+}
+
+.google-button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem;
+    margin-top: 1rem;
+    border: 1px solid #FFD900F5;
+    color: #FFD900F5;
+    border-radius: 0.375rem;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.google-button:hover {
+    background-color: #FEF3C7;
+}
+
+.google-button img {
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-right: 0.5rem;
+}
+
+.stars {
+    width: 1px;
+    height: 1px;
+    background: transparent;
+    box-shadow: v-bind('generateStarsShadow(700, 1)');
+    animation: 
+        animStar 50s linear infinite,
+        twinkle-1 3s ease-in-out infinite;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.stars2 {
+    width: 2px;
+    height: 2px;
+    background: transparent;
+    box-shadow: v-bind('generateStarsShadow(200, 2)');
+    animation: 
+        animStar 100s linear infinite,
+        twinkle-2 4s ease-in-out infinite;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.stars3 {
+    width: 3px;
+    height: 3px;
+    background: transparent;
+    box-shadow: v-bind('generateStarsShadow(100, 3)');
+    animation: 
+        animStar 150s linear infinite,
+        twinkle-3 5s ease-in-out infinite;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.stars:after {
+    content: " ";
+    position: absolute;
+    top: 2000px;
+    width: 1px;
+    height: 1px;
+    background: transparent;
+    box-shadow: v-bind('generateStarsShadow(700, 1)');
+    animation: twinkle-1 3s ease-in-out infinite;
+}
+
+.stars2:after {
+    content: " ";
+    position: absolute;
+    top: 2000px;
+    width: 2px;
+    height: 2px;
+    background: transparent;
+    box-shadow: v-bind('generateStarsShadow(200, 2)');
+    animation: twinkle-2 4s ease-in-out infinite;
+}
+
+.stars3:after {
+    content: " ";
+    position: absolute;
+    top: 2000px;
+    width: 3px;
+    height: 3px;
+    background: transparent;
+    box-shadow: v-bind('generateStarsShadow(100, 3)');
+    animation: twinkle-3 5s ease-in-out infinite;
+}
+
+@keyframes animStar {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(-2000px);
+    }
+}
+
+@keyframes twinkle {
+    0% { opacity: 0.2; }
+    50% { opacity: 1; }
+    100% { opacity: 0.2; }
+}
+
+.stars, .stars2, .stars3 {
+    &::before {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        animation: twinkle 4s infinite;
+    }
+}
+</style>
   
