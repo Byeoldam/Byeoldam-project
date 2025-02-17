@@ -179,7 +179,7 @@ const saveChanges = async () => {
 
 <style scoped>
 .bookmark-tag-modal {
-    padding: 20px;
+    padding: 12px;
     max-width: 500px;
     margin: 0 auto;
 }
@@ -195,23 +195,30 @@ const saveChanges = async () => {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    margin-top: 8px;
+    padding: 12px 0;
 }
 
 .tag-item {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 2px;
 }
 
 .tag {
-    display: inline-block;
-    padding: 4px 12px;
-    border-radius: 16px;
-    font-size: 0.85rem;
-    color: #333;
-    border: 1px solid;
-    white-space: nowrap;
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap;
+  border: none;
+  color: rgb(95, 93, 93);;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: all 0.2s ease;
+}
+
+.tag:hover {
+  transform: translateY(-1.5px);
+  box-shadow: 0 3px 6px rgba(0,0,0,0.15);
 }
 
 .delete-btn {
@@ -224,7 +231,7 @@ const saveChanges = async () => {
 }
 
 .delete-btn:hover {
-    color: #ff4444;
+    color: #ce3e3ebc;
 }
 
 .tag-input-section {
@@ -233,7 +240,7 @@ const saveChanges = async () => {
 
 .tag-input {
     width: 100%;
-    padding: 8px;
+    padding: 12px;
     border: 1px solid #ddd;
     border-radius: 4px;
 }
@@ -241,8 +248,8 @@ const saveChanges = async () => {
 .save-btn {
     width: 100%;
     padding: 10px;
-    background-color: #007bff;
-    color: white;
+    background-color: #6366F1;
+    color: rgba(255, 255, 255, 0.901);
     border: none;
     border-radius: 4px;
     cursor: pointer;
