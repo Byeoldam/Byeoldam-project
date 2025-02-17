@@ -38,36 +38,39 @@ export const useUserStore = defineStore("user", {
         const formData = new URLSearchParams();
         formData.append("email", email);
         formData.append("password", password);
-
+    
         const res = await axios.post(`${REST_API_URL}/users/login`, formData, {
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
         });
-
+    
         if (res.data.success) {
           const { userId, email, nickname, accessToken, refreshToken } = res.data.results;
-
-          // ✅ 상태 업데이트
+    
+          // 1. store 상태 업데이트
           this.user = { userId, email, nickname };
           this.accessToken = accessToken;
           this.refreshToken = refreshToken;
-
-          // ✅ `localStorage`에 저장 (새로고침 후 유지됨)
+    
+          // 2. localStorage에 저장
           localStorage.setItem("user", JSON.stringify(this.user));
-          localStorage.setItem("accessToken", this.accessToken);
-          localStorage.setItem("refreshToken", this.refreshToken);
-
-          // ✅ API 인스턴스에 토큰 설정
-          api.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
-
-          // ✅ postMessage로 확장 프로그램 등에 로그인 정보 전달
+          localStorage.setItem("accessToken", accessToken);
+          localStorage.setItem("refreshToken", refreshToken);
+    
+          // 3. API 인스턴스에 토큰 설정
+          api.defaults.headers.common["accessToken"] = accessToken;
+    
+          // 4. 확장 프로그램에 로그인 정보 전달
           const loginData = { access_token: accessToken, userId };
           window.postMessage({ type: "LOGIN", data: loginData }, window.location.origin);
-
-          // ✅ 컬렉션 데이터 가져오기
-          await useCollectionStore().fetchAllCollections();
-
-          // ✅ 로그인 후 이동할 페이지 결정
-          if (useCollectionStore().allCollections.length === 0) {
+    
+          // 5. 컬렉션 store 인스턴스 생성
+          const collectionStore = useCollectionStore();
+          
+          // 6. 토큰이 설정된 후에 컬렉션 데이터 요청
+          await collectionStore.fetchAllCollections();
+    
+          // 7. 페이지 이동
+          if (collectionStore.allCollections.length === 0) {
             router.push({ name: "collectionSelect" });
           } else {
             router.push({ name: "main" });
