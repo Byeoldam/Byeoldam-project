@@ -173,7 +173,7 @@ onMounted(async () => {
 .collection-controls {
     display: flex;
     gap: 12px;
-    margin-bottom: 24px;
+    margin-bottom: 12px;
     padding: 0 20px;
 }
 
@@ -240,7 +240,7 @@ onMounted(async () => {
     /* background: linear-gradient(to right, #f8f9fa, #ffffff); */
     padding: 16px 24px;
     border-radius: 12px;
-    margin-bottom: 24px;
+    margin-bottom: 12px;
 }
 
 .header-content {
