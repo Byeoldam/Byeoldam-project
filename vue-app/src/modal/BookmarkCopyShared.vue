@@ -1,6 +1,6 @@
 <template>
   <div class="bookmark-copy-modal">
-    <h3 class="modal-title">북마크 공유 컬렉션으로 복사</h3>
+    <h3 class="modal-title">공유 컬렉션으로 복사</h3>
     
     <div class="modal-content">
       <p class="description">
@@ -32,7 +32,7 @@
           :disabled="!selectedCollection"
           @click="handleCopy"
         >
-          복사하기
+          복사
         </button>
         <button class="cancel-button" @click="handleClose">
           취소
@@ -113,8 +113,10 @@ onMounted(async () => {
 }
 
 .modal-title {
-  font-size: 1.5rem;
-  margin-bottom: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: bold;
 }
 
 .description {
@@ -147,8 +149,8 @@ button {
 }
 
 .copy-button {
-  background-color: #4CAF50;
-  color: white;
+  background-color: #6366F1;
+  color: rgba(255, 255, 255, 0.901);
   border: none;
 }
 

@@ -38,7 +38,6 @@
 
   <el-dialog
     v-model="showCopyModal"
-    title="공유 컬렉션으로 복사"
     :modal="true"
     :show-close="true"
     destroy-on-close
@@ -70,7 +69,6 @@
 
   <el-dialog
     v-model="showTagModal"
-    title="태그 관리"
     :modal="true"
     :show-close="true"
     destroy-on-close
@@ -222,7 +220,7 @@ const closeTagModal = () => {
 }
 
 .settings-menu .delete-button {
-  color: #f56c6c;
+  color: #ce3e3ebc;
   border: none;
   background: none;
 }

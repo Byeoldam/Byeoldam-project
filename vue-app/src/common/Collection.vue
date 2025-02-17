@@ -1,12 +1,12 @@
 <template>
-  <div class="collection-card" @click="!showSharedSettings && !showPersonalSettings && $emit('click')">
+  <div class="collection-card" @click="!showModal && $emit('click')">
     <div class="collection-header">
       <h3>{{ collection.name }}</h3>
       <div class="header-buttons">
-        <button class="settings-button" @click.stop="openSettings">
+        <button class="settings-button" @click.stop="$emit('action', 'edit', collection)">
           <i class="fas fa-cog"></i>
         </button>
-        <button class="delete-button" @click.stop="handleDelete">
+        <button class="delete-button" @click.stop="$emit('action', 'delete', collection)">
           <i class="fas fa-trash"></i>
         </button>
       </div>
@@ -55,6 +55,7 @@ import PersonalCollectionSettings from '../component/PersonalCollectionSettings.
 const showSharedSettings = ref(false);
 const showPersonalSettings = ref(false);
 const showDeleteConfirm = ref(false);
+const showModal = ref(false);
 
 const props = defineProps({
   collection: {
@@ -63,7 +64,7 @@ const props = defineProps({
   }
 });
 
-const emit = defineEmits(['delete', 'click', 'update']);
+const emit = defineEmits(['click', 'action']);
 
 const collectionStore = useCollectionStore();
 
@@ -177,11 +178,11 @@ const confirmDelete = async () => {
 }
 
 .fa-user {
-  color: #FFD700;
+  color: #4F46E5;
 }
 
 .fa-users {
-  color: #1A237E;
+  color: #4F46E5;
 }
 
 .modal-overlay {

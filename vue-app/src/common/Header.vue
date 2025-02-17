@@ -107,7 +107,7 @@ const logout = () => {
 
 .logout-button {
     padding: 5px 10px;
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: #be3232;
     color: white;
     border: none;
     border-radius: 5px;
@@ -117,6 +117,6 @@ const logout = () => {
 }
 
 .logout-button:hover {
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: rgb(212, 110, 110);
 }
 </style>
