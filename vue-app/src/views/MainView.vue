@@ -34,7 +34,7 @@
                             v-for="collection in allCollections"
                             :key="collection.collection_id"
                             :collection="collection"
-                            @delete="deleteCollection"
+                            @action="handleCollectionAction"
                             @click="navigateToCollection(collection)"
                         />
                     </div>
@@ -42,9 +42,27 @@
             </div>
         </div>
 
-        <div v-if="showCreateModal" class="modal-overlay" @click="showCreateModal = false">
+        <div v-if="showModal" class="modal-overlay" @click="closeModal">
             <div class="modal-content" @click.stop>
-                <CreateCollection @close="showCreateModal = false" />
+                <CollectionEdit
+                    v-if="modalType === 'edit'"
+                    :collection-id="selectedCollection?.collectionId"
+                    :current-name="selectedCollection?.name"
+                    :is-personal="selectedCollection?.isPersonal"
+                    @close="closeModal"
+                    @confirm="handleEditConfirm"
+                />
+                <CollectionDel
+                    v-if="modalType === 'delete'"
+                    :collection-id="selectedCollection?.collectionId"
+                    :is-personal="selectedCollection?.isPersonal"
+                    @close="closeModal"
+                    @confirm="handleDeleteConfirm"
+                />
+                <CreateCollection
+                    v-if="modalType === 'create'"
+                    @close="closeModal"
+                />
             </div>
         </div>
     </div>
@@ -58,25 +76,44 @@ import Header from '@/common/Header.vue';
 import SideBar from '@/common/SideBar.vue';
 import Collection from '@/common/Collection.vue';
 import CreateCollection from '@/modal/CreateCollection.vue';
+import CollectionEdit from '@/modal/CollectionEdit.vue';
+import CollectionDel from '@/modal/CollectionDel.vue';
 import { useCollectionStore } from '@/stores/collection';
 
 const router = useRouter();
 const collectionStore = useCollectionStore();
 const { allCollections } = storeToRefs(collectionStore);
-const showCreateModal = ref(false);
+
+// 모달 관련 상태
+const showModal = ref(false);
+const modalType = ref(null);
+const selectedCollection = ref(null);
 
 const createNewCollection = () => {
-    showCreateModal.value = true;
+    modalType.value = 'create';
+    showModal.value = true;
 };
 
-const deleteCollection = async (collectionId) => {
-    try {
-        await collectionStore.deleteCollection(collectionId);
-            // store의 allCollections가 자동으로 업데이트됨
-        
-    } catch (error) {
-        console.error('컬렉션 삭제 실패:', error);
-    }
+const closeModal = () => {
+    showModal.value = false;
+    modalType.value = null;
+    selectedCollection.value = null;
+};
+
+const handleEditConfirm = async () => {
+    await collectionStore.fetchAllCollections();
+    closeModal();
+};
+
+const handleDeleteConfirm = async () => {
+    await collectionStore.fetchAllCollections();
+    closeModal();
+};
+
+const handleCollectionAction = (action, collection) => {
+    selectedCollection.value = collection;
+    modalType.value = action;
+    showModal.value = true;
 };
 
 const navigateToCollection = (collection) => {
@@ -218,9 +255,9 @@ onMounted(async () => {
     position: fixed;
     top: 0;
     left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -230,10 +267,13 @@ onMounted(async () => {
 .modal-content {
     background: white;
     border-radius: 12px;
-    padding: 0;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
     max-width: 90%;
     max-height: 90%;
     overflow-y: auto;
+    position: relative;
+    width: auto;
+    margin: 1.75rem auto;
 }
 
 .page-header {

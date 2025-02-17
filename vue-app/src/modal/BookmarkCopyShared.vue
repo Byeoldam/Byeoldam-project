@@ -1,6 +1,6 @@
 <template>
   <div class="bookmark-copy-modal">
-    <h3 class="modal-title">북마크 공유 컬렉션으로 복사</h3>
+    <h3 class="modal-title">공유 컬렉션으로 복사</h3>
     
     <div class="modal-content">
       <p class="description">
@@ -113,8 +113,10 @@ onMounted(async () => {
 }
 
 .modal-title {
-  font-size: 1.5rem;
-  margin-bottom: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: bold;
 }
 
 .description {

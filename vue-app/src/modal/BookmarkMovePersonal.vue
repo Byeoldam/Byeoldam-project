@@ -1,6 +1,6 @@
 <template>
   <div class="bookmark-move-modal">
-    <h2 class="modal-title">북마크 이동</h2>
+    <h2 class="modal-title">개인 컬렉션으로 이동</h2>
     
     <div class="select-container">
       <label for="collection-select">개인 컬렉션 선택:</label>
@@ -96,8 +96,10 @@ const moveBookmark = async () => {
 }
 
 .modal-title {
-  font-size: 1.5rem;
-  margin-bottom: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: bold;
 }
 
 .select-container {
