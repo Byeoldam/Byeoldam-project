@@ -78,11 +78,12 @@
 import { RouterLink } from 'vue-router';
 
 // 별을 생성하는 함수
-function generateStarsShadow(count, size) {
+function generateStarsShadow(count) {
     let shadows = [];
     for(let i = 0; i < count; i++) {
-        const x = Math.floor(Math.random() * 2000);
-        const y = Math.floor(Math.random() * 2000);
+        // 범위를 더 넓게 설정 (4000px)
+        const x = Math.floor(Math.random() * 4000) - 2000; // -2000px ~ 2000px
+        const y = Math.floor(Math.random() * 4000) - 2000; // -2000px ~ 2000px
         shadows.push(`${x}px ${y}px #FFF`);
     }
     return shadows.join(', ');
@@ -91,10 +92,12 @@ function generateStarsShadow(count, size) {
 
 <style scoped>
 .intro-container {
-    min-height: 100vh;
+    height: 100vh;
     background: radial-gradient(ellipse at bottom, #1B2735 0%, #1E1B4B 100%);
     overflow: hidden;
     position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
 @keyframes animStar {
@@ -110,39 +113,33 @@ function generateStarsShadow(count, size) {
     width: 1px;
     height: 1px;
     background: transparent;
-    box-shadow: v-bind('generateStarsShadow(700, 1)');
-    animation: 
-        animStar 50s linear infinite,
-        twinkle-1 3s ease-in-out infinite;
+    box-shadow: v-bind('generateStarsShadow(700)');
+    animation: animStar 50s linear infinite;
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 50%;
+    left: 50%;
 }
 
 .stars2 {
     width: 2px;
     height: 2px;
     background: transparent;
-    box-shadow: v-bind('generateStarsShadow(200, 2)');
-    animation: 
-        animStar 100s linear infinite,
-        twinkle-2 4s ease-in-out infinite;
+    box-shadow: v-bind('generateStarsShadow(200)');
+    animation: animStar 100s linear infinite;
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 50%;
+    left: 50%;
 }
 
 .stars3 {
     width: 3px;
     height: 3px;
     background: transparent;
-    box-shadow: v-bind('generateStarsShadow(100, 3)');
-    animation: 
-        animStar 150s linear infinite,
-        twinkle-3 5s ease-in-out infinite;
+    box-shadow: v-bind('generateStarsShadow(100)');
+    animation: animStar 150s linear infinite;
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 50%;
+    left: 50%;
 }
 
 .stars:after {
@@ -152,8 +149,7 @@ function generateStarsShadow(count, size) {
     width: 1px;
     height: 1px;
     background: transparent;
-    box-shadow: v-bind('generateStarsShadow(700, 1)');
-    animation: twinkle-1 3s ease-in-out infinite;
+    box-shadow: v-bind('generateStarsShadow(700)');
 }
 
 .stars2:after {
@@ -163,8 +159,7 @@ function generateStarsShadow(count, size) {
     width: 2px;
     height: 2px;
     background: transparent;
-    box-shadow: v-bind('generateStarsShadow(200, 2)');
-    animation: twinkle-2 4s ease-in-out infinite;
+    box-shadow: v-bind('generateStarsShadow(200)');
 }
 
 .stars3:after {
@@ -174,15 +169,14 @@ function generateStarsShadow(count, size) {
     width: 3px;
     height: 3px;
     background: transparent;
-    box-shadow: v-bind('generateStarsShadow(100, 3)');
-    animation: twinkle-3 5s ease-in-out infinite;
+    box-shadow: v-bind('generateStarsShadow(100)');
 }
 
 /* 기존 스타일에 z-index 추가 */
 .header {
     position: fixed;
     width: 100%;
-    padding: 1rem 1.5rem;
+    padding: 0.8rem 1.5rem;
     z-index: 10;
     background-color: rgba(30, 27, 75, 0.9);
     backdrop-filter: blur(12px);
@@ -247,10 +241,10 @@ function generateStarsShadow(count, size) {
 }
 
 .hero-section {
-    padding-top: 8rem;
-    padding-inline: 1.5rem;
-    position: relative;
-    z-index: 5;
+    padding-top: 4rem;
+    flex: 1;
+    display: flex;
+    align-items: center;
 }
 
 .hero-content {
@@ -260,10 +254,10 @@ function generateStarsShadow(count, size) {
 }
 
 .hero-title {
-    font-size: 3.75rem;
+    font-size: 2.5rem;
     font-weight: bold;
     color: white;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
 }
 
 .highlight {
@@ -271,9 +265,9 @@ function generateStarsShadow(count, size) {
 }
 
 .hero-description {
-    font-size: 1.25rem;
+    font-size: 1rem;
     color: rgb(209, 213, 219);
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
     line-height: 1.7;
 }
 
@@ -296,9 +290,7 @@ function generateStarsShadow(count, size) {
 }
 
 .features-section {
-    padding: 6rem 1.5rem;
-    position: relative;
-    z-index: 5;
+    padding: 2rem 1.5rem;
 }
 
 .features-content {
@@ -307,11 +299,11 @@ function generateStarsShadow(count, size) {
 }
 
 .features-title {
-    font-size: 1.875rem;
+    font-size: 1.5rem;
     font-weight: bold;
     color: white;
     text-align: center;
-    margin-bottom: 4rem;
+    margin-bottom: 2rem;
 }
 
 .features-grid {
@@ -335,7 +327,7 @@ function generateStarsShadow(count, size) {
 .feature-card {
     background-color: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(12px);
-    padding: 2rem;
+    padding: 1.5rem;
     border-radius: 1rem;
     transition: transform 0.3s ease;
 }
@@ -345,30 +337,31 @@ function generateStarsShadow(count, size) {
 }
 
 .feature-icon {
-    width: 4rem;
-    height: 4rem;
+    width: 3rem;
+    height: 3rem;
     background-color: #F5f5f5;
     border-radius: 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1.5rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
 }
 
 .feature-card-title {
-    font-size: 1.25rem;
+    font-size: 1rem;
     font-weight: bold;
     color: white;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
 }
 
 .feature-description {
     color: rgb(209, 213, 219);
+    font-size: 0.875rem;
 }
 
 .footer {
-    padding: 2rem;
+    padding: 1rem;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     position: relative;
     z-index: 5;
