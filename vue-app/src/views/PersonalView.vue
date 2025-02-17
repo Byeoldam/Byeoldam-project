@@ -183,7 +183,7 @@ const createNewCollection = () => {
     position: sticky;
     top: 0;
     background-color: #F5F5F5;
-    padding: 10px 0;
+    padding: 10px 20px;
     z-index: 98;
     display: flex;
     justify-content: space-between;
@@ -196,7 +196,7 @@ const createNewCollection = () => {
     gap: 10px;
     flex-wrap: wrap;
     flex: 1;
-    padding: 0 20px;
+    /* padding: 0 20px; */
 }
 
 .filter-btn {
