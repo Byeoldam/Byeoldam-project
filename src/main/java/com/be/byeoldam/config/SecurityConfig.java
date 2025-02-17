@@ -1,10 +1,14 @@
 package com.be.byeoldam.config;
 
+import java.util.List;
+
 import com.be.byeoldam.common.filter.JWTFilter;
 import com.be.byeoldam.common.filter.LoginFilter;
 import com.be.byeoldam.common.jwt.JwtUtil;
 import com.be.byeoldam.domain.user.UserService;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,6 +20,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
 
 @Configuration
 @EnableWebSecurity
@@ -46,7 +54,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationManager authenticationManager, UserService userService) throws Exception {
         //csrf보호를 비활성화.
         http.csrf((auth) -> auth.disable())
-        .cors(cors -> cors.configure(http)); // ✅ CORS 설정 추가(swagger 사용 시 필요)
+        .cors(cors -> cors.configurationSource(corsConfigurationSource())); // ✅ CORS 설정 추가(swagger 사용 시 필요)
         //From 로그인 방식 비활성화  jwt 방식을 사용
         http.formLogin((auth) -> auth.disable());
         //http basic 인증 비활성화
@@ -78,5 +86,20 @@ public class SecurityConfig {
 
         return http.build();
     }
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of(
+        "chrome-extension://djiemmdlekojnbiclbgdepjapkoejddm",
+        "https://byeoldam.store",
+        "https://www.byeoldam.store"
+        ));
+        configuration.addAllowedMethod("*"); // ✅ 모든 HTTP 메서드 허용 (GET, POST, PUT, DELETE 등)
+        configuration.addAllowedHeader("*"); // ✅ 모든 헤더 허용
+        configuration.setAllowCredentials(true); // ✅ 쿠키, Authorization 헤더 포함 가능
 
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+}
 }
