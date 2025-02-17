@@ -71,7 +71,7 @@ export const useCollectionStore = defineStore("collection", () => {
         try {
             const request = { "name": name };
             const response = await api.post('/collections/personal', request);
-            console.log('컬렉션 생성 성공:');
+            return response.data;
         } catch (error) {
             console.error('개인 컬렉션 생성 중 오류 발생:', error);
             throw error;
@@ -83,7 +83,7 @@ export const useCollectionStore = defineStore("collection", () => {
         try {
             const request = { "name": name };
             const response = await api.post('/collections/shared', request);
-            console.log('컬렉션 생성 성공:');
+            return response.data;
         } catch (error) {
             console.error('컬렉션 생성 중 오류 발생:', error);
             throw error;
