@@ -25,7 +25,10 @@ public class TagBookmarkUrlRepositoryCustomImpl implements TagBookmarkUrlReposit
         return queryFactory
                 .select(Projections.constructor(RecommendedUrlResponse.class,
                         bookmarkUrl.url,
-                        bookmarkUrl.readingTime))
+                        bookmarkUrl.readingTime,
+                        bookmarkUrl.description,
+                        bookmarkUrl.img,
+                        bookmarkUrl.title))
                 .from(tagBookmarkUrl)
                 .join(tagBookmarkUrl.tag, tag)
                 .join(tagBookmarkUrl.bookmarkUrl, bookmarkUrl)

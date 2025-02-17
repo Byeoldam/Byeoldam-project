@@ -3,6 +3,7 @@ package com.be.byeoldam.domain.tag;
 import com.be.byeoldam.domain.bookmark.dto.TagDto;
 import com.be.byeoldam.domain.bookmark.model.Bookmark;
 import com.be.byeoldam.domain.bookmark.repository.BookmarkTagRepository;
+import com.be.byeoldam.domain.common.model.BookmarkUrl;
 import com.be.byeoldam.domain.common.repository.BookmarkUrlRepository;
 import com.be.byeoldam.domain.common.repository.TagBookmarkUrlRepository;
 import com.be.byeoldam.domain.personalcollection.dto.PersonalBookmarkResponse;
@@ -142,7 +143,6 @@ public class TagService {
         List<Bookmark> bookmarkUrlList = bookmarkTagRepository.findBookmarksByUserIdAndTagNameWithPaging(userId, tagName, cursorId * size, size);
         List<PersonalBookmarkResponse> personalBookmarkResponseList = bookmarkUrlList.stream()
                 .map(bookmark -> {
-                    UrlPreview preview = JsoupUtil.fetchMetadata(bookmark.getBookmarkUrl().getUrl());
                     List<TagDto> tagDtos = bookmarkTagRepository.findByBookmark(bookmark).stream()
                             .map(bookmarkTag -> {
                                 Tag userTag = bookmarkTag.getTag();
@@ -151,12 +151,8 @@ public class TagService {
                     return PersonalBookmarkResponse.of(bookmark, tagDtos);
                 }).toList();
 
-
         // 2. 추천 URL
         List<RecommendedUrlResponse> recommendedUrlList = tagBookmarkUrlRepository.findBookmarkUrlsByTagName(tagName, cursorId * size, size);
-        recommendedUrlList.forEach(response ->
-                response.updateFromPreview(JsoupUtil.fetchMetadata(response.getUrl()))
-        );
 
         TagSearchResponse response = TagSearchResponse.of(personalBookmarkResponseList, recommendedUrlList);
         return TagSearchResponse.of(personalBookmarkResponseList, recommendedUrlList);
@@ -166,10 +162,8 @@ public class TagService {
     // 태그 기반 검색, URL 추천(무한 스크롤)   ->    관심 태그 추천 페이지 / 태그 기반 검색 페이지
     @Transactional(readOnly = true)
     List<RecommendedUrlResponse> getBookmarkUrlsByTagName(String tagName, int cursorId, int size) {
-       List<RecommendedUrlResponse> urlList = tagBookmarkUrlRepository.findBookmarkUrlsByTagName(tagName,cursorId*size, size);
-        urlList.forEach(response ->
-                response.updateFromPreview(JsoupUtil.fetchMetadata(response.getUrl()))
-        );
+        List<RecommendedUrlResponse> urlList = tagBookmarkUrlRepository.findBookmarkUrlsByTagName(tagName,cursorId*size, size);
+
         return urlList;
     }
 
