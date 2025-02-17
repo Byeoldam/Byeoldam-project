@@ -8,7 +8,6 @@
     "default_icon": "favicon.ico"
   },
   "permissions": ["storage", "activeTab", "tabs"],
-
   "background": {
     "service_worker": "background.js"
   },
@@ -18,6 +17,5 @@
       "js": ["contentScript.js"]
     }
   ],
-
   "icons": {}
 }
