@@ -45,7 +45,9 @@
                                 />
                             </div>
                             <div v-else class="empty-state">
-                                <p class="empty-text">추천 북마크가 없습니다.</p>
+                                <i class="fas fa-thumbs-up empty-icon"></i>
+                                <p class="empty-message">추천 북마크가 없습니다.</p>
+                                <p class="empty-sub-message">다른 태그를 선택해보세요!</p>
                             </div>
                         </template>
                         <template #fallback>
@@ -181,6 +183,8 @@ onUnmounted(() => {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    background-color: #F5F5F5;
+
 }
 
 .header {
@@ -227,7 +231,7 @@ onUnmounted(() => {
 }
 
 .page-header {
-    background: linear-gradient(to right, #f8f9fa, #ffffff);
+    /* background: linear-gradient(to right, #f8f9fa, #ffffff); */
     padding: 16px 24px;
     border-radius: 12px;
     margin-bottom: 24px;
@@ -246,7 +250,7 @@ onUnmounted(() => {
 
 .title-icon {
     font-size: 1.5rem;
-    color: #007bff;
+    color: #3730A3;
 }
 
 .title {
@@ -265,72 +269,32 @@ onUnmounted(() => {
 
 .filter-buttons {
     display: flex;
-    flex-wrap: wrap;
     gap: 10px;
-    margin: 20px;
-    justify-content: flex-start;
-    max-width: 1800px;
+    flex-wrap: wrap;
+    flex: 1;
 }
 
 .filter-btn {
-    flex: 0 0 calc(8.33% - 10px);
-    padding: 10px 15px;
+    padding: 8px 16px;
+    border: 1px solid #ddd;
     border-radius: 20px;
-    background-color: #f8f9fa;
-    border: 1px solid #dee2e6;
-    color: #495057;
+    background: white;
     cursor: pointer;
-    transition: all 0.2s ease;
-    font-size: 0.95rem;
-    font-weight: 500;
-    text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    min-width: 120px;
+    transition: all 0.3s ease;
 }
 
 .filter-btn:hover {
-    background-color: #e9ecef;
-    transform: scale(1.05);
+    background: #f5f5f5;
+
 }
 
 .filter-btn.active {
-    background-color: #007bff;
-    color: white;
-    border-color: #007bff;
-    box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
+    background: #3730A3;
+    color: rgba(255, 255, 255, 0.901);
+    border-color: #3730A3;
+
 }
 
-@media (max-width: 1600px) {
-    .filter-btn {
-        flex: 0 0 calc(10% - 10px);
-    }
-}
-
-@media (max-width: 1200px) {
-    .filter-btn {
-        flex: 0 0 calc(12.5% - 10px);
-    }
-}
-
-@media (max-width: 992px) {
-    .filter-btn {
-        flex: 0 0 calc(16.66% - 10px);
-    }
-}
-
-@media (max-width: 768px) {
-    .filter-btn {
-        flex: 0 0 calc(25% - 10px);
-    }
-}
-
-@media (max-width: 576px) {
-    .filter-btn {
-        flex: 0 0 calc(33.33% - 10px);
-    }
-}
 
 .bookmarks-grid {
     display: grid;
@@ -344,7 +308,7 @@ onUnmounted(() => {
     justify-content: center;
     padding: 24px;
     font-size: 24px;
-    color: #007bff;
+    color: #3730A3;
 }
 
 .empty-state {
@@ -354,25 +318,25 @@ onUnmounted(() => {
     justify-content: center;
     padding: 60px 20px;
     text-align: center;
-    background: #f8f9fa;
+    /* background: #f8f9fa; */
     border-radius: 12px;
 }
 
 .empty-icon {
-    font-size: 48px;
-    color: #ccc;
+    font-size: 3rem;
+    color: #ddd;
     margin-bottom: 16px;
 }
 
-.empty-text {
+.empty-message {
     font-size: 1.2rem;
     color: #666;
     margin-bottom: 8px;
 }
 
-.empty-description {
-    color: #888;
+.empty-sub-message {
     font-size: 0.9rem;
+    color: #888;
 }
 
 .cards-grid {

@@ -6,7 +6,7 @@
             </div>
             <div class="settings">
                 <button class="save-button" @click="openModal">
-                    Save
+                    저장
                 </button>
             </div>
         </div>
@@ -266,7 +266,7 @@ const openModal = () => {
 
 .save-button {
     padding: 4px 12px;
-    background-color: #007bff;
+    background-color: #6366F1;
     color: white;
     border: none;
     border-radius: 4px;
@@ -276,6 +276,6 @@ const openModal = () => {
 }
 
 .save-button:hover {
-    background-color: #0056b3;
+    background-color: #3830a3c5;
 }
 </style>

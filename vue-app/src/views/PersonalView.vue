@@ -31,6 +31,7 @@
                         </button>
                     </div>
                     <div v-if="selectedCollectionId && selectedCollectionBookmarks.length === 0" class="empty-state">
+                        <i class="fas fa-bookmark search-icon"></i>
                         <p class="empty-message">이 컬렉션에는 아직 북마크가 없습니다.</p>
                         <p class="empty-sub-message">새로운 북마크를 추가해보세요!</p>
                     </div>
@@ -50,13 +51,6 @@
                             :isPersonal="true"
                             :readingTime="bookmark.readingTime"
                         />
-                    </div>
-                    <div v-if="selectedCollectionBookmarks.length === 0" class="initial-message">
-                        <div class="message-box">
-                            <i class="fas fa-bookmark search-icon"></i>
-                            <h3>저장된 북마크가 없습니다.</h3>
-                            <p>새로운 북마크를 추가해보세요</p>
-                        </div>
                     </div>
                 </div>
             </div>
