@@ -163,8 +163,8 @@ const createCollections = async () => {
   }
   
   .folder.selected {
-    border-color: #0f62fe;
-    background: rgba(15, 98, 254, 0.1);
+    border-color: #818CF8;
+    background: #EEF2FF;
   }
   
   .collection-input {
@@ -185,8 +185,8 @@ const createCollections = async () => {
   }
   
   .tag {
-    background: #0f62fe;
-    color: #fff;
+    background: #6366F1;
+    color: rgba(255, 255, 255, 0.901);
     padding: 6px 12px;
     border-radius: 12px;
     display: flex;
@@ -206,7 +206,7 @@ const createCollections = async () => {
     width: 550px;
     height: 50px;
     margin-top: 20px;
-    background: #0f62fe;
+    background: #3730A3;
     color: white;
     border: none;
     border-radius: 10px;
