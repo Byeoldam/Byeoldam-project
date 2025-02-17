@@ -36,8 +36,16 @@ export default {
       userStore.refreshToken = null
     }
 
+    if(!sessionStorage.getItem('isReloading')){
+      console.log("isReloading 없음");
+      clearUserData()
+    }
+
     onMounted(() => {
       console.log("새로 고침 시");
+      
+      // sessionStorage에 플래그 설정
+      // sessionStorage.setItem('isReloading', 'true');
       
       // localStorage에서 데이터 불러오기
       const savedUser = localStorage.getItem('user')
@@ -49,11 +57,11 @@ export default {
         userStore.user = JSON.parse(savedUser)
         userStore.accessToken = savedAccessToken
         userStore.refreshToken = savedRefreshToken
+        sessionStorage.setItem("isReloading", "true");
 
         // API 인스턴스에 토큰 설정
         api.defaults.headers.common['accessToken'] = savedAccessToken
 
-        // 필요한 경우 컬렉션 데이터도 다시 불러오기
         const initializeData = async () => {
           try {
             await userStore.initializeUserData()
@@ -65,19 +73,7 @@ export default {
         initializeData()
       }
 
-      // 브라우저 창이 닫힐 때 이벤트 리스너 추가
-      //window.addEventListener('unload', clearUserData)
-      //window.addEventListener('beforeunload', clearUserData)
     })
-
-    onBeforeUnmount(() => {
-      // 이벤트 리스너 제거
-      console.log("컴포넌트 언마운트 시");
-      clearUserData();
-      //window.removeEventListener('unload', clearUserData)
-      //clearUserData()
-    })
-
 
    
   }
