@@ -51,6 +51,13 @@
                             :readingTime="bookmark.readingTime"
                         />
                     </div>
+                    <div v-if="selectedCollectionBookmarks.length === 0" class="initial-message">
+                        <div class="message-box">
+                            <i class="fas fa-share-alt search-icon"></i>
+                            <h3>공유된 북마크가 없습니다.</h3>
+                            <p>다른 사용자와 북마크를 공유해보세요</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -323,5 +330,41 @@ const createNewCollection = () => {
 .empty-sub-message {
     font-size: 1rem;
     color: #888;
+}
+
+.initial-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.message-box {
+    text-align: center;
+    padding: 20px;
+    border-radius: 12px;
+    max-width: 500px;
+}
+
+.search-icon {
+    font-size: 48px;
+    margin-bottom: 20px;
+    color: #ddd;
+    display: block;
+}
+
+.message-box h3 {
+    color: #2d3748;
+    font-size: 24px;
+    margin-bottom: 12px;
+}
+
+.message-box p {
+    color: #718096;
+    font-size: 16px;
+    line-height: 1.5;
 }
 </style>
