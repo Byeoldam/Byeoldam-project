@@ -90,6 +90,8 @@ const selectPost = (url) => {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    background-color: #F5F5F5;
+
 }
 
 .header {
@@ -142,7 +144,7 @@ const selectPost = (url) => {
 }
 
 .page-header {
-    background: linear-gradient(to right, #f8f9fa, #ffffff);
+    /* background: linear-gradient(to right, #f8f9fa, #ffffff); */
     padding: 16px 24px;
     border-radius: 12px;
     margin-bottom: 24px;
@@ -161,7 +163,7 @@ const selectPost = (url) => {
 
 .title-icon {
     font-size: 1.5rem;
-    color: #007bff;
+    color: #3730A3;
 }
 
 .title {
@@ -188,7 +190,7 @@ const selectPost = (url) => {
     align-items: center;
     justify-content: center;
     z-index: 10;
-    background-color: rgba(255, 255, 255, 0.8);
+    /* background-color: rgba(255, 255, 255, 0.8); */
     padding: 2rem;
     border-radius: 8px;
     width: fit-content;
@@ -199,7 +201,7 @@ const selectPost = (url) => {
     width: 50px;
     height: 50px;
     border: 3px solid #f3f3f3;
-    border-top: 3px solid #007bff;
+    border-top: 3px solid #3730A3;
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin-bottom: 1rem;

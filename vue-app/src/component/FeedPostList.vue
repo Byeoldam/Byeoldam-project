@@ -73,7 +73,7 @@ top: 50%;
 transform: translateY(-50%);
 width: 8px;
 height: 8px;
-background-color: #007bff;
+background-color: #ce3e3ebc;
 border-radius: 50%;
 }
 

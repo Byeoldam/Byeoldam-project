@@ -63,7 +63,7 @@ position: relative;
 }
 
 .tab.active {
-background-color: #007bff;
+background-color: #3730A3;
 color: white;
 }
 
@@ -73,7 +73,7 @@ top: -5px;
 right: -5px;
 width: 8px;
 height: 8px;
-background-color: #ff4444;
+background-color: #ce3e3ebc;
 border-radius: 50%;
 }
 </style>
