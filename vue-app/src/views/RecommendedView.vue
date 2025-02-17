@@ -27,17 +27,24 @@
                     </div>
 
                     <!-- 추천 북마크 카드 표시 영역 -->
-                    <div class="cards-grid" v-if="recommendedBookmarks.length > 0">
-                        <CardUnbookmarked
-                            v-for="bookmark in recommendedBookmarks"
-                            :key="bookmark.url"
-                            :url="bookmark.url"
-                            :title="bookmark.title"
-                            :description="bookmark.description"
-                            :img="bookmark.imageUrl"
-                            :readingTime="bookmark.readingTime"
-                        />
-                    </div>
+                    <Suspense>
+                        <template #default>
+                            <div class="cards-grid" v-if="recommendedBookmarks.length > 0">
+                                <CardUnbookmarked
+                                    v-for="bookmark in recommendedBookmarks"
+                                    :key="bookmark.url"
+                                    :url="bookmark.url"
+                                    :title="bookmark.title"
+                                    :description="bookmark.description"
+                                    :img="bookmark.imageUrl"
+                                    :readingTime="bookmark.readingTime"
+                                />
+                            </div>
+                        </template>
+                        <template #fallback>
+                            <div>로딩 중...</div>
+                        </template>
+                    </Suspense>
                 </div>
             </div>
         </div>

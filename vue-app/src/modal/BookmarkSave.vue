@@ -11,8 +11,12 @@
                     <p>저장할 개인 컬렉션을 선택하세요.</p>
                     <select v-model="selectedCollection" class="select-input">
                         <option value="" disabled>컬렉션을 선택하세요</option>
-                        <option v-for="collection in collections" :key="collection.id" :value="collection.id">
-                            {{ collection.name }}
+                        <option 
+                            v-for="collection in collections" 
+                            :key="collection.collection_id" 
+                            :value="collection.collection_id"
+                        >
+                            {{ collection.collection_name }}
                         </option>
                     </select>
                 </div>
@@ -50,15 +54,12 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useCollectionStore } from '@/stores/collection';
 import { useBookmarkStore } from '@/stores/bookmark';
+import { ElMessage } from 'element-plus';
 
 const props = defineProps({
-    key: {
-        type: String,
-        required: true
-    },
     url: {
         type: String,
         required: true
@@ -74,6 +75,10 @@ const props = defineProps({
     img: {
         type: String,
         required: true
+    },
+    readingTime: {
+        type: Number,
+        required: true
     }
 });
 
@@ -82,11 +87,17 @@ const collectionStore = useCollectionStore();
 const bookmarkStore = useBookmarkStore();
 
 // 컴포넌트가 마운트될 때 컬렉션 데이터를 가져옵니다
-await collectionStore.fetchAllCollection();
+await collectionStore.fetchAllCollections();
 
 const selectedCollection = ref('');
-// personalCollections 대신 allCollections 사용
-const collections = computed(() => collectionStore.allCollections);
+const collections = computed(() => {
+    console.log('collections raw:', collectionStore.allCollections);
+    return collectionStore.allCollections.map(collection => ({
+        collection_id: collection.collection_id || collection.collectionId,
+        collection_name: collection.collection_name || collection.name,
+        isPersonal: collection.isPersonal
+    }));
+});
 
 const selectedTags = ref([]);
 const newTag = ref('');
@@ -113,31 +124,60 @@ const handleSave = async () => {
             return;
         }
 
-        // 선택된 컬렉션이 개인 컬렉션인지 확인
-        const collection = collectionStore.allCollections.find(
+        // 태그 색상 배열 추가
+        const tagColors = [
+            '#e3f2fd', // 파란색 계열
+            '#fff3e0', // 주황색 계열
+            '#fce4ec', // 분홍색 계열
+            '#f3e5f5', // 보라색 계열
+            '#e8f5e9', // 초록색 계열
+            '#fff8e1'  // 노란색 계열
+        ];
+
+        // 선택된 컬렉션 찾기
+        const selectedCollectionInfo = collections.value.find(
             c => c.collection_id === selectedCollection.value
         );
+
+        // API 요청 데이터 구성
+        const bookmarkData = {
+            url: props.url,
+            collectionId: Number(selectedCollection.value),
+            tags: selectedTags.value.map(tag => ({
+                tagName: tag,
+                tagColor: tagColors[Math.floor(Math.random() * tagColors.length)], // 랜덤 색상 지정
+                tagBolder: "normal"
+            })),
+            readingTime: props.readingTime,
+            isPersonal: selectedCollectionInfo.isPersonal
+        };
+
+        console.log('서버로 보내는 데이터:', bookmarkData);
         
-        // 태그 형식 변환
-        const formattedTags = selectedTags.value.map(tag => ({
-            tagName: tag,
-            tagColor: "#111111" // 기본 색상 설정
-        }));
-
-        await bookmarkStore.saveBookmark(
-            props.url, // props로 전달받은 URL
-            selectedCollection.value,
-            collection.isPersonal,
-            formattedTags
-        );
-
-        emit('save'); // 저장 성공 이벤트 발생
+        const response = await bookmarkStore.saveBookmark(bookmarkData);
+        console.log('서버 응답:', response);
+        ElMessage.success('북마크가 저장장되었습니다')
+        
+        emit('save');
         closeModal();
     } catch (error) {
         console.error('북마크 저장 중 오류 발생:', error);
-        alert('북마크 저장에 실패했습니다.');
+        if (error.response) {
+            console.error('서버 응답 데이터:', error.response.data);
+            console.error('요청 데이터:', error.config.data);
+        }
+        ElMessage.error(error.response.data.message);
     }
 };
+
+// 디버깅을 위한 watch
+watch(() => collections.value, (newCollections) => {
+    console.log('컬렉션 데이터 변경:', newCollections);
+});
+
+watch(selectedCollection, (newVal) => {
+    console.log('선택된 컬렉션 값:', newVal, typeof newVal);
+});
 </script>
 
 <style scoped>
@@ -145,13 +185,13 @@ const handleSave = async () => {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 9999;
 }
 
 .modal-content {
@@ -160,6 +200,8 @@ const handleSave = async () => {
     width: 90%;
     max-width: 500px;
     padding: 20px;
+    position: relative;
+    z-index: 10000;
 }
 
 .modal-header {
@@ -188,6 +230,14 @@ const handleSave = async () => {
     border: 1px solid #ddd;
     border-radius: 4px;
     margin-top: 8px;
+    color: #000;
+    background-color: #fff;
+}
+
+.select-input option {
+    color: #000;
+    background-color: #fff;
+    padding: 8px;
 }
 
 .tags-section {

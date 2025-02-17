@@ -7,22 +7,11 @@ export const useBookmarkStore = defineStore("bookmark", () => {
     //북마크 모달들에 대한 함수 store
 
     //북마크 생성(저장)에 대한 함수
-    const saveBookmark = async (bookmarkUrl, collectionId, isPersonal, tags) => {
-        const request = {
-          "bookmark_url": bookmarkUrl,
-          "collectionId" : collectionId,
-          "isPersonal" : isPersonal,
-          "tags" : tags // 배열 형식으로 전달 
-          // 예시 형식
-          // [
-          //   {
-          //     "tagName" : "웹",
-          //     "tagColor" : "#111111"
-          //   }, 
-          // ]
-        }
-        const response = await api.post("/bookmarks", request);
+    const saveBookmark = async (bookmarkData) => {
+        // 데이터를 직접 전달
+        const response = await api.post("/bookmarks", bookmarkData);
         console.log(response.data);
+        return response;
     };
 
     //북마크 중요도 수정 함수

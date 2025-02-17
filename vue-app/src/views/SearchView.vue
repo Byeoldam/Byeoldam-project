@@ -1,95 +1,99 @@
 <template>
-    <div class="layout">
-        <Header class="header"/>
-        <div class="content-wrapper">
-            <SideBar class="sidebar"/>
-            <div class="main-content">
-                <div class="body">
-                    <div class="page-header">
-                        <div class="header-content">
-                            <div class="title-section">
-                                <i class="fas fa-search title-icon"></i>
-                                <h2 class="title">북마크 검색</h2>
+    <Suspense>
+        <template #default>
+            <div class="layout">
+                <Header class="header"/>
+                <div class="content-wrapper">
+                    <SideBar class="sidebar"/>
+                    <div class="main-content">
+                        <div class="body">
+                            <div class="page-header">
+                                <div class="header-content">
+                                    <div class="title-section">
+                                        <i class="fas fa-search title-icon"></i>
+                                        <h2 class="title">북마크 검색</h2>
+                                    </div>
+                                    <p class="description">태그를 통해 원하는 북마크를 빠르게 찾아보세요</p>
+                                </div>
                             </div>
-                            <p class="description">태그를 통해 원하는 북마크를 빠르게 찾아보세요</p>
-                        </div>
-                    </div>
-                    <div class="search-page">
-                        <div class="search-container">
-                            <input 
-                                v-model="searchTag" 
-                                @keyup.enter="handleSearch"
-                                placeholder="태그를 입력하세요"
-                                class="search-input"
-                            />
-                            <button @click="handleSearch" class="search-button">
-                                검색
-                            </button>
-                        </div>
-                        
-                        <!-- 검색 전 안내 메시지 -->
-                        <div v-if="!hasSearched" class="initial-message">
-                            <div class="message-box">
-                                <i class="fas fa-search search-icon"></i>
-                                <h3>현재 검색된 태그가 없습니다.</h3>
-                                <p>태그를 통해 검색해보세요</p>
-                            </div>
-                        </div>
-                    
-                        <!-- 검색 결과 -->
-                        <div class="search-results-container">
-                            <!-- 왼쪽: 검색 결과 -->
-                            <div class="main-results">
-                                <h2 v-if="hasSearched" class="section-title">검색결과</h2>
-                                <div v-if="bookmarks.length > 0" class="bookmarks-grid">
-                                    <Card
-                                        v-for="bookmark in bookmarks"
-                                        :key="bookmark.bookmarkId"
-                                        :bookmarkId="bookmark.bookmarkId"
-                                        :url="bookmark.url"
-                                        :img="bookmark.img"
-                                        :title="bookmark.title"
-                                        :description="bookmark.description"
-                                        :tag="bookmark.tags"
-                                        :priority="bookmark.priority"
-                                        :readingTime="bookmark.readingTime"
-                                        :createdAt="bookmark.createdAt"
-                                        :updatedAt="bookmark.updatedAt"
-                                        :is-personal="true"
-                                        :collection-id="bookmark.collectionId"
+                            <div class="search-page">
+                                <div class="search-container">
+                                    <input 
+                                        v-model="searchTag" 
+                                        @keyup.enter="handleSearch"
+                                        placeholder="태그를 입력하세요"
+                                        class="search-input"
                                     />
+                                    <button @click="handleSearch" class="search-button">
+                                        검색
+                                    </button>
                                 </div>
                                 
-                                <div v-if="loading" class="loading">
-                                    데이터를 불러오는 중...
+                                <!-- 검색 전 안내 메시지 -->
+                                <div v-if="!hasSearched" class="initial-message">
+                                    <div class="message-box">
+                                        <i class="fas fa-search search-icon"></i>
+                                        <h3>현재 검색된 태그가 없습니다.</h3>
+                                        <p>태그를 통해 검색해보세요</p>
+                                    </div>
                                 </div>
-                                
-                                <div v-if="hasSearched && bookmarks.length === 0 && !loading" class="no-results">
-                                    검색 결과가 없습니다.
-                                </div>
-                            </div>
+                            
+                                <!-- 검색 결과 -->
+                                <div class="search-results-container">
+                                    <!-- 왼쪽: 검색 결과 -->
+                                    <div class="main-results">
+                                        <h2 v-if="hasSearched" class="section-title">검색결과</h2>
+                                        <div v-if="bookmarks.length > 0" class="bookmarks-grid">
+                                            <Card
+                                                v-for="bookmark in bookmarks"
+                                                :key="bookmark.bookmarkId"
+                                                :bookmarkId="bookmark.bookmarkId"
+                                                :url="bookmark.url"
+                                                :img="bookmark.img"
+                                                :title="bookmark.title"
+                                                :description="bookmark.description"
+                                                :tag="bookmark.tags"
+                                                :priority="bookmark.priority"
+                                                :readingTime="bookmark.readingTime"
+                                                :createdAt="bookmark.createdAt"
+                                                :updatedAt="bookmark.updatedAt"
+                                                :is-personal="true"
+                                                :collection-id="bookmark.collectionId"
+                                            />
+                                        </div>
+                                        
+                                        <div v-if="loading" class="loading">
+                                            데이터를 불러오는 중...
+                                        </div>
+                                        
+                                        <div v-if="hasSearched && bookmarks.length === 0 && !loading" class="no-results">
+                                            검색 결과가 없습니다.
+                                        </div>
+                                    </div>
 
-                            <!-- 오른쪽: 추천 북마크 -->
-                            <div v-if="recommendedBookmarks.length > 0" class="recommended-section">
-                                <h2 class="section-title">관련 북마크</h2>
-                                <div class="recommended-list">
-                                    <div 
-                                        v-for="bookmark in recommendedBookmarks" 
-                                        :key="bookmark.url"
-                                        class="recommended-item"
-                                    >
-                                        <div class="recommended-content-wrapper" @click="goToUrl(bookmark.url)">
-                                            <img :src="bookmark.imageUrl" :alt="bookmark.title" class="recommended-image">
-                                            <div class="recommended-content">
-                                                <h3>{{ bookmark.title }}</h3>
+                                    <!-- 오른쪽: 추천 북마크 -->
+                                    <div v-if="recommendedBookmarks.length > 0" class="recommended-section">
+                                        <h2 class="section-title">관련 북마크</h2>
+                                        <div class="recommended-list">
+                                            <div 
+                                                v-for="bookmark in recommendedBookmarks" 
+                                                :key="bookmark.url"
+                                                class="recommended-item"
+                                            >
+                                                <div class="recommended-content-wrapper" @click="goToUrl(bookmark.url)">
+                                                    <img :src="bookmark.imageUrl" :alt="bookmark.title" class="recommended-image">
+                                                    <div class="recommended-content">
+                                                        <h3>{{ bookmark.title }}</h3>
+                                                    </div>
+                                                </div>
+                                                <button 
+                                                    class="save-button"
+                                                    @click.stop="showSaveModal(bookmark)"
+                                                >
+                                                    save
+                                                </button>
                                             </div>
                                         </div>
-                                        <button 
-                                            class="save-button"
-                                            @click.stop="showSaveModal(bookmark)"
-                                        >
-                                            save
-                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -97,20 +101,30 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+        </template>
+        <template #fallback>
+            <div class="loading">로딩 중...</div>
+        </template>
+    </Suspense>
 
     <!-- 북마크 저장 모달 -->
-    <BookmarkSave 
-        v-if="selectedBookmark"
-        :key="selectedBookmark.url"
-        :url="selectedBookmark.url"
-        :title="selectedBookmark.title"
-        :description="selectedBookmark.description"
-        :img="selectedBookmark.image"
-        @close="selectedBookmark = null"
-        @save="handleSave"
-    />
+    <Suspense>
+        <template #default>
+            <BookmarkSave 
+                v-if="selectedBookmark"
+                :key="selectedBookmark.url"
+                :url="selectedBookmark.url"
+                :title="selectedBookmark.title"
+                :description="selectedBookmark.description"
+                :img="selectedBookmark.image"
+                @close="selectedBookmark = null"
+                @save="handleSave"
+            />
+        </template>
+        <template #fallback>
+            <div class="loading">모달 로딩 중...</div>
+        </template>
+    </Suspense>
 
     <div v-if="!hasMore && hasSearched && bookmarks.length > 0" class="end-message">
         모든 검색 결과를 불러왔습니다.
@@ -223,7 +237,12 @@ const handleScroll = () => {
 }
 
 const showSaveModal = (bookmark) => {
-    selectedBookmark.value = bookmark
+    selectedBookmark.value = {
+        url: bookmark.url,
+        title: bookmark.title,
+        description: bookmark.description,
+        image: bookmark.imageUrl  // 이미지 URL 매핑
+    }
 }
 
 const handleSave = () => {
