@@ -155,8 +155,15 @@ import { ElMessage } from 'element-plus';
   const sendVerificationCode = async () => {
     try {
       const response = await userStore.emailVerification(email.value);
-      if (response.success) {
+      console.log("sendVerificationCode");
+      console.log(response.success);
+      
+      if (response.status) {
+        console.log("인증번호 발송 완료");
+       
+        
         isEmailSent.value = true;
+        console.log(isEmailSent.value);
         modal.value = { 
           visible: true, 
           success: true, 
@@ -176,7 +183,6 @@ import { ElMessage } from 'element-plus';
   const verifyCode = async () => {
     console.log("인증 코드 확인 시작");
     if (!email.value) {
-      console.log("인증 코드 확인 실패 1");
       modal.value = {
         visible: true,
         success: false,
@@ -190,8 +196,10 @@ import { ElMessage } from 'element-plus';
       console.log(verificationCode.value);
       
       const response = await userStore.checkCode(email.value,verificationCode.value);
-      if (response.success) {
+      if (response.status) {
         isEmailVerified.value = true;
+        console.log("인증 코드 확인 완료");
+        
         modal.value = {
           visible: true,
           success: true,
@@ -210,6 +218,10 @@ import { ElMessage } from 'element-plus';
 
   // 회원가입
   const handleRegister = async () => {
+    if (!isEmailVerified.value) {
+      alert("이메일 인증부터 해라~");
+      return;
+    }
     // 비밀번호 확인
     if (password.value !== confirmPassword.value) {
       modal.value = { 
@@ -225,7 +237,7 @@ import { ElMessage } from 'element-plus';
       password: password.value,
       nickname: nickname.value,
     };
-
+    
     try {
       await userStore.signup(payload);
       ElMessage.success('회원가입이 성공적으로 완료되었습니다.');
