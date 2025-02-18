@@ -685,6 +685,33 @@ export const useBookmarkStore = defineStore("bookmark", () => {
         isPersonal: true
     });
 
+    const selectedBookmark = ref(null);
+
+    const setSelectedBookmark = (bookmark) => {
+        selectedBookmark.value = bookmark;
+    };
+
+    // 현재 컬렉션의 북마크 중에서 특정 북마크 찾기
+    const findBookmarkById = (bookmarkId) => {
+        // 개인 컬렉션 북마크에서 찾기
+        if (personalCollectionBookmarks.value?.results?.bookmarks) {
+            const found = personalCollectionBookmarks.value.results.bookmarks.find(
+                b => b.bookmarkId === Number(bookmarkId)
+            );
+            if (found) return found;
+        }
+
+        // 공유 컬렉션 북마크에서 찾기
+        if (sharedCollectionBookmarks.value?.results?.bookmarks) {
+            const found = sharedCollectionBookmarks.value.results.bookmarks.find(
+                b => b.bookmarkId === Number(bookmarkId)
+            );
+            if (found) return found;
+        }
+
+        return null;
+    };
+
     return {
         changePriority,
         moveToOtherCollection,
@@ -723,5 +750,8 @@ export const useBookmarkStore = defineStore("bookmark", () => {
         refreshCurrentPage,
         currentCollection,
         clearSearchResults,
+        selectedBookmark,
+        setSelectedBookmark,
+        findBookmarkById
     };
 });
