@@ -1,5 +1,6 @@
 package com.be.byeoldam.domain.sharedcollection.service;
 
+import com.be.byeoldam.domain.bookmark.BookmarkService;
 import com.be.byeoldam.domain.bookmark.dto.TagDto;
 import com.be.byeoldam.domain.bookmark.model.Bookmark;
 import com.be.byeoldam.domain.bookmark.repository.BookmarkRepository;
@@ -7,7 +8,6 @@ import com.be.byeoldam.domain.bookmark.repository.BookmarkTagRepository;
 import com.be.byeoldam.domain.notification.NotificationRepository;
 import com.be.byeoldam.domain.notification.model.InviteNotification;
 import com.be.byeoldam.domain.notification.model.Notification;
-import com.be.byeoldam.domain.personalcollection.dto.PersonalBookmarkResponse;
 import com.be.byeoldam.domain.sharedcollection.dto.*;
 import com.be.byeoldam.domain.sharedcollection.model.Role;
 import com.be.byeoldam.domain.sharedcollection.model.SharedCollection;
@@ -15,8 +15,6 @@ import com.be.byeoldam.domain.sharedcollection.model.SharedUser;
 import com.be.byeoldam.domain.sharedcollection.repository.SharedCollectionRepository;
 import com.be.byeoldam.domain.sharedcollection.repository.SharedUserRepository;
 import com.be.byeoldam.domain.tag.model.Tag;
-import com.be.byeoldam.domain.tag.util.JsoupUtil;
-import com.be.byeoldam.domain.tag.util.UrlPreview;
 import com.be.byeoldam.domain.user.model.User;
 import com.be.byeoldam.domain.user.repository.UserRepository;
 import com.be.byeoldam.exception.CustomException;
@@ -32,20 +30,17 @@ import java.util.stream.Collectors;
 public class SharedCollectionService {
 
     private final SharedCollectionRepository sharedCollectionRepository;
-
     private final SharedUserRepository sharedUserRepository;
-
     private final UserRepository userRepository;
-
     private final BookmarkRepository bookmarkRepository;
-
     private final BookmarkTagRepository bookmarkTagRepository;
     private final NotificationRepository notificationRepository;
+    private final BookmarkService bookmarkService;
 
     // 공유컬렉션 생성
     // 예외 1. user_id 확인
     @Transactional
-    public void createSharedCollection(SharedCollectionRequest sharedCollectionRequest, Long userId) {
+    public SharedCollectionResponse createSharedCollection(SharedCollectionRequest sharedCollectionRequest, Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException("사용자를 찾을 수 없습니다."));
         SharedCollection collection = sharedCollectionRequest.toEntity();
@@ -53,6 +48,8 @@ public class SharedCollectionService {
 
         SharedUser sharedUser = SharedUser.create(user, collection, Role.OWNER);
         sharedUserRepository.save(sharedUser);
+
+        return SharedCollectionResponse.of(collection.getId(), collection.getName());
     }
 
     // 공유컬렉션 목록 조회
@@ -110,19 +107,33 @@ public class SharedCollectionService {
         if (!sharedUser.getRole().equals(Role.OWNER)) {
             throw new CustomException("해당 권한은 방장만 가능합니다.");
         }
-        sharedCollectionRepository.delete(collection);
+
+
+        List<Bookmark> bookmarkList = bookmarkRepository.findBySharedCollection(collection);
+
+        for (Bookmark bookmark : bookmarkList) {
+            bookmarkService.deleteBookmark(userId, bookmark.getId());
+        }
         sharedUserRepository.deleteAllBySharedCollection(collection);
+
+        sharedCollectionRepository.delete(collection);
     }
 
     // 공유컬렉션 상세 조회 - 북마크 목록 조회
     @Transactional(readOnly = true)
-    public List<SharedBookmarkResponse> getCollectionBookmark(Long userId, Long collectionId) {
+    public SharedBookmarkListResponse getCollectionBookmark(Long userId, Long collectionId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(""));
+                .orElseThrow(() -> new CustomException("사용자를 찾을 수 없습니다."));
         SharedCollection collection = sharedCollectionRepository.findById(collectionId)
-                .orElseThrow(() -> new CustomException(""));
-        List<Bookmark> bookmarks = bookmarkRepository.findByUserAndSharedCollection(user, collection);
-        return makeBookmarkResponse(bookmarks);
+                .orElseThrow(() -> new CustomException("컬렉션을 찾을 수 없습니다."));
+
+        if (sharedUserRepository.findByUserAndSharedCollection(user, collection).isEmpty()) {
+            throw new CustomException("해당 컬렉션에 대한 조회 권한이 없습니다.");
+        }
+
+        List<Bookmark> bookmarks = bookmarkRepository.findBySharedCollection(collection);
+
+        return SharedBookmarkListResponse.of(collectionId, makeBookmarkResponse(bookmarks));
     }
 
     // 공유컬렉션 멤버 관리 - 초대
@@ -132,11 +143,9 @@ public class SharedCollectionService {
     public void inviteNewMember(InviteAcceptRequest request, Long userId) {
         Notification notification = notificationRepository.findById(request.getNotificationId())
                 .orElseThrow(() -> new CustomException("알림이 존재하지 않습니다."));
-        if(!(notification instanceof InviteNotification)) {
+        if(!(notification instanceof InviteNotification inviteNotification)) {
             throw new CustomException("유효하지 않은 초대 알림입니다.");
         }
-
-        InviteNotification inviteNotification = (InviteNotification) notification;
 
         // 로그인해있는 유저
         User user = userRepository.findById(userId)
@@ -192,22 +201,23 @@ public class SharedCollectionService {
 
     public List<CollectionMemberResponse> getMember(Long userId, Long collectionId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(""));
+                .orElseThrow(() -> new CustomException("사용자를 찾을 수 없습니다."));
         SharedCollection collection = sharedCollectionRepository.findById(collectionId)
-                .orElseThrow(() -> new CustomException(""));
+                .orElseThrow(() -> new CustomException("컬렉션을 찾을 수 없습니다."));
 
         List<SharedUser> sharedUsers = sharedUserRepository.findBySharedCollection(collection);
         List<User> users = sharedUsers.stream().map(SharedUser::getUser).toList();
 
         if (!users.contains(user)) {
-            throw new CustomException("");
+            throw new CustomException("해당 컬렉션에 대한 조회 권한이 없습니다.");
         }
 
         return users.stream()
                 .map(member -> new CollectionMemberResponse(
                         member.getId(),
                         member.getEmail(),
-                        member.getNickname()
+                        member.getNickname(),
+                        member.getProfileUrl()
                 )).toList();
 
     }
@@ -215,13 +225,12 @@ public class SharedCollectionService {
     private List<SharedBookmarkResponse> makeBookmarkResponse(List<Bookmark> bookmarks) {
         return bookmarks.stream()
                 .map(bookmark -> {
-                    UrlPreview preview = JsoupUtil.fetchMetadata(bookmark.getBookmarkUrl().getUrl());
                     List<TagDto> tagDtos = bookmarkTagRepository.findByBookmark(bookmark).stream()
                             .map(bookmarkTag -> {
                                 Tag tag = bookmarkTag.getTag();
                                 return TagDto.of(tag);
                             }).toList();
-                    return SharedBookmarkResponse.of(bookmark, tagDtos, preview.getImageUrl(), preview.getTitle(), preview.getDescription());
+                    return SharedBookmarkResponse.of(bookmark, tagDtos);
                 }).toList();
     }
 }

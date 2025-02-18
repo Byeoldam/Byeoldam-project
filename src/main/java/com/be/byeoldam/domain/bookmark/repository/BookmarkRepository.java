@@ -28,9 +28,13 @@ public interface BookmarkRepository extends JpaRepository<Bookmark, Long> {
 
     List<Bookmark> findByUser(User user);
 
-    @Query("SELECT b FROM Bookmark b WHERE b.user = :user AND b.createdAt <= :thirtyDaysAgo")
+    @Query("SELECT b FROM Bookmark b WHERE b.user = :user AND b.isRead = false AND b.createdAt <= :thirtyDaysAgo")
     List<Bookmark> findOldBookmarksByUser(@Param("user") User user, @Param("thirtyDaysAgo") LocalDateTime thirtyDaysAgo);
 
     @Query("SELECT b FROM Bookmark b WHERE b.user = :user AND b.priority = true")
     List<Bookmark> findPriorityByUser(@Param("user") User user);
+
+    List<Bookmark> findBySharedCollection(SharedCollection collection);
+
+    boolean existsByBookmarkUrlAndSharedCollection(BookmarkUrl bookmarkUrl, SharedCollection collection);
 }

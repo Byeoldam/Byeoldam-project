@@ -8,6 +8,7 @@ import com.be.byeoldam.domain.sharedcollection.service.InviteService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +30,7 @@ public class InviteController {
     public ResponseTemplate<Void> inviteUser(
             @PathVariable Long collectionId,
             @UserId Long inviterId,
-            @RequestBody InviteRequest request
+            @Valid @RequestBody InviteRequest request
     ) {
         inviteService.inviteUser(inviterId, collectionId, request);
         return ResponseTemplate.ok();

@@ -34,6 +34,12 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             throw new BadCredentialsException("이메일과 비밀번호 불일치");
         }
 
+        // 우선 비밀번호 암호화 풀어놓기.
+//        if(!password.equals(userDetails.getPassword())) {
+//            System.out.println("이메일과 비밀번호 불일치");
+//            throw new BadCredentialsException("이메일과 비밀번호 불일치");
+//        }
+
         System.out.println("Success");
         return new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
     }

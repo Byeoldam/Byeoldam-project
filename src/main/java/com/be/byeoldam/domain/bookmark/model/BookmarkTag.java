@@ -3,7 +3,6 @@ package com.be.byeoldam.domain.bookmark.model;
 import com.be.byeoldam.domain.tag.model.Tag;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

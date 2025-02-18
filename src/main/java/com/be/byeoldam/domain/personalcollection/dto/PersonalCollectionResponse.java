@@ -1,5 +1,6 @@
 package com.be.byeoldam.domain.personalcollection.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -9,6 +10,8 @@ public class PersonalCollectionResponse {
 
     private Long collectionId;
     private String name;
+
+    @JsonProperty("isPersonal")
     private boolean isPersonal;
 
     public static PersonalCollectionResponse of(Long collectionId, String name) {

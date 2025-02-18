@@ -1,6 +1,7 @@
 package com.be.byeoldam.domain.user;
 
 
+import com.be.byeoldam.domain.bookmark.dto.TagDto;
 import com.be.byeoldam.domain.tag.TagService;
 import com.be.byeoldam.domain.user.dto.*;
 import com.be.byeoldam.domain.user.model.S3Image;
@@ -34,7 +35,7 @@ public class MypageService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException("해당 userId와 매핑된 User가 없습니다."));
 
-        List<String> tagList = tagService.getUserTags(userId);
+        List<TagDto> tagList = tagService.getUserTags(userId).getTagList();
 
         return MypageResponse.builder()
                 .profileUrl(user.getProfileUrl())

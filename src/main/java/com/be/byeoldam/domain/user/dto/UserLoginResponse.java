@@ -14,15 +14,17 @@ public class UserLoginResponse {
     private String nickname;
     private String accessToken;
     private String refreshToken;
+    private String profileUrl;
 
-    private UserLoginResponse(Long userId, String email, String nickname){
+    private UserLoginResponse(Long userId, String email, String nickname, String profileUrl){
         this.userId = userId;
         this.email = email;
         this.nickname = nickname;
+        this.profileUrl = profileUrl;
     }
 
     public static UserLoginResponse fromEntity(User user){
-        return new UserLoginResponse(user.getId(), user.getEmail(), user.getEmail());
+        return new UserLoginResponse(user.getId(), user.getEmail(), user.getEmail(), user.getProfileUrl());
     }
 
     public void addTokens(String accessToken, String refreshToken) {

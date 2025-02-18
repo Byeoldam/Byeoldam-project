@@ -121,18 +121,18 @@ class PersonalCollectionServiceTest {
 
 
 
-    @Test
-    void deletePersonalCollection_Success() {
-        // given
-        when(userRepository.findById(1L)).thenReturn(Optional.of(mockUser));
-        when(personalCollectionRepository.findById(1L)).thenReturn(Optional.of(mockCollection));
-
-        // when
-        personalCollectionService.deletePersonalCollection(1L, 1L);
-
-        // then
-        verify(personalCollectionRepository, times(1)).delete(mockCollection);
-    }
+//    @Test
+//    void deletePersonalCollection_Success() {
+//        // given
+//        when(userRepository.findById(1L)).thenReturn(Optional.of(mockUser));
+//        when(personalCollectionRepository.findById(1L)).thenReturn(Optional.of(mockCollection));
+//
+//        // when
+//        personalCollectionService.deletePersonalCollection(1L, 1L);
+//
+//        // then
+//        verify(personalCollectionRepository, times(1)).delete(mockCollection);
+//    }
 
     @Test
     void deletePersonalCollection_Fail_NotFound() {

@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface BookmarkTagRepository extends JpaRepository<BookmarkTag, Long> {
+public interface BookmarkTagRepository extends JpaRepository<BookmarkTag, Long>, BookmarkTagRepositoryCustom {
     List<BookmarkTag> findByBookmark(Bookmark bookmark);
 
     void deleteByBookmark(Bookmark bookmark);

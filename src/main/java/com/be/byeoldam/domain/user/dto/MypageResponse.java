@@ -1,5 +1,6 @@
 package com.be.byeoldam.domain.user.dto;
 
+import com.be.byeoldam.domain.bookmark.dto.TagDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,6 +15,6 @@ public class MypageResponse {
     String nickname;
     String profileUrl;
     int alrerDay;
-    List<String> tagList;
+    List<TagDto> tagList;
 
 }

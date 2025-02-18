@@ -61,14 +61,15 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         responseData.put("success", true);
         responseData.put("message", "로그인 성공 :)");
 
-        String accessToken = jwtUtil.createJwt("access", userDetails.getUserId(), userDetails.getEmail(),"ROLE_USER",6000000L);
-        String refreshToken = jwtUtil.createJwt("refresh", userDetails.getUserId(), userDetails.getEmail(),"ROLE_USER",6000000L); ;
+        String accessToken = jwtUtil.createJwt("access", userDetails.getUserId(), userDetails.getEmail(),"ROLE_USER",600000000L);
+        String refreshToken = jwtUtil.createJwt("refresh", userDetails.getUserId(), userDetails.getEmail(),"ROLE_USER",600000000L); ;
         userService.updateRefreshToken(userDetails.getUserId(), refreshToken);
 
         UserLoginResponse userLoginResponse = UserLoginResponse.builder()
                 .userId(userDetails.getUserId())
                 .email(userDetails.getEmail())
                 .nickname(userDetails.getNickname())
+                .profileUrl(userDetails.getProfileUrl())
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();

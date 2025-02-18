@@ -78,8 +78,11 @@ public class MemoService {
     @Transactional(readOnly = true)
     public List<MemoResponse> getMemoList(Long bookmarkId) {
 
-        if (!bookmarkRepository.existsById(bookmarkId)) {
-            throw new CustomException("북마크를 찾을 수 없습니다.");
+        Bookmark bookmark = bookmarkRepository.findById(bookmarkId)
+                .orElseThrow(() -> new CustomException("북마크를 찾을 수 없습니다."));
+
+        if (!bookmark.isRead()) { // 읽지 않은 북마크인 경우 읽음 처리
+            bookmark.updateRead();
         }
 
         List<Memo> memoList = memoRepository.findByBookmarkId(bookmarkId);

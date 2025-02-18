@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class RecommendedUrlByTagRequest {
     private String tagName;
-    private Long cursorId;
+    private int cursorId;
     private int size;
 }

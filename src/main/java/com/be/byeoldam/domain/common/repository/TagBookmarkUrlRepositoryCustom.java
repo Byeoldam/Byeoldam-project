@@ -5,5 +5,5 @@ import com.be.byeoldam.domain.tag.dto.RecommendedUrlResponse;
 import java.util.List;
 
 public interface TagBookmarkUrlRepositoryCustom {
-    List<RecommendedUrlResponse> findBookmarkUrlsByTagName(String tagName, Long cursorId, int size);
+    List<RecommendedUrlResponse> findBookmarkUrlsByTagName(String tagName, int cursorId, int size);
 }

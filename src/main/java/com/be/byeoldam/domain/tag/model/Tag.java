@@ -31,8 +31,12 @@ public class Tag {
     @PrePersist
     private void prePersist() {
         this.referenceCount = 0;
-        this.color = "red";
-        this.bolderColor = "green";
+        if(this.color == null || this.color.isBlank()) {
+            this.color = "#ed9fde";
+        }
+        if(this.bolderColor == null || this.bolderColor.isBlank()) {
+            this.bolderColor = "#ea55cf";
+        }
     }
 
     public static Tag create(String name){

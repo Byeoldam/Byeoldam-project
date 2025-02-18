@@ -63,7 +63,7 @@ class BookmarkUrlRepositoryTest {
         bookmarkUrlTagRepository.save(TagBookmarkUrl.create(tag,url5));
         bookmarkUrlTagRepository.save(TagBookmarkUrl.create(tag,url6));
 
-        request = new RecommendedUrlByTagRequest("검색",0L,4);
+        request = new RecommendedUrlByTagRequest("검색",0,4);
     }
 
     @Test

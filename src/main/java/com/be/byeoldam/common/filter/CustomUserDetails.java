@@ -14,16 +14,20 @@ public class CustomUserDetails implements UserDetails {
     private String email;
     private String password;
     private String nickname;
-
-    private CustomUserDetails(long userId, String email, String password, String nickname) {
+    private String profileUrl;
+    private CustomUserDetails(long userId, String email, String password, String nickname, String profileUrl) {
         this.userId = userId;
         this.email = email;
         this.password = password;
         this.nickname = nickname;
+        this.profileUrl = profileUrl;
     }
 
     public static CustomUserDetails fromEntity(User user) {
-        return new CustomUserDetails(user.getId(), user.getEmail(), user.getPassword(), user.getNickname());
+        return new CustomUserDetails(user.getId(), user.getEmail(), user.getPassword(), user.getNickname(), user.getProfileUrl());
+    }
+    public String getProfileUrl() {
+        return profileUrl;
     }
 
     public String getEmail() {

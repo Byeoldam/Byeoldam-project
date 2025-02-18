@@ -9,6 +9,8 @@ import com.be.byeoldam.domain.common.model.BookmarkUrl;
 import com.be.byeoldam.domain.common.model.TagBookmarkUrl;
 import com.be.byeoldam.domain.common.repository.BookmarkUrlRepository;
 import com.be.byeoldam.domain.common.repository.TagBookmarkUrlRepository;
+import com.be.byeoldam.domain.memo.MemoRepository;
+import com.be.byeoldam.domain.notification.NotificationRepository;
 import com.be.byeoldam.domain.personalcollection.model.PersonalCollection;
 import com.be.byeoldam.domain.personalcollection.repository.PersonalCollectionRepository;
 import com.be.byeoldam.domain.sharedcollection.model.SharedCollection;
@@ -16,6 +18,8 @@ import com.be.byeoldam.domain.sharedcollection.repository.SharedCollectionReposi
 import com.be.byeoldam.domain.sharedcollection.repository.SharedUserRepository;
 import com.be.byeoldam.domain.tag.model.Tag;
 import com.be.byeoldam.domain.tag.repository.TagRepository;
+import com.be.byeoldam.domain.tag.util.JsoupUtil;
+import com.be.byeoldam.domain.tag.util.UrlPreview;
 import com.be.byeoldam.domain.user.model.User;
 import com.be.byeoldam.domain.user.repository.UserRepository;
 import com.be.byeoldam.exception.CustomException;
@@ -42,6 +46,8 @@ public class BookmarkService {
     private final BookmarkUrlRepository bookmarkUrlRepository;
     private final SharedUserRepository sharedUserRepository;
     private final TagBookmarkUrlRepository tagBookmarkUrlRepository;
+    private final MemoRepository memoRepository;
+    private final NotificationRepository notificationRepository;
 
     // 북마크 추가
     // 1. Bookmarks에 추가
@@ -64,19 +70,19 @@ public class BookmarkService {
 
         // 븍마크 존재 여부 확인 후 없으면 생성, 그 후 +1
         BookmarkUrl bookmarkUrl = bookmarkUrlRepository.findByUrl(request.getUrl())
-                .orElseGet(() ->
-                        // TODO : readingTime 나중에 추가 필요
-                        bookmarkUrlRepository.save(BookmarkUrl.create(request.getUrl(), 0L, 0)));
-        bookmarkUrl.increment();
-
-        bookmarkRepository.findByBookmarkUrlAndUser(bookmarkUrl, user).stream()
-                .filter(bookmark -> bookmark.getPersonalCollection() != null)
-                .findFirst()
-                .ifPresent(bookmark -> {
-                    throw new CustomException("이미 저장한 url입니다.");
+                .orElseGet(() -> {
+                    UrlPreview preview = JsoupUtil.fetchMetadata(request.getUrl());
+                    return bookmarkUrlRepository.save(BookmarkUrl.create(preview, request.getUrl(), 0L, request.getReadingTime()));
                 });
 
+        bookmarkUrl.increment();
 
+//        bookmarkRepository.findByBookmarkUrlAndUser(bookmarkUrl, user).stream()
+//                .filter(bookmark -> bookmark.getPersonalCollection() != null)
+//                .findFirst()
+//                .ifPresent(bookmark -> {
+//                    throw new CustomException("이미 저장한 url입니다.");
+//                });
 
         // 2. Bookmark에 bookmark 추가해주기
         // 2-1. 컬렉션 타입 확인하기
@@ -89,11 +95,22 @@ public class BookmarkService {
             if (!collection.getUser().equals(user)) {
                 throw new CustomException("해당 컬렉션에 대한 권한이 없습니다.");
             }
+
+            bookmarkRepository.findByBookmarkUrlAndUser(bookmarkUrl, user).stream()
+                    .filter(bm -> bm.getPersonalCollection() != null)
+                    .findFirst()
+                    .ifPresent(bm -> {
+                        throw new CustomException("개인 컬렉션에 담은 페이지입니다.");
+                    });
+
             bookmark = Bookmark.createPersonalBookmark(bookmarkUrl, user, collection);
         } else {
             // 공유컬렉션이면 공유컬렉션 북마크로 만들기
             SharedCollection collection = sharedCollectionRepository.findById(request.getCollectionId())
-                    .orElseThrow(() -> new CustomException("8888해당 공유컬렉션이 없습니다."));
+                    .orElseThrow(() -> new CustomException("해당 공유컬렉션이 없습니다."));
+            if(bookmarkRepository.existsByBookmarkUrlAndSharedCollection(bookmarkUrl, collection)) {
+                throw new CustomException("공유컬렉션에 담은 페이지입니다.");
+            }
             bookmark = Bookmark.createSharedBookmark(bookmarkUrl, user, collection);
         }
 
@@ -201,7 +218,7 @@ public class BookmarkService {
             if (tag.getReferenceCount() == 0) {
                 // 태그-url 연관관계 삭제
                 tagBookmarkUrlRepository.deleteByTag(tag);
-                tagRepository.delete(tag); // 태그 삭제
+//                tagRepository.delete(tag); // 태그 삭제
             }
         }
     }
@@ -237,6 +254,8 @@ public class BookmarkService {
             }
         }
 
+        notificationRepository.deleteBookmarkNotification(bookmarkId);
+
         // 1. 북마크링크 referenceCount-- or 삭제
         // 삭제 시 북마크링크_태그도 지워줘야 함
         BookmarkUrl url = bookmarkUrlRepository.findById(bookmark.getBookmarkUrl().getId())
@@ -245,7 +264,7 @@ public class BookmarkService {
         if (url.getReferenceCount() == 0) {
             // 북마크 링크 삭제, tag-bookmarkurl 연관 관계도 삭제하기
             tagBookmarkUrlRepository.deleteByBookmarkUrl(url);
-            bookmarkUrlRepository.delete(url);
+//            bookmarkUrlRepository.delete(url);
         }
 
         // 2. 태그 쪽 삭제
@@ -257,10 +276,16 @@ public class BookmarkService {
             tag.decrement();
             bookmarkTagRepository.delete(bookmarkTag);
             if (tag.getReferenceCount() == 0) {
+                // Tag 삭제, 북마크-태그 테이블에서 연관관계 삭제
                 tagBookmarkUrlRepository.deleteByTag(tag);
-                tagRepository.delete(tag);
+//                tagRepository.delete(tag);
             }
         }
+
+        // 메모 삭제
+        // 북마크에 메모가 있으면 메모도 삭제
+        memoRepository.deleteAllByBookmarkId(bookmarkId);
+
 
         // 진짜 찐으로 북마크 삭제를 해야 함
         bookmarkRepository.delete(bookmark);
@@ -278,16 +303,18 @@ public class BookmarkService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException("사용자를 찾을 수 없습니다."));
 
-        // 예외 1. 북마크의 userId 와 요청한 userId 일치하지 않으면
-        if (!bookmark.getUser().getId().equals(user.getId())) {
-            throw new CustomException("해당 북마크를 가지고 있지 않습니다.");
-        }
 
         // 개인 > 개인: 이동
         if (request.isPersonal() && bookmark.getPersonalCollection() != null) {
             PersonalCollection collection = personalCollectionRepository.findById(request.getCollectionId())
-                    .orElseThrow(() -> new CustomException("00해당 개인컬렉션이 없습니다."));
+                    .orElseThrow(() -> new CustomException("해당 개인컬렉션이 없습니다."));
 
+            // 예외 1. 북마크의 userId 와 요청한 userId 일치하지 않으면
+            if (!bookmark.getUser().getId().equals(user.getId())) {
+                throw new CustomException("해당 북마크에 대한 권한이 없습니다ㅣ.");
+            }
+
+            log.info("PersonalCollection: {}", bookmark.getPersonalCollection());
             bookmark.updatePersonalCollection(collection);
             return; // return : 이동시키고 끝
         }
@@ -298,20 +325,26 @@ public class BookmarkService {
         // 개인 > 공유
         if (!request.isPersonal() && bookmark.getPersonalCollection() != null) {
             SharedCollection collection = sharedCollectionRepository.findById(request.getCollectionId())
-                    .orElseThrow(() -> new CustomException("11해당 공유컬렉션이 없습니다."));
+                    .orElseThrow(() -> new CustomException("해당 공유컬렉션이 없습니다."));
+
+            log.info("SharedCollection: {}", bookmark.getSharedCollection());
             newBookmark.updatePersonalCollection(null); // 개인 컬렉션 해제
             newBookmark.updateSharedCollection(collection);
 
         // 공유 > 공유
         } else if (!request.isPersonal() && bookmark.getSharedCollection() != null) {
             SharedCollection collection = sharedCollectionRepository.findById(request.getCollectionId())
-                    .orElseThrow(() -> new CustomException("22해당 개인컬렉션이 없습니다."));
+                    .orElseThrow(() -> new CustomException("해당 개인컬렉션이 없습니다."));
+
+            log.info("SharedCollection: {}", bookmark.getSharedCollection());
             newBookmark.updateSharedCollection(collection);
 
         // 공유 > 개인
         } else {
             PersonalCollection collection = personalCollectionRepository.findById(request.getCollectionId())
-                    .orElseThrow(() -> new CustomException("33해당 개인컬렉션이 없습니다."));
+                    .orElseThrow(() -> new CustomException("해당 개인컬렉션이 없습니다."));
+
+            log.info("PersonalCollection: {}", bookmark.getPersonalCollection());
             newBookmark.updateSharedCollection(null); // 공유 컬렉션 해제
             newBookmark.updatePersonalCollection(collection);
         }
@@ -333,13 +366,19 @@ public class BookmarkService {
         // 5. 북마크 URL referenceCount 증가
         BookmarkUrl bookmarkUrl = bookmark.getBookmarkUrl();
         bookmarkUrl.increment();
+        bookmarkRepository.save(newBookmark);
     }
 
     // 북마크 중요도 수정
     @Transactional
-    public void changePriority(Long bookmarkId) {
+    public void changePriority(Long userId, Long bookmarkId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException("사용자를 찾을 수 없습니다."));
         Bookmark bookmark = bookmarkRepository.findById(bookmarkId)
                 .orElseThrow(() -> new CustomException("해당 북마크가 없습니다."));
+        if (!bookmark.getUser().equals(user)) {
+            throw new CustomException("해당 북마크에 대한 권한이 없습니다.");
+        }
         bookmark.updatePriority();
     }
 }

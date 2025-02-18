@@ -15,9 +15,12 @@ public class RecommendedUrlResponse {
     private String imageUrl;
     private int readingTime;
 
-    public RecommendedUrlResponse(String url, int readingTime) {
+    public RecommendedUrlResponse(String url, int readingTime, String description, String img, String title) {
         this.url = url;
         this.readingTime = readingTime;
+        this.description = description;
+        this.imageUrl = img;
+        this.title = title;
     }
 
     public RecommendedUrlResponse updateFromPreview(UrlPreview preview){

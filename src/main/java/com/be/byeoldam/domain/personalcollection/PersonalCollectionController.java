@@ -2,12 +2,14 @@ package com.be.byeoldam.domain.personalcollection;
 
 import com.be.byeoldam.common.ResponseTemplate;
 import com.be.byeoldam.common.annotation.UserId;
+import com.be.byeoldam.domain.personalcollection.dto.PersonalBookmarkListResponse;
 import com.be.byeoldam.domain.personalcollection.dto.PersonalBookmarkResponse;
 import com.be.byeoldam.domain.personalcollection.dto.PersonalCollectionRequest;
 import com.be.byeoldam.domain.personalcollection.dto.PersonalCollectionResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +27,7 @@ public class PersonalCollectionController {
     @ApiResponse(responseCode = "200", description = "개인컬렉션 생성 성공", useReturnTypeSchema = true)
     @PostMapping
     public ResponseTemplate<Void> createPersonalCollection(
-            @RequestBody PersonalCollectionRequest request,
+            @Valid @RequestBody PersonalCollectionRequest request,
             @UserId Long userId
     ) {
 
@@ -49,7 +51,7 @@ public class PersonalCollectionController {
     @ApiResponse(responseCode = "200", description = "", useReturnTypeSchema = true)
     @PutMapping("/{personalCollectionId}")
     public ResponseTemplate<PersonalCollectionResponse> updatePeronalCollection(
-            @RequestBody PersonalCollectionRequest request,
+            @Valid @RequestBody PersonalCollectionRequest request,
             @UserId Long userId,
             @PathVariable Long personalCollectionId
     ) {
@@ -72,12 +74,13 @@ public class PersonalCollectionController {
     @Operation(summary = "개인컬렉션 북마크 목록 조회", description = "개인컬렉션의 북마크 목록 조회")
     @ApiResponse(responseCode = "200", description = "개인컬렉션 북마크 목록 조회 성공", useReturnTypeSchema = true)
     @GetMapping("/{personalCollectionId}")
-    public ResponseTemplate<List<PersonalBookmarkResponse>> getPersonalBookmark(
-            @PathVariable Long personalCollectionId,
-            @UserId Long userId
+    public ResponseTemplate<PersonalBookmarkListResponse> getPersonalBookmark(
+            @UserId Long userId,
+            @PathVariable Long personalCollectionId
+
     ) {
 
-        return ResponseTemplate.ok(personalCollectionService.getCollectionBookmark(personalCollectionId, userId));
+        return ResponseTemplate.ok(personalCollectionService.getCollectionBookmark(userId, personalCollectionId));
     }
 
     @Operation(summary = "오래된 북마크 조회", description = "30일 이상 보지 않은 북마크 목록 조회")

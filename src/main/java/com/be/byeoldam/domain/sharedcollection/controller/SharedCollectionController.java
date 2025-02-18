@@ -7,6 +7,7 @@ import com.be.byeoldam.domain.sharedcollection.service.SharedCollectionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +25,7 @@ public class SharedCollectionController {
     @ApiResponse(responseCode = "200", description = "공유컬렉션 생성 성공", useReturnTypeSchema = true)
     @PostMapping
     public ResponseTemplate<Void> createSharedCollection(
-            @RequestBody SharedCollectionRequest request,
+            @Valid @RequestBody SharedCollectionRequest request,
             @UserId Long userId
     ) {
 
@@ -48,7 +49,7 @@ public class SharedCollectionController {
     @ApiResponse(responseCode = "200", description = "공유컬렉션 수정 성공", useReturnTypeSchema = true)
     @PutMapping("/{sharedCollectionId}")
     public ResponseTemplate<SharedCollectionResponse> updateSharedCollection(
-            @RequestBody SharedCollectionRequest request,
+            @Valid @RequestBody SharedCollectionRequest request,
             @UserId Long userId,
             @PathVariable Long sharedCollectionId
     ) {
@@ -59,7 +60,7 @@ public class SharedCollectionController {
     @Operation(summary = "공유컬렉션 북마크 조회", description = "공유컬렉션의 북마크 조회")
     @ApiResponse(responseCode = "200", description = "공유컬렉션 북마크 조회 성공", useReturnTypeSchema = true)
     @GetMapping("/{sharedCollectionId}")
-    public ResponseTemplate<List<SharedBookmarkResponse>> getSharedBookmark(
+    public ResponseTemplate<SharedBookmarkListResponse> getSharedBookmark(
             @PathVariable Long sharedCollectionId,
             @UserId Long userId
     ) {
@@ -94,7 +95,7 @@ public class SharedCollectionController {
     @ApiResponse(responseCode = "200", description = "공유컬렉션 수락 성공", useReturnTypeSchema = true)
     @PostMapping("/invite")
     public ResponseTemplate<Void> acceptSharedCollection(
-            @RequestBody InviteAcceptRequest request,
+            @Valid @RequestBody InviteAcceptRequest request,
             @UserId Long userId
     ) {
         sharedCollectionService.inviteNewMember(request, userId);

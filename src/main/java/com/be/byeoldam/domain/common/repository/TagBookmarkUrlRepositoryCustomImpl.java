@@ -17,7 +17,7 @@ public class TagBookmarkUrlRepositoryCustomImpl implements TagBookmarkUrlReposit
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<RecommendedUrlResponse> findBookmarkUrlsByTagName(String tagName, Long cursorId, int size) {
+    public List<RecommendedUrlResponse> findBookmarkUrlsByTagName(String tagName, int offset, int size) {
         QTagBookmarkUrl tagBookmarkUrl = QTagBookmarkUrl.tagBookmarkUrl;
         QTag tag = QTag.tag;
         QBookmarkUrl bookmarkUrl = QBookmarkUrl.bookmarkUrl;
@@ -25,13 +25,16 @@ public class TagBookmarkUrlRepositoryCustomImpl implements TagBookmarkUrlReposit
         return queryFactory
                 .select(Projections.constructor(RecommendedUrlResponse.class,
                         bookmarkUrl.url,
-                        bookmarkUrl.readingTime))
+                        bookmarkUrl.readingTime,
+                        bookmarkUrl.description,
+                        bookmarkUrl.img,
+                        bookmarkUrl.title))
                 .from(tagBookmarkUrl)
                 .join(tagBookmarkUrl.tag, tag)
                 .join(tagBookmarkUrl.bookmarkUrl, bookmarkUrl)
-                .where(tag.name.eq(tagName))
-                .orderBy(tagBookmarkUrl.bookmarkUrl.referenceCount.desc()) // ASC 정렬
-                .offset(cursorId * size) // OFFSET 추가
+                .where(tagName != null ? tag.name.eq(tagName) : null) // 조건 동적 추가
+                .orderBy(tagBookmarkUrl.bookmarkUrl.referenceCount.desc()) // desc 정렬
+                .offset(offset) // OFFSET 추가
                 .limit(size) // size만큼 가져오기
                 .fetch();
     }
