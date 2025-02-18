@@ -75,11 +75,21 @@ const router = createRouter({
       name: 'personal',
       component: PersonalView,
     },
+    {
+      path: '/collections/personal/:collectionId',
+      name: 'personal-collection',
+      component: PersonalView
+    },
     // 공유 컬렉션
     {
       path: '/shared',
       name: 'shared',
       component: SharedView,
+    },
+    {
+      path: '/collections/shared/:collectionId',
+      name: 'shared-collection',
+      component: SharedView
     },
     // 검색 페이지
     {

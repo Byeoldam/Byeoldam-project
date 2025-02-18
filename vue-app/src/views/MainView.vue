@@ -32,10 +32,10 @@
                     <div v-else class="collections-grid">
                         <Collection 
                             v-for="collection in allCollections"
-                            :key="collection.collection_id"
+                            :key="collection.collectionId"
                             :collection="collection"
                             @action="handleCollectionAction"
-                            @click="navigateToCollection(collection)"
+                            @click="handleCollectionClick"
                         />
                     </div>
                 </div>
@@ -116,18 +116,12 @@ const handleCollectionAction = (action, collection) => {
     showModal.value = true;
 };
 
-const navigateToCollection = (collection) => {
-    if (collection.isPersonal) {
-        router.push({
-            name: 'personal',
-            query: { collection: collection.name }
-        });
-    } else {
-        router.push({
-            name: 'shared',
-            query: { collection: collection.name }
-        });
-    }
+const handleCollectionClick = (collectionData) => {
+    const { collectionId, isPersonal } = collectionData;
+    const path = isPersonal 
+        ? `/collections/personal/${collectionId}` 
+        : `/collections/shared/${collectionId}`;
+    router.push(path);
 };
 
 onMounted(async () => {
