@@ -111,18 +111,27 @@ const handleCollectionClick = async (collectionId, collectionName) => {
 
 onMounted(async () => {
     try {
+        // 1. 컬렉션 목록 가져오기
         const response = await collectionStore.fetchPersonalCollection();
         collections.value = response.results || [];
         
+        // 2. URL에서 collectionId 확인
         const collectionId = parseInt(route.params.collectionId);
+        
         if (collectionId) {
+            // URL에 collectionId가 있는 경우 해당 컬렉션의 북마크 조회
             const targetCollection = collections.value.find(c => c.collectionId === collectionId);
             if (targetCollection) {
                 selectedCollectionId.value = collectionId;
                 selectedCollectionName.value = targetCollection.name;
-                
                 await bookmarkStore.getPersonalCollectionBookmarks(collectionId);
             }
+        } else if (collections.value.length > 0) {
+            // URL에 collectionId가 없는 경우 첫 번째 컬렉션의 북마크 조회
+            const firstCollection = collections.value[0];
+            selectedCollectionId.value = firstCollection.collectionId;
+            selectedCollectionName.value = firstCollection.name;
+            await bookmarkStore.getPersonalCollectionBookmarks(firstCollection.collectionId);
         }
     } catch (error) {
         console.error('데이터 로딩 실패:', error);
