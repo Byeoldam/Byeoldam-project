@@ -31,6 +31,7 @@
                         </button>
                     </div>
                     <div v-if="selectedCollectionId && selectedCollectionBookmarks.length === 0" class="empty-state">
+                        <i class="fas fa-share-alt search-icon"></i>
                         <p class="empty-message">이 컬렉션에는 아직 북마크가 없습니다.</p>
                         <p class="empty-sub-message">새로운 북마크를 추가해보세요!</p>
                     </div>
@@ -50,13 +51,6 @@
                             :isPersonal="false"
                             :readingTime="bookmark.readingTime"
                         />
-                    </div>
-                    <div v-if="selectedCollectionBookmarks.length === 0" class="initial-message">
-                        <div class="message-box">
-                            <i class="fas fa-share-alt search-icon"></i>
-                            <h3>공유된 북마크가 없습니다.</h3>
-                            <p>다른 사용자와 북마크를 공유해보세요</p>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -216,9 +210,9 @@ const createNewCollection = () => {
 }
 
 .filter-btn.active {
-    background: #3730A3;
+    background: #4338CA;
     color: rgba(255, 255, 255, 0.901);
-    border-color: #3730A3;
+    border-color: #4338CA;
 }
 
 .new-collection-btn {

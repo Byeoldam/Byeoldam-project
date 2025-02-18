@@ -124,7 +124,7 @@ onMounted(async () => {
     align-items: center;
     justify-content: center;
     padding: 60px 20px;
-    background-color: #f8f9fa;
+    /* background-color: #f8f9fa; */
     border-radius: 12px;
     text-align: center;
 }
