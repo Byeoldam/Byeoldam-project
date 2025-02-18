@@ -52,6 +52,7 @@
                     </span>
                 </div>
                 <div v-if="props.readingTime" class="read-time">
+                  <i class="far fa-clock"></i>
                     {{ props.readingTime }}분
                 </div>
             </div>
@@ -170,7 +171,7 @@ const handlePriorityToggle = () => {
 
 <style scoped>
 .card {
-  border-radius: 12px;
+  border-radius: 18px;
   background: #ffffff;
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
   overflow: hidden;
@@ -197,7 +198,7 @@ const handlePriorityToggle = () => {
 }
 
 .card-content {
-  padding: 16px;
+  padding: 13px;
   height: 160px;
   display: flex;
   flex-direction: column;
@@ -205,7 +206,7 @@ const handlePriorityToggle = () => {
 
 .card-title {
   margin: 0 0 8px 0;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   color: #333;
   font-weight: 600;
   white-space: nowrap;
@@ -215,7 +216,7 @@ const handlePriorityToggle = () => {
 
 .card-description {
   color: #666;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   line-height: 1.4;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -225,7 +226,7 @@ const handlePriorityToggle = () => {
 }
 
 .card-url {
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   color: #999;
   margin-bottom: 8px;
   white-space: nowrap;
@@ -238,6 +239,7 @@ const handlePriorityToggle = () => {
   justify-content: space-between;
   align-items: center;
   margin-top: auto;
+  padding: 0 px;
 }
 
 .tags-container {
@@ -285,7 +287,7 @@ const handlePriorityToggle = () => {
   justify-content: space-between;
   align-items: center;
   padding: 10px 16px;
-  background-color: #f8f9fa;
+  background-color: #ffffff;
 }
 
 .priority {
@@ -294,14 +296,14 @@ const handlePriorityToggle = () => {
 }
 
 .star-icon {
-  color: #ffd700;
+  color: #FFD900F5;
   font-size: 1.2rem;
   text-shadow: 0 2px 4px rgba(0,0,0,0.1);
   transition: all 0.2s ease;
 }
 
 .star-icon.empty {
-  color: #e0e0e0;
+  color: #e7e7e7;
 }
 
 .star-icon:hover {

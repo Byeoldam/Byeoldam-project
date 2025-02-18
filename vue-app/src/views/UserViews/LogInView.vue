@@ -65,7 +65,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useUserStore } from "@/stores/user";
 import { RouterLink } from "vue-router";
 import { useRouter } from "vue-router";
@@ -76,6 +76,18 @@ const userstore = useUserStore()
 
 const email = ref("");
 const password = ref("");
+
+// 별 그림자 상태를 저장할 ref 변수들 추가
+const starsStyle = ref('');
+const stars2Style = ref('');
+const stars3Style = ref('');
+
+// onMounted를 가져옵니다
+onMounted(() => {
+  starsStyle.value = generateStarsShadow(700, 1);
+  stars2Style.value = generateStarsShadow(200, 2);
+  stars3Style.value = generateStarsShadow(100, 3);
+});
 
 //로그인 핸들러
 const handleLogin = async () => {
@@ -159,7 +171,7 @@ button:hover {
     width: 1px;
     height: 1px;
     background: transparent;
-    box-shadow: v-bind('generateStarsShadow(700, 1)');
+    box-shadow: v-bind('starsStyle');
     animation: 
         animStar 50s linear infinite,
         twinkle-1 3s ease-in-out infinite;
@@ -172,7 +184,7 @@ button:hover {
     width: 2px;
     height: 2px;
     background: transparent;
-    box-shadow: v-bind('generateStarsShadow(200, 2)');
+    box-shadow: v-bind('stars2Style');
     animation: 
         animStar 100s linear infinite,
         twinkle-2 4s ease-in-out infinite;
@@ -185,7 +197,7 @@ button:hover {
     width: 3px;
     height: 3px;
     background: transparent;
-    box-shadow: v-bind('generateStarsShadow(100, 3)');
+    box-shadow: v-bind('stars3Style');
     animation: 
         animStar 150s linear infinite,
         twinkle-3 5s ease-in-out infinite;

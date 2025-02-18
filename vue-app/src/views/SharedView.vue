@@ -25,33 +25,43 @@
                                 {{ collection.name }}
                             </button>
                         </div>
-                        <button class="new-collection-btn" @click="createNewCollection">
-                            <span class="plus-icon">+</span>
-                            새 컬렉션
-                        </button>
+                        <div class="right-section">
+                            <CollectionMembers 
+                                v-if="selectedCollectionId && collectionMembers.length > 0"
+                                :members="collectionMembers"
+                            />
+                            <button class="new-collection-btn" @click="createNewCollection">
+                                <span class="plus-icon">+</span>
+                                새 컬렉션
+                            </button>
+                        </div>
                     </div>
-                    <div v-if="selectedCollectionId && selectedCollectionBookmarks.length === 0" class="empty-state">
-                        <p class="empty-message">이 컬렉션에는 아직 북마크가 없습니다.</p>
-                        <p class="empty-sub-message">새로운 북마크를 추가해보세요!</p>
+                    <div class="content-section">
+                        <div class="cards-section">
+                            <div v-if="selectedCollectionId && selectedCollectionBookmarks.length === 0" class="empty-state">
+                                <p class="empty-message">이 컬렉션에는 아직 북마크가 없습니다.</p>
+                                <p class="empty-sub-message">새로운 북마크를 추가해보세요!</p>
+                            </div>
+                            <div v-else-if="selectedCollectionBookmarks.length > 0" class="cards-grid">
+                                <Card
+                                    v-for="bookmark in selectedCollectionBookmarks"
+                                    :key="bookmark.bookmarkId"
+                                    :bookmarkId="bookmark.bookmarkId"
+                                    :url="bookmark.url"
+                                    :img="bookmark.img"
+                                    :title="bookmark.title"
+                                    :description="bookmark.description"
+                                    :tag="bookmark.tags"
+                                    :priority="bookmark.priority"
+                                    :createdAt="bookmark.createdAt"
+                                    :updatedAt="bookmark.updatedAt"
+                                    :isPersonal="false"
+                                    :readingTime="bookmark.readingTime"
+                                />
+                            </div>
+                        </div>
                     </div>
-                    <div v-else-if="selectedCollectionBookmarks.length > 0" class="cards-grid">
-                        <Card
-                            v-for="bookmark in selectedCollectionBookmarks"
-                            :key="bookmark.bookmarkId"
-                            :bookmarkId="bookmark.bookmarkId"
-                            :url="bookmark.url"
-                            :img="bookmark.img"
-                            :title="bookmark.title"
-                            :description="bookmark.description"
-                            :tag="bookmark.tags"
-                            :priority="bookmark.priority"
-                            :createdAt="bookmark.createdAt"
-                            :updatedAt="bookmark.updatedAt"
-                            :isPersonal="false"
-                            :readingTime="bookmark.readingTime"
-                        />
-                    </div>
-                    <div v-if="selectedCollectionBookmarks.length === 0" class="initial-message">
+                    <div v-if="!selectedCollectionId" class="initial-message">
                         <div class="message-box">
                             <i class="fas fa-share-alt search-icon"></i>
                             <h3>공유된 북마크가 없습니다.</h3>
@@ -80,6 +90,7 @@ import { useCollectionStore } from '@/stores/collection';
 import { useBookmarkStore } from '@/stores/bookmark';
 import { storeToRefs } from 'pinia';
 import Card from '@/common/Card.vue';
+import CollectionMembers from '@/component/CollectionMembers.vue';
 
 const collectionStore = useCollectionStore();
 const bookmarkStore = useBookmarkStore();
@@ -90,9 +101,9 @@ const selectedCollectionBookmarks = computed(() =>
     sharedCollectionBookmarks.value?.results?.bookmarks || []
 );
 const showCreateModal = ref(false);
+const collectionMembers = ref([]);
 
 const collections = ref([]);
-
 
 const handleCollectionClick = async (collectionId, collectionName) => {
     console.log('Selected Collection ID:', collectionId, 'hakjun0412');
@@ -100,9 +111,22 @@ const handleCollectionClick = async (collectionId, collectionName) => {
     selectedCollectionName.value = collectionName;
     
     try {
-        await bookmarkStore.getSharedCollectionBookmarks(collectionId);
+        await Promise.all([
+            bookmarkStore.getSharedCollectionBookmarks(collectionId),
+            loadCollectionMembers(collectionId)
+        ]);
     } catch (error) {
-        console.error('북마크 로딩 실패:', error, 'hakjun0412');
+        console.error('데이터 로딩 실패:', error, 'hakjun0412');
+    }
+};
+
+const loadCollectionMembers = async (collectionId) => {
+    try {
+        const response = await collectionStore.getMembersByCollectionId(collectionId);
+        collectionMembers.value = response.results || [];
+    } catch (error) {
+        console.error('멤버 정보 로딩 실패:', error);
+        collectionMembers.value = [];
     }
 };
 
@@ -216,9 +240,9 @@ const createNewCollection = () => {
 }
 
 .filter-btn.active {
-    background: #3730A3;
+    background: #4338CA;
     color: rgba(255, 255, 255, 0.901);
-    border-color: #3730A3;
+    border-color: #4338CA;
 }
 
 .new-collection-btn {
@@ -366,5 +390,21 @@ const createNewCollection = () => {
     color: #718096;
     font-size: 16px;
     line-height: 1.5;
+}
+
+.content-section {
+    display: flex;
+    margin-top: 20px;
+}
+
+.cards-section {
+    flex: 1;
+    min-width: 0;
+}
+
+.right-section {
+    display: flex;
+    align-items: center;
+    gap: 16px;
 }
 </style>
