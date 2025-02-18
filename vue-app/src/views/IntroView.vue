@@ -174,7 +174,7 @@ function generateStarsShadow(count, size) {
 .header {
     position: fixed;
     width: 100%;
-    padding: 0.8rem 1.5rem;
+    padding: 1.0rem 1.5rem;
     z-index: 10;
     background-color: rgba(30, 27, 75, 0.9);
     backdrop-filter: blur(12px);
@@ -197,7 +197,7 @@ function generateStarsShadow(count, size) {
 .logo-title {
     font-size: 1.875rem;
     font-weight: bold;
-    color: white;
+    color: #ffd900f5;
 }
 
 .logo-subtitle {

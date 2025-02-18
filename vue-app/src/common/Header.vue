@@ -5,7 +5,7 @@
                 <img src="@/assets/logo.png" alt="별담 로고" class="logo-image">
                 <div class="logo-text">
                     <span class="logo-title">별담</span>
-                    <span class="logo-subtitle">: 별을 담다</span>
+                    <span class="logo-subtitle">:별을 담다</span>
                 </div>
             </router-link>
         </div>
@@ -79,8 +79,8 @@ const goToMyPage = () => {
 }
 
 .logo-image {
-    width: 50px;  /* 로고 이미지 크기 조정 */
-    height: 50px;  /* 로고 이미지 크기 조정 */
+    width: 40px;  /* 로고 이미지 크기 조정 */
+    height: 40px;  /* 로고 이미지 크기 조정 */
     object-fit: contain;  /* 이미지 비율 유지 */
 }
 
@@ -104,32 +104,31 @@ const goToMyPage = () => {
 .logo-link {
     display: flex;
     align-items: center;
-    gap: 7px;
+    gap: 0.5rem;
     text-decoration: none;
     color: inherit;
-    white-space: nowrap;  /* 줄바꿈 방지 */
+    white-space: nowrap;  
     margin-top: 5px;
     margin-left: 3px;
 }
 
 .logo-text {
     display: flex;
-    align-items: center;  /* 세로 중앙 정렬 */
-    gap: 5px;  /* 타이틀과 서브타이틀 사이 간격 */
-    margin-top: 3px;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin-top: 4px;
 }
 
 .logo-title {
-    font-size: 1.7rem;
-    font-weight: 700;
-    color: #ffd900f5;  /* 키 컬러로 변경 */
-    letter-spacing: 0.5px;
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #ffd900f5;
 }
 
 .logo-subtitle {
-    font-size: 1.2rem;  /* 크기 조정 */
-    color: rgba(255, 255, 255, 0.75);  /* 반투명 흰색 */
-    letter-spacing: 0.5px;
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: normal;
 }
 
 .logout-button {
