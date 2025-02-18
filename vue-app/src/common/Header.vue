@@ -11,18 +11,10 @@
         </div>
         
         <div class="auth-section">
-            <div>
-                <p class="welcome-message">{{ usernickname }} 님 환영합니다</p>
-            </div>
-            <img 
-                :src="userProfile || defaultProfileImage" 
-                alt="프로필 사진" 
-                class="profile-image"
-            />
             <!-- 로그아웃 버튼 추가 -->
             <div class="profile-area" @click="goToMyPage">
                 <div>
-                    <p>{{ usernickname }} 님 환영합니다</p>
+                    <p class="welcome-message">{{ usernickname }} 님 환영합니다</p>
                 </div>
                 <img 
                     :src="userProfile || defaultProfileImage" 
