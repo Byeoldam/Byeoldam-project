@@ -3,7 +3,7 @@
       <h2 class="modal-title">컬렉션 삭제</h2>
       <p class="warning-text">삭제된 컬렉션은 되돌릴 수 없습니다.</p>
       <div class="button-group">
-        <el-button @click="$emit('close')">아니오</el-button>
+        <el-button @click="$emit('close')" class="cancel-button">아니오</el-button>
         <el-button type="danger" @click="handleDelete" class="delete-button">예, 삭제하겠습니다</el-button>
       </div>
     </div>
@@ -53,7 +53,8 @@
   .modal-title {
     font-size: 20px;
     margin-bottom: 16px;
-    color: #303133;
+    color: #333;
+    font-weight: 700;
   }
   
   .warning-text {
@@ -65,6 +66,18 @@
     display: flex;
     justify-content: center;
     gap: 12px;
+  }
+
+  .cancel-button {
+    color: #606266;
+    background: #ffffff;
+    border-color: #dcdfe6;
+  }
+  
+  .cancel-button:hover {
+    color: #818CF8;
+    background: #EEF2FF;
+    border-color: #C7D2FE;
   }
 
     :deep(.delete-button) {

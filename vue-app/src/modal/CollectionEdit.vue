@@ -77,7 +77,8 @@
   .modal-title {
     font-size: 20px;
     margin-bottom: 20px;
-    color: #303133;
+    color: #333;
+    font-weight: 700;
   }
   
   .button-group {
