@@ -146,6 +146,8 @@ const confirmDelete = async () => {
 .collection-header h3 {
   margin: 0;
   font-size: 1.1rem;
+  margin-top: 4px;
+  font-weight: 500;
 }
 
 .header-buttons {

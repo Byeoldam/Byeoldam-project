@@ -20,7 +20,12 @@
                             새 컬렉션
                         </button>
                     </div>
-                    <div v-if="!allCollections?.length" class="empty-state">
+                    <div v-if="isLoading" class="loading-spinner">
+                        <div class="spinner"></div>
+                        <p>로딩 중...</p>
+                    </div>
+                    
+                    <div v-else-if="!allCollections?.length" class="empty-state">
                         <i class="fas fa-folder-open empty-icon"></i>
                         <p class="empty-text">컬렉션이 존재하지 않습니다.</p>
                         <p class="empty-description">
@@ -89,6 +94,7 @@ const { allCollections } = storeToRefs(collectionStore);
 const showModal = ref(false);
 const modalType = ref(null);
 const selectedCollection = ref(null);
+const isLoading = ref(true);
 
 const createNewCollection = () => {
     modalType.value = 'create';
@@ -139,9 +145,12 @@ const handleLogout = async () => {
 
 onMounted(async () => {
     try {
+        isLoading.value = true;
         await collectionStore.fetchAllCollections();
     } catch (error) {
         console.error('컬렉션 로딩 실패:', error);
+    } finally {
+        isLoading.value = false;
     }
 });
 </script>
@@ -297,7 +306,7 @@ onMounted(async () => {
 .title-section {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     margin-bottom: 8px;
 }
 
@@ -320,4 +329,27 @@ onMounted(async () => {
     line-height: 1.4;
 }
 
+.loading-spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    padding-top: 200px;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #3730A3;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
 </style>

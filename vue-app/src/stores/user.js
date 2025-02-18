@@ -44,10 +44,10 @@ export const useUserStore = defineStore("user", {
         });
     
         if (res.data.success) {
-          const { userId, email, nickname, accessToken, refreshToken } = res.data.results;
+          const { userId, email, nickname, accessToken, refreshToken, profileUrl } = res.data.results;
     
           // 1. store 상태 업데이트
-          this.user = { userId, email, nickname };
+          this.user = { userId, email, nickname, profileUrl };
           this.accessToken = accessToken;
           this.refreshToken = refreshToken;
     
@@ -110,6 +110,7 @@ export const useUserStore = defineStore("user", {
       try {
         const response = await axios.post(`${REST_API_URL}/users/email/send`, { email });
         console.log("이메일 인증 요청 완료");
+        console.log(response.data);
         return response.data;
       } catch (error) {
         console.error("이메일 인증 요청 실패:", error);
