@@ -110,17 +110,12 @@ const router = createRouter({
       name: 'old',
       component: OldView,
     },
-    // 개인 상세 페이지
+    // 개인 컬렉션 북마크 상세
     {
-      path: '/personal-collection/:id',
-      name: 'personal-detail',
-      component: PersonalDetailView
-    },
-    // 공유 상세 페이지
-    {
-      path: '/shared-collection/:id',
-      name: 'shared-detail',
-      component: SharedDetailView
+      path: '/api/bookmarks/:bookmarkId',
+      name: 'bookmark-detail',
+      component: PersonalDetailView,
+      props: true
     },
     // 마이페이지
     {

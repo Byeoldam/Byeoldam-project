@@ -20,7 +20,7 @@
             :src="imageSrc" 
             :alt="props.title" 
             class="card-image"
-            @click="handleImageClick"
+            @click="handleCardClick"
             style="cursor: pointer"
         >
         <div class="card-content">
@@ -65,6 +65,7 @@
 import { ref, computed } from 'vue';
 import BookmarkSettings from '@/common/BookmarkSettings.vue';
 import { useRouter } from 'vue-router';
+import { useBookmarkStore } from '@/stores/bookmark';
 
 const props = defineProps({
     key: {
@@ -126,6 +127,7 @@ const props = defineProps({
 });
 
 const router = useRouter();
+const bookmarkStore = useBookmarkStore();
 
 const visibleTags = computed(() => props.tag.slice(0, 2));
 const remainingTagsCount = computed(() => Math.max(0, props.tag.length - 2));
@@ -136,30 +138,12 @@ const imageSrc = computed(() => {
         : 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?q=80&w=2128&auto=format&fit=crop';
 });
 
-const handleImageClick = () => {
-    const bookmarkData = {
-        id: props.bookmarkId,
-        url: props.url,
-        title: props.title,
-        description: props.description,
-        img: props.img,
-        tag: props.tag,
-        priority: props.priority,
-        isPersonal: props.isPersonal,
-        createdAt: props.createdAt,
-        updatedAt: props.updatedAt
-    };
-    
-    // isPersonal 값에 따라 다른 라우트로 이동
-    const route = props.isPersonal 
-        ? `/personal-collection/${props.bookmarkId}`
-        : `/shared-collection/${props.bookmarkId}`;
-    
-    // 북마크 데이터를 query parameter로 전달
-    router.push({
-        path: route,
-        query: { data: JSON.stringify(bookmarkData) }
-    });
+const handleCardClick = () => {
+  // URL은 깔끔하게 bookmarkId만 전달
+  router.push({
+    name: 'bookmark-detail',
+    params: { bookmarkId: props.bookmarkId }
+  });
 };
 
 const emit = defineEmits(['update:priority']);
