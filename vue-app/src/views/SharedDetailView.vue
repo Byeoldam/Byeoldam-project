@@ -48,6 +48,8 @@
                                 placeholder="메모를 입력하세요..."
                                 rows="4"
                                 :disabled="isSubmitting"
+                                @keydown.enter.exact.prevent="addMemo"
+                                @keydown.shift.enter="newMemo += '\n'"
                             ></textarea>
                             <button 
                                 @click="addMemo" 
