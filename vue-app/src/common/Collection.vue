@@ -1,19 +1,21 @@
 <template>
   <div class="collection-card" @click="!showModal && $emit('click')">
-    <div class="collection-header">
-      <h3>{{ collection.name }}</h3>
-      <div class="header-buttons">
-        <button class="settings-button" @click.stop="$emit('action', 'edit', collection)">
-          <i class="fas fa-cog"></i>
-        </button>
-        <button class="delete-button" @click.stop="$emit('action', 'delete', collection)">
-          <i class="fas fa-trash"></i>
-        </button>
+    <div class="card-content">
+      <div class="collection-header">
+        <h3>{{ collection.name }}</h3>
+        <div class="header-buttons">
+          <button class="settings-button" @click.stop="$emit('action', 'edit', collection)">
+            <i class="fas fa-cog"></i>
+          </button>
+          <button class="delete-button" @click.stop="$emit('action', 'delete', collection)">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
       </div>
-    </div>
-    <div class="collection-type">
-      <i :class="['collection-icon', collection.isPersonal ? 'fas fa-user' : 'fas fa-users']"></i>
-      {{ collection.isPersonal ? '개인' : '공유' }} 컬렉션
+      <div class="collection-type">
+        <i :class="['collection-icon', collection.isPersonal ? 'fas fa-user' : 'fas fa-users']"></i>
+        {{ collection.isPersonal ? '개인' : '공유' }} 컬렉션
+      </div>
     </div>
 
     <SharedCollectionSettings 
@@ -113,17 +115,21 @@ const confirmDelete = async () => {
   transition: all 0.3s ease;
   cursor: pointer;
   border: 1px solid #E9ECEF;
+  min-height: 120px;
 }
 
-.collection-card:hover {
-  box-shadow: 0 8px 15px rgba(26, 35, 126, 0.15);
-  transform: translateY(-2px);
+.card-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  min-height: 50px;
 }
 
 .collection-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 8px;
 }
 
