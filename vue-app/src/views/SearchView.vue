@@ -319,12 +319,13 @@ onUnmounted(() => {
     padding: 20px;
     max-width: 1200px;
     margin: 0 auto;
+    margin-right: 20px;
 }
 
 .search-container {
     margin-bottom: 30px;
     display: flex;
-    gap: 10px;
+    gap: 15px;
 }
 
 .search-input {
@@ -351,15 +352,16 @@ onUnmounted(() => {
 
 .search-results-container {
     display: flex;
-    gap: 40px;
+    gap: 30px;
 }
 
 .main-results {
     flex: 1;
+    min-width: 780px; /* 카드 3개와 간격을 수용할 수 있는 최소 너비 */
 }
 
 .recommended-section {
-    width: 280px;
+    width: 240px; /* 추천 섹션 너비 축소 */
     flex-shrink: 0;
 }
 
@@ -372,7 +374,7 @@ onUnmounted(() => {
 
 .bookmarks-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    grid-template-columns: repeat(3, 240px); /* 3개의 카드를 위한 그리드 설정 */
     gap: 20px;
 }
 
@@ -383,69 +385,65 @@ onUnmounted(() => {
 }
 
 .recommended-item {
-    display: flex;
-    gap: 8px;
-    padding: 8px;
     border: 1px solid #e2e8f0;
     border-radius: 8px;
-    cursor: pointer;
-    transition: transform 0.2s;
-    height: 80px;
-    width: 100%;
-    position: relative;
+    transition: all 0.2s ease;
+    background-color: white;
+    overflow: hidden; /* 내부 요소가 넘치지 않도록 */
 }
 
 .recommended-item:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transform: translateY(-2px);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.recommended-image {
-    width: 50px;
-    height: 50px;
-    object-fit: cover;
-    border-radius: 4px;
 }
 
 .recommended-content-wrapper {
     display: flex;
-    gap: 8px;
-    flex: 1;
+    padding: 10px;
+    gap: 12px;
+    cursor: pointer;
+}
+
+.recommended-image {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
 }
 
 .recommended-content {
     flex: 1;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    min-width: 0;
+    padding-right: 8px; /* save 버튼과의 간격 */
 }
 
 .recommended-content h3 {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
+    color: #666;
     margin: 0;
-    color: #2d3748;
+    line-height: 1.4;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    word-break: break-word;
 }
 
 .save-button {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    padding: 2px 8px;
-    background-color: transparent;
-    border: 1px solid #e2e8f0;
-    border-radius: 4px;
-    color: #718096;
+    width: 100%;
+    padding: 6px;
+    background-color: #f8fafc;
+    border: none;
+    border-top: 1px solid #e2e8f0;
+    color: #3730A3;
+    font-weight: 600;
     cursor: pointer;
-    font-size: 0.75rem;
-    z-index: 1;
+    transition: background-color 0.2s ease;
 }
 
 .save-button:hover {
-    background-color: #f7fafc;
+    background-color: #f1f5f9;
 }
 
 .loading {

@@ -106,6 +106,7 @@
 import { useUserStore } from "@/stores/user";;
 import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import { ElMessage } from 'element-plus';
   
   const userStore = useUserStore();
   const router = useRouter();
@@ -125,6 +126,9 @@ import { useRouter } from "vue-router";
 
   const isEmailVerified = ref(false);
   const isEmailSent = ref(false);
+  const message = ref("");
+  const showMessage = ref(false);
+  const messageType = ref("");
 
   // 별 그림자 상태를 저장할 ref 변수들 추가
   const starsStyle = ref('');
@@ -224,13 +228,12 @@ import { useRouter } from "vue-router";
 
     try {
       await userStore.signup(payload);
-      router.push({ name: 'login' });
+      ElMessage.success('회원가입이 성공적으로 완료되었습니다.');
+      setTimeout(() => {
+        router.push({ name: 'login' });
+      }, 100);
     } catch (error) {
-      modal.value = { 
-        visible: true, 
-        success: false, 
-        message: error.response?.data?.message || "회원가입에 실패했습니다" 
-      };
+      ElMessage.error(error.response?.data?.message || '회원가입에 실패했습니다.');
     }
   };
 
@@ -413,6 +416,25 @@ import { useRouter } from "vue-router";
         height: 100%;
         animation: twinkle 4s infinite;
     }
+}
+
+.message {
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
 }
 </style>
   

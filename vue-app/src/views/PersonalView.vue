@@ -196,6 +196,7 @@ const createNewCollection = () => {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 12px;
+    margin-right: 20px;
 }
 
 .filter-buttons {

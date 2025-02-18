@@ -1,15 +1,20 @@
 <template>
-    <div class="modal-overlay" @click="closeModal">
-        <div class="modal-content" @click.stop>
-            <div class="modal-header">
-                <h2>북마크 저장하기</h2>
-                <button class="close-button" @click="closeModal">×</button>
-            </div>
+    <div class="modal-overlay">
+        <div class="bookmark-save-modal">
+            <h3 class="modal-title">북마크 저장하기</h3>
             
-            <div class="modal-body">
-                <div class="collection-select">
-                    <p>저장할 개인 컬렉션을 선택하세요.</p>
-                    <select v-model="selectedCollection" class="select-input">
+            <div class="modal-content">
+                <p class="description">
+                    북마크를 저장할 개인 컬렉션을 선택하고 태그를 추가해주세요.
+                </p>
+
+                <div class="select-container">
+                    <label for="collection-select">개인 컬렉션 선택:</label>
+                    <select 
+                        id="collection-select"
+                        v-model="selectedCollection" 
+                        class="collection-select"
+                    >
                         <option value="" disabled>컬렉션을 선택하세요</option>
                         <option 
                             v-for="collection in collections" 
@@ -22,16 +27,22 @@
                 </div>
 
                 <div class="tags-section">
-                    <p>태그</p>
+                    <label>태그 추가</label>
                     <div class="selected-tags">
-                        <span 
-                            v-for="tag in selectedTags" 
-                            :key="tag"
-                            class="tag"
-                        >
-                            # {{ tag }}
-                            <button class="remove-tag" @click="removeTag(tag)">×</button>
-                        </span>
+                        <div v-for="tag in selectedTags" 
+                             :key="tag.name"
+                             class="tag-item">
+                            <span 
+                                class="tag"
+                                :style="{
+                                    backgroundColor: tag.color,
+                                    borderColor: tag.bolder
+                                }"
+                            >
+                                #{{ tag.name }}
+                            </span>
+                            <button @click="removeTag(tag.name)" class="delete-btn">×</button>
+                        </div>
                     </div>
                     <div class="tag-input-container">
                         <input 
@@ -43,10 +54,11 @@
                         >
                     </div>
                 </div>
-            </div>
 
-            <div class="modal-footer">
-                <button class="save-button" @click="handleSave">저장</button>
+                <div class="button-group">
+                    <button class="save-button" @click="handleSave">저장</button>
+                    <button class="cancel-button" @click="closeModal">취소</button>
+                </div>
             </div>
         </div>
     </div>
@@ -101,15 +113,52 @@ const collections = computed(() => {
 const selectedTags = ref([]);
 const newTag = ref('');
 
+// HSL을 HEX로 변환하는 함수 추가
+const hslToHex = (h, s, l) => {
+    s /= 100;
+    l /= 100;
+    const c = (1 - Math.abs(2 * l - 1)) * s;
+    const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+    const m = l - c / 2;
+    let r = 0, g = 0, b = 0;
+
+    if (0 <= h && h < 60) { r = c; g = x; b = 0; }
+    else if (60 <= h && h < 120) { r = x; g = c; b = 0; }
+    else if (120 <= h && h < 180) { r = 0; g = c; b = x; }
+    else if (180 <= h && h < 240) { r = 0; g = x; b = c; }
+    else if (240 <= h && h < 300) { r = x; g = 0; b = c; }
+    else if (300 <= h && h < 360) { r = c; g = 0; b = x; }
+
+    const toHex = (value) => {
+        const hex = Math.round((value + m) * 255).toString(16);
+        return hex.length === 1 ? "0" + hex : hex;
+    };
+
+    return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+};
+
+// 새로운 색상 생성 함수
+const generateRandomColor = () => {
+    const hue = Math.floor(Math.random() * 359);
+    const saturation = 85 + Math.random() * 10;
+    const lightness = 92 + Math.random() * 3;
+    return hslToHex(hue, saturation - 50, lightness);
+};
+
+// addTag 함수 수정
 const addTag = () => {
     if (newTag.value.trim() && !selectedTags.value.includes(newTag.value.trim())) {
-        selectedTags.value.push(newTag.value.trim());
+        const tagColor = generateRandomColor();
+        selectedTags.value.push({
+            name: newTag.value.trim(),
+            color: tagColor
+        });
         newTag.value = '';
     }
 };
 
 const removeTag = (tag) => {
-    selectedTags.value = selectedTags.value.filter(t => t !== tag);
+    selectedTags.value = selectedTags.value.filter(t => t.name !== tag);
 };
 
 const closeModal = () => {
@@ -143,8 +192,8 @@ const handleSave = async () => {
             url: props.url,
             collectionId: Number(selectedCollection.value),
             tags: selectedTags.value.map(tag => ({
-                tagName: tag,
-                tagColor: tagColors[Math.floor(Math.random() * tagColors.length)], // 랜덤 색상 지정
+                tagName: tag.name,
+                tagColor: tag.color,
                 tagBolder: "normal"
             })),
             readingTime: props.readingTime,
@@ -184,138 +233,139 @@ watch(selectedCollection, (newVal) => {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 9999;
+    z-index: 1000;
 }
 
-.modal-content {
-    background: white;
+.bookmark-save-modal {
+    background-color: white;
     border-radius: 8px;
+    padding: 20px;
     width: 90%;
     max-width: 500px;
-    padding: 20px;
-    position: relative;
-    z-index: 10000;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.modal-title {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.description {
+    margin-bottom: 20px;
+    color: #666;
+}
+
+.select-container {
     margin-bottom: 20px;
 }
 
-.modal-header h2 {
-    margin: 0;
-    font-size: 1.5rem;
-}
-
-.close-button {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    padding: 0;
-}
-
-.select-input {
+.collection-select {
     width: 100%;
-    padding: 10px;
+    padding: 8px;
+    margin-top: 8px;
     border: 1px solid #ddd;
     border-radius: 4px;
-    margin-top: 8px;
-    color: #000;
-    background-color: #fff;
-}
-
-.select-input option {
-    color: #000;
-    background-color: #fff;
-    padding: 8px;
 }
 
 .tags-section {
-    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.tags-section label {
+    display: block;
+    margin-bottom: 8px;
 }
 
 .selected-tags {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    margin: 10px 0;
+    padding: 8px 0;
+}
+
+.tag-item {
+    display: flex;
+    align-items: center;
+    gap: 2px;
 }
 
 .tag {
-    display: flex;
-    align-items: center;
     padding: 4px 8px;
-    background: #e9ecef;
-    border-radius: 16px;
-    font-size: 0.9rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    white-space: nowrap;
+    border: none;
+    color: rgb(95, 93, 93);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.2s ease;
 }
 
-.tag.redis {
-    background: #e3f2fd;
+.tag:hover {
+    transform: translateY(-1.5px);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
 }
 
-.tag.smtp {
-    background: #fff3e0;
-}
-
-.tag.spring {
-    background: #fce4ec;
-}
-
-.remove-tag {
+.delete-btn {
     background: none;
     border: none;
-    margin-left: 4px;
     cursor: pointer;
+    font-size: 1.2rem;
+    color: #666;
     padding: 0 4px;
 }
 
+.delete-btn:hover {
+    color: #ce3e3ebc;
+}
+
 .tag-input-container {
-    display: flex;
-    gap: 8px;
+    margin-top: 8px;
 }
 
 .tag-input {
-    flex: 1;
+    width: 100%;
     padding: 8px;
     border: 1px solid #ddd;
     border-radius: 4px;
 }
 
-.add-button {
-    background: #4285f4;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 0 16px;
-    cursor: pointer;
+.button-group {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
 }
 
-.modal-footer {
-    margin-top: 20px;
-    display: flex;
-    justify-content: flex-end;
+button {
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
 }
 
 .save-button {
-    background: #4285f4;
-    color: white;
+    background-color: #6366F1;
+    color: rgba(255, 255, 255, 0.901);
     border: none;
-    border-radius: 4px;
-    padding: 8px 24px;
-    cursor: pointer;
 }
 
-.save-button:hover {
-    background: #3367d6;
+.save-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.cancel-button {
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
 }
 </style>
