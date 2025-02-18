@@ -108,19 +108,20 @@ const goToMyPage = () => {
     text-decoration: none;
     color: inherit;
     white-space: nowrap;  
-    margin-top: 5px;
+    margin-top: 7px;
     margin-left: 3px;
+    padding-left: 6px;
 }
 
 .logo-text {
     display: flex;
     align-items: baseline;
-    gap: 0.5rem;
+    gap: 0.4rem;
     margin-top: 4px;
 }
 
 .logo-title {
-    font-size: 1.8rem;
+    font-size: 1.7rem;
     font-weight: bold;
     color: #ffd900f5;
 }

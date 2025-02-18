@@ -286,10 +286,10 @@ const openModal = () => {
 .save-button {
     padding: 4px 12px;
     background-color: #6366F1;
-    color: white;
+    color: rgba(255, 255, 255, 0.901);
     border: none;
     border-radius: 4px;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     cursor: pointer;
     transition: background-color 0.2s;
 }

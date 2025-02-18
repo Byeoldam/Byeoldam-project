@@ -104,7 +104,6 @@
         <!-- 멤버 관리 모달 -->
         <el-dialog
             v-model="showMemberModal"
-            title="멤버 관리"
             width="50%"
         >
             <MemberManageModal 
@@ -552,7 +551,7 @@ const handleCollectionNameSave = async () => {
     padding: 8px;
     border: none;
     border-radius: 50%;
-    background: #f8f9fa;
+    background: #F5F5F5;
     color: #666;
     cursor: pointer;
     transition: all 0.3s ease;

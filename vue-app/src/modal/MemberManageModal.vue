@@ -96,9 +96,19 @@ const selectedMember = ref(null);
 
 const handleInvite = async () => {
   try {
-    // 초대 API 호출 (아직 구현되지 않음)
+    if (!inviteEmail.value) {
+      ElMessage.error('이메일을 입력해주세요.');
+      return;
+    }
+    
+    await collectionStore.addMemberToSharedCollection(
+      props.collectionId,
+      inviteEmail.value
+    );
+    
     ElMessage.success('초대 메일이 발송되었습니다.');
     inviteEmail.value = '';
+    emit('refresh');
   } catch (error) {
     ElMessage.error('초대 실패: ' + error.message);
   }
@@ -132,6 +142,7 @@ const handleEject = async () => {
 .modal-title {
   font-size: 1.5rem;
   margin-bottom: 20px;
+  font-weight: 600;
 }
 
 .invite-section {
@@ -148,12 +159,16 @@ const handleEject = async () => {
 }
 
 .invite-button {
-  padding: 8px 16px;
+  padding: 7px 14px;
   background: #3730A3;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+}
+
+.invite-button:hover {
+  background: #726cc5;
 }
 
 .members-list {
