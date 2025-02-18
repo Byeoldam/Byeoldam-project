@@ -21,8 +21,19 @@
                                 :key="collection.collectionId"
                                 :class="['filter-btn', selectedCollectionId === collection.collectionId ? 'active' : '']"
                                 @click="handleCollectionClick(collection.collectionId, collection.name)"
+                                @dblclick="handleCollectionNameEdit(collection)"
                             >
-                                {{ collection.name }}
+                                <span v-if="editingCollectionId !== collection.collectionId">
+                                    {{ collection.name }}
+                                </span>
+                                <input
+                                    v-else
+                                    v-model="editingCollectionName"
+                                    @blur="handleCollectionNameSave"
+                                    @keyup.enter="handleCollectionNameSave"
+                                    ref="collectionNameInput"
+                                    class="collection-name-input"
+                                />
                             </button>
                         </div>
                         <div class="right-section">
@@ -30,6 +41,13 @@
                                 v-if="selectedCollectionId && collectionMembers.length > 0"
                                 :members="collectionMembers"
                             />
+                            <button 
+                                v-if="selectedCollectionId"
+                                class="settings-button"
+                                @click="openSettings"
+                            >
+                                <i class="fas fa-cog"></i>
+                            </button>
                             <button class="new-collection-btn" @click="createNewCollection">
                                 <span class="plus-icon">+</span>
                                 새 컬렉션
@@ -78,13 +96,27 @@
                 />
             </div>
         </div>
+
+        <!-- 멤버 관리 모달 -->
+        <el-dialog
+            v-model="showMemberModal"
+            title="멤버 관리"
+            width="50%"
+        >
+            <MemberManageModal 
+                :members="collectionMembers"
+                :collectionId="selectedCollectionId"
+                @close="showMemberModal = false"
+                @refresh="loadCollectionMembers(selectedCollectionId)"
+            />
+        </el-dialog>
     </div>
 </template>
 
 <script setup>
 import Header from '@/common/Header.vue'
 import SideBar from '@/common/SideBar.vue'
-import { computed, ref, onMounted } from 'vue';
+import { computed, ref, onMounted, nextTick } from 'vue';
 import CreateCollection from '@/modal/CreateCollection.vue';
 import { useCollectionStore } from '@/stores/collection';
 import { useBookmarkStore } from '@/stores/bookmark';
@@ -92,9 +124,14 @@ import { storeToRefs } from 'pinia';
 import Card from '@/common/Card.vue';
 import CollectionMembers from '@/component/CollectionMembers.vue';
 import { useRoute } from 'vue-router';
+import { useUserStore } from '@/stores/user';
+import MemberManageModal from '@/modal/MemberManageModal.vue';
+import { ElMessage } from 'element-plus';
 
 const collectionStore = useCollectionStore();
 const bookmarkStore = useBookmarkStore();
+const userStore = useUserStore();
+const { getUserId } = storeToRefs(userStore);
 const { sharedCollectionBookmarks } = storeToRefs(bookmarkStore);
 const selectedCollectionId = ref(null);
 const selectedCollectionName = ref('');
@@ -103,10 +140,15 @@ const selectedCollectionBookmarks = computed(() =>
 );
 const showCreateModal = ref(false);
 const collectionMembers = ref([]);
+const showMemberModal = ref(false);
 
 const collections = ref([]);
 
 const route = useRoute();
+
+const editingCollectionId = ref(null);
+const editingCollectionName = ref('');
+const collectionNameInput = ref(null);
 
 const handleCollectionClick = async (collectionId, collectionName) => {
     selectedCollectionId.value = collectionId;
@@ -125,6 +167,7 @@ const handleCollectionClick = async (collectionId, collectionName) => {
 const loadCollectionMembers = async (collectionId) => {
     try {
         const response = await collectionStore.getMembersByCollectionId(collectionId);
+        console.log('Member Response:', response);
         collectionMembers.value = response.results || [];
     } catch (error) {
         console.error('멤버 정보 로딩 실패:', error);
@@ -169,6 +212,49 @@ onMounted(async () => {
 
 const createNewCollection = () => {
     showCreateModal.value = true;
+};
+
+const openSettings = () => {
+    showMemberModal.value = true;
+};
+
+const handleCollectionNameEdit = (collection) => {
+    editingCollectionId.value = collection.collectionId;
+    editingCollectionName.value = collection.name;
+    // 다음 틱에 input에 포커스
+    nextTick(() => {
+        if (collectionNameInput.value) {
+            collectionNameInput.value.focus();
+        }
+    });
+};
+
+const handleCollectionNameSave = async () => {
+    if (editingCollectionId.value && editingCollectionName.value.trim()) {
+        try {
+            await collectionStore.updateSharedCollectionName(
+                editingCollectionId.value,
+                editingCollectionName.value.trim()
+            );
+            ElMessage({
+                message: '컬렉션 이름이 수정되었습니다.',
+                type: 'success',
+                duration: 3000
+            });
+        } catch (error) {
+            // 에러 메시지를 화면에 표시
+            ElMessage({
+                message: error.message,
+                type: 'error',
+                duration: 3000
+            });
+            // 수정 중이던 이름을 원래 이름으로 되돌림
+            editingCollectionName.value = collections.value.find(
+                c => c.collectionId === editingCollectionId.value
+            )?.name || '';
+        }
+    }
+    editingCollectionId.value = null;
 };
 </script>
 
@@ -425,7 +511,41 @@ const createNewCollection = () => {
 .right-section {
     display: flex;
     align-items: center;
-    gap: 40px;
+    gap: 16px;
     margin-right: 20px;
+}
+
+.settings-button {
+    padding: 8px;
+    border: none;
+    border-radius: 50%;
+    background: #f8f9fa;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.settings-button:hover {
+    background: #e9ecef;
+    color: #3730A3;
+}
+
+.settings-button i {
+    font-size: 1.2rem;
+}
+
+.collection-name-input {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #3730A3;
+    color: inherit;
+    font-size: inherit;
+    padding: 2px 4px;
+    width: 100%;
+    outline: none;
+}
+
+.collection-name-input:focus {
+    border-bottom-color: #2d2682;
 }
 </style>

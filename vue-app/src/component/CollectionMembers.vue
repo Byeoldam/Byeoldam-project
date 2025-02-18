@@ -1,37 +1,79 @@
 <template>
-    <div class="members-list">
-        <div v-for="(member, index) in members" 
-             :key="member.userId" 
-             class="member-item"
-             :style="{ marginLeft: index > 0 ? '-8px' : '0' }"
-             @mouseover="showTooltip(member.userId)"
-             @mouseleave="hideTooltip"
+    <div class="members-container">
+        <el-tooltip
+            v-for="member in displayedMembers"
+            :key="member.userId"
+            placement="bottom"
+            effect="dark"
+            :show-after="200"
+            :hide-after="200"
         >
-            <img 
-                :src="member.profileUrl" 
-                :alt="member.nickname"
-                class="member-avatar"
-            />
-            <div class="tooltip" v-if="activeTooltip === member.userId">
+            <template #content>
                 <div class="tooltip-content">
-                    <strong>{{ member.nickname }}</strong>
-                    <span>{{ member.email }}</span>
+                    <div class="nickname">
+                        {{ member.nickname }}
+                        <span v-if="member.role === 'OWNER'" class="crown">👑</span>
+                    </div>
+                    <div class="email">{{ member.email }}</div>
                 </div>
-                <div class="tooltip-arrow"></div>
+            </template>
+            <div class="member-avatar">
+                <img 
+                    :src="member.profileUrl" 
+                    :alt="member.nickname"
+                    class="avatar-image"
+                />
             </div>
-        </div>
+        </el-tooltip>
+        <el-tooltip 
+            v-if="remainingCount > 0"
+            placement="bottom"
+            effect="dark"
+        >
+            <template #content>
+                <div v-for="member in remainingMembers" :key="member.userId" class="tooltip-content">
+                    <div class="nickname">
+                        {{ member.nickname }}
+                        <span v-if="member.role === 'OWNER'" class="crown">👑</span>
+                    </div>
+                    <div class="email">{{ member.email }}</div>
+                    <div v-if="member !== remainingMembers[remainingMembers.length-1]" class="divider"></div>
+                </div>
+            </template>
+            <div class="more-members">
+                +{{ remainingCount }}
+            </div>
+        </el-tooltip>
     </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 
-defineProps({
+const props = defineProps({
     members: {
         type: Array,
         required: true,
         default: () => []
     }
+});
+
+const MAX_DISPLAY = 5; // 3에서 5로 수정
+
+// 화면에 표시할 멤버 목록
+const displayedMembers = computed(() => {
+    return props.members.slice(0, MAX_DISPLAY);
+});
+
+// 더보기에 표시할 남은 멤버 수
+const remainingCount = computed(() => {
+    const remaining = props.members.length - MAX_DISPLAY;
+    return remaining > 0 ? remaining : 0;
+});
+
+// 나머지 멤버 목록
+const remainingMembers = computed(() => {
+    return props.members.slice(MAX_DISPLAY);
 });
 
 const activeTooltip = ref(null);
@@ -46,22 +88,23 @@ const hideTooltip = () => {
 </script>
 
 <style scoped>
-.members-list {
+.members-container {
     display: flex;
     align-items: center;
 }
 
-.member-item {
+.member-avatar {
     position: relative;
     cursor: pointer;
     z-index: 1;
+    margin-right: -8px; /* 멤버 아바타들을 살짝 겹치게 표시 */
 }
 
-.member-item:hover {
-    z-index: 2;
+.member-avatar:last-child {
+    margin-right: 0; /* 마지막 아바타는 마진 제거 */
 }
 
-.member-avatar {
+.avatar-image {
     width: 32px;
     height: 32px;
     border-radius: 50%;
@@ -70,50 +113,72 @@ const hideTooltip = () => {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.member-item:hover .member-avatar {
+.member-avatar:hover .avatar-image {
     transform: scale(1.1);
 }
 
-.tooltip {
-    position: absolute;
-    bottom: calc(100% + 10px);
-    left: 50%;
-    transform: translateX(-50%);
-    background: #333;
-    color: white;
-    padding: 8px 12px;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    white-space: nowrap;
-    z-index: 1000;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+/* 툴팁 커스텀 스타일 */
+:deep(.el-tooltip__popper) {
+    padding: 12px 16px !important;
+    border-radius: 8px !important;
+    background-color: rgba(0, 0, 0, 0.85) !important;
+    backdrop-filter: blur(8px) !important;
+}
+
+:deep(.el-tooltip__popper[data-popper-placement^='bottom'] .el-tooltip__arrow) {
+    border-bottom-color: rgba(0, 0, 0, 0.85) !important;
 }
 
 .tooltip-content {
+    text-align: center;
+    padding: 4px 0;
+}
+
+.tooltip-content .nickname {
+    font-weight: 600;
+    font-size: 14px;
+    color: white;
+    margin-bottom: 4px;
     display: flex;
-    flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 4px;
 }
 
-.tooltip-content strong {
-    color: #fff;
+.tooltip-content .email {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.7);
 }
 
-.tooltip-content span {
-    color: #ccc;
-    font-size: 0.8rem;
+.tooltip-content .crown {
+    font-size: 14px;
 }
 
-.tooltip-arrow {
-    position: absolute;
-    bottom: -5px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 0;
-    height: 0;
-    border-left: 6px solid transparent;
-    border-right: 6px solid transparent;
-    border-top: 6px solid #333;
+.divider {
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.1);
+    margin: 8px 0;
+}
+
+.more-members {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #f0f0f0;
+    color: #666;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-left: -8px;
+}
+
+.more-members:hover {
+    background: #e0e0e0;
+    transform: scale(1.1);
+    transition: all 0.2s ease;
 }
 </style> 

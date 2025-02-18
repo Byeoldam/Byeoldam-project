@@ -103,15 +103,31 @@ export const useCollectionStore = defineStore("collection", () => {
         }
     };
 
-    const updateSharedCollectionName = async (collectionId, newName) => {
+    // 공유 컬렉션 이름 수정
+    const updateSharedCollectionName = async (sharedCollectionId, newName) => {
         try {
-            const request = { "name": newName };
-            const response = await api.put(`/collections/shared/${collectionId}`, request);
-            console.log('컬렉션 이름 변경 성공:');
+            if (!sharedCollectionId) {
+                throw new Error("컬렉션 ID가 유효하지 않습니다.");
+            }
+
+            const request = { "name" : newName };
+
+            const response = await api.put(`/collections/shared/${sharedCollectionId}`, request);
+            console.log('공유컬렉션 이름 수정 성공');
+            
             await fetchSharedCollection();
+            return response.data;
         } catch (error) {
-            console.error('컬렉션 이름 변경 중 오류 발생:', error);
-            throw error;
+            console.error('공유컬렉션 이름 수정 중 오류 발생:', error);
+            
+            // 400 Bad Request나 403 Forbidden 에러일 경우
+            if (error.response?.status === 400 || error.response?.status === 403) {
+                const errorMessage = "컬렉션 소유자만 이름을 수정할 수 있습니다.";
+                console.error(errorMessage);  // 콘솔에도 표시
+                throw new Error(errorMessage);  // 에러 메시지 전달
+            }
+            // 그 외의 에러
+            throw new Error("컬렉션 이름 수정에 실패했습니다.");
         }
     };
 
@@ -160,14 +176,13 @@ export const useCollectionStore = defineStore("collection", () => {
     // 공유 컬렉션 인원 강퇴  
     const removeMemberFromSharedCollection = async (collectionId, userId) => {
         try {
-            const response = await api.delete(`/collections/shared/${collectionId}/members/${userId}`);
+            await api.delete(`/collections/shared/${collectionId}/members/${userId}`);
             console.log('공유컬렉션 인원 강퇴 성공:');
         } catch (error) {
             console.error('공유컬렉션 인원 강퇴 중 오류 발생:', error);
             throw error;
         }
     };
-
 
     return {
         // 상태
