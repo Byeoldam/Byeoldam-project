@@ -158,13 +158,13 @@ const selectPost = (url) => {
 .title-section {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     margin-bottom: 8px;
 }
 
 .title-icon {
     font-size: 1.5rem;
-    color: #3730A3;
+    color: #ce3e3ebc;
 }
 
 .title {

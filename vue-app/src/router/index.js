@@ -12,8 +12,9 @@ import SharedView from '@/views/SharedView.vue'
 import SearchView from '@/views/SearchView.vue'
 import FeedView from '@/views/FeedView.vue'
 import OldView from '@/views/OldView.vue'
-import PersonalDetailView from '../views/PersonalDetailView.vue'
-import SharedDetailView from '../views/SharedDetailView.vue'
+import PersonalDetailView from '@/views/PersonalDetailView.vue'
+import SharedDetailView from '@/views/SharedDetailView.vue'
+import MyPageView from '@/views/UserViews/MyPageView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -120,6 +121,15 @@ const router = createRouter({
       path: '/shared-collection/:id',
       name: 'shared-detail',
       component: SharedDetailView
+    },
+    // 마이페이지
+    {
+      path: '/mypage',
+      name: 'mypage',
+      component: MyPageView,
+      meta: {
+        requiresAuth: true  // 로그인이 필요한 페이지라면 추가
+      }
     }
   ],
 })

@@ -15,7 +15,12 @@
                         </div>
                     </div>
                     
-                    <div v-if="!bookmarkResults.length" class="empty-state">
+                    <div v-if="isLoading" class="loading-spinner">
+                        <div class="spinner"></div>
+                        <p>로딩 중...</p>
+                    </div>
+                    
+                    <div v-else-if="!bookmarkResults.length" class="empty-state">
                         <i class="fas fa-star empty-icon"></i>
                         <p class="empty-text">중요 표시된 북마크가 없습니다.</p>
                         <p class="empty-description">북마크에 별표를 클릭하여 중요 북마크로 지정할 수 있습니다.</p>
@@ -56,7 +61,7 @@ const bookmarkStore = useBookmarkStore();
 const { importantBookmarks } = storeToRefs(bookmarkStore);
 const { getImportantBookmarks } = bookmarkStore;
 
-
+const isLoading = ref(true);
 
 // exampleImportantBookmarks 대신 실제 데이터인 importantBookmarks 사용
 const bookmarkResults = computed(() => {
@@ -68,12 +73,14 @@ const bookmarkResults = computed(() => {
     }));
 });
 
-
 onMounted(async () => {
     try {
+        isLoading.value = true;
         await getImportantBookmarks();
     } catch (error) {
         console.error('중요 북마크를 불러오는데 실패했습니다:', error);
+    } finally {
+        isLoading.value = false;
     }
 });
 
@@ -141,7 +148,7 @@ watch(bookmarkResults, (newResults) => {
 .title-section {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     margin-bottom: 8px;
 }
 
@@ -203,5 +210,29 @@ watch(bookmarkResults, (newResults) => {
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     gap: 24px;
     padding: 20px 20px;
+}
+
+.loading-spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    padding-top: 200px;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #3730A3;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 </style>

@@ -48,10 +48,10 @@ export const useUserStore = defineStore("user", {
         });
     
         if (res.data.success) {
-          const { userId, email, nickname, accessToken, refreshToken } = res.data.results;
+          const { userId, email, nickname, accessToken, refreshToken, profileUrl } = res.data.results;
     
           // user 객체에 userId 포함
-          this.user = { userId, email, nickname };
+          this.user = { userId, email, nickname, profileUrl };
           this.accessToken = accessToken;
           this.refreshToken = refreshToken;
     

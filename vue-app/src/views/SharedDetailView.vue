@@ -298,16 +298,24 @@ onUnmounted(() => {
 
 .preview-section {
     background: #F5F5F5;
-    padding: 20px;
+    padding: 12px;
     height: 100%;
     display: flex;
     flex-direction: column;
     overflow: hidden;
 }
 
+.preview-title {
+    font-size: 1.3rem;
+    font-weight: 550;
+    color: #2D3748;
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+}
+
 .memo-section {
     background: #F5F5F5;
-    padding: 20px;
+    padding: 12px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     height: 100%;
     display: flex;
@@ -316,8 +324,8 @@ onUnmounted(() => {
 }
 
 h2 {
-    font-size: 1.4rem;
-    font-weight: 600;
+    font-size: 1.3rem;
+    font-weight: 550;
     color: #2D3748;
     padding-bottom: 12px;
     margin-bottom: 16px;
@@ -380,6 +388,7 @@ h2 {
 
 .memo-section {
     max-width: none;
+    border-radius: 12px;
 }
 
 textarea {
@@ -393,12 +402,13 @@ textarea {
 }
 
 .add-memo-btn {
-    padding: 8px 16px;
+    padding: 6px 12px;
     background: #28a745;
-    color: white;
+    color: rgba(255, 255, 255, 0.901);
     border: none;
     border-radius: 6px;
     cursor: pointer;
+    font-size: 0.9rem;
 }
 
 .memo-item {
@@ -414,26 +424,26 @@ textarea {
 
 .memo-content {
     margin-bottom: 8px;
-    padding-right: 70px; /* 삭제 버튼 공간 확보 */
-    word-break: break-all; /* 긴 텍스트 줄바꿈 */
-    white-space: pre-wrap; /* 줄바꿈 유지 */
+    word-break: break-all;
+    white-space: pre-wrap;
+    font-size: 0.9rem;
 }
 
 .memo-user {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 8px 0;
+    padding: 4px 0 8px 0;
     border-bottom: 1px solid #edf2f7;
     margin-bottom: 8px;
 }
 
 .user-avatar {
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid #fff;
+    border: 1px solid #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -449,22 +459,23 @@ textarea {
 }
 
 .memo-date {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     color: #666;
     margin-top: auto;
 }
 
 .delete-memo-btn {
     position: absolute;
-    top: 8px;
+    top: 14px;
     right: 8px;
     padding: 4px 8px;
     background: #ce3e3ebc;
-    color: white;
+    color: rgba(255, 255, 255, 0.901);
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    min-width: 60px; /* 버튼 최소 너비 설정 */
+    min-width: 40px;
+    font-size: 0.8rem;
 }
 
 .preview-section .content {
@@ -501,14 +512,15 @@ textarea {
 .original-link-btn {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 12px 24px;
+    gap: 6px;
+    padding: 8px 16px;
     background-color: #3730A3;
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 6px;
     text-decoration: none;
-    font-weight: 500;
+    font-weight: 400;
+    font-size: 0.9rem;
     transition: background-color 0.2s;
 }
 

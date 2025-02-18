@@ -168,13 +168,13 @@ onMounted(async () => {
 .title-section {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     margin-bottom: 8px;
 }
 
 .title-icon {
     font-size: 1.5rem;
-    color: #3730A3;
+    color: #a6a6a6;
 }
 
 .title {

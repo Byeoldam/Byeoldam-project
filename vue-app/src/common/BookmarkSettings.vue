@@ -42,6 +42,7 @@
     :show-close="true"
     destroy-on-close
     append-to-body
+    width="500px"
     class="bookmark-copy-dialog"
   >
     <BookmarkCopyShared 
@@ -58,6 +59,7 @@
     :show-close="true"
     destroy-on-close
     append-to-body
+    width="500px"
     class="bookmark-move-dialog"
   >
     <BookmarkMovePersonal 
@@ -73,6 +75,7 @@
     :show-close="true"
     destroy-on-close
     append-to-body
+    width="500px"
     class="bookmark-tag-dialog"
   >
     <BookmarkTagSetting 
