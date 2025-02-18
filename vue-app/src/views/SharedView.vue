@@ -8,7 +8,7 @@
                     <div class="page-header">
                         <div class="header-content">
                             <div class="title-section">
-                                <i class="fas fa-user title-icon"></i>
+                                <i class="fas fa-users title-icon"></i>
                                 <h2 class="title">공유 컬렉션</h2>
                             </div>
                             <p class="description">나만의 북마크를 체계적으로 관리하고 정리할 수 있는 공간입니다</p>
@@ -405,6 +405,7 @@ const createNewCollection = () => {
 .right-section {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 40px;
+    margin-right: 20px;
 }
 </style>
