@@ -89,16 +89,17 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of(
-        "chrome-extension://djiemmdlekojnbiclbgdepjapkoejddm",
-        "https://byeoldam.store",
-        "https://www.byeoldam.store",
-        "http://localhost:5173",
-        "http://localhost:5174"
-        ));
+//        configuration.setAllowedOrigins(List.of(
+//        "chrome-extension://djiemmdlekojnbiclbgdepjapkoejddm",
+//        "https://byeoldam.store",
+//        "https://www.byeoldam.store",
+//        "http://localhost:5173",
+//        "http://localhost:5174"
+//        ));
+        configuration.setAllowedOriginPatterns(List.of("*")); // ✅ 모든 Origin 허용
         configuration.addAllowedMethod("*"); // ✅ 모든 HTTP 메서드 허용 (GET, POST, PUT, DELETE 등)
         configuration.addAllowedHeader("*"); // ✅ 모든 헤더 허용
-        configuration.setAllowCredentials(true); // ✅ 쿠키, Authorization 헤더 포함 가능
+        configuration.setAllowCredentials(false); // ✅ 쿠키, Authorization 헤더 포함 가능
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
