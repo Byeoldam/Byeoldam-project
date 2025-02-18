@@ -109,8 +109,22 @@ onMounted(async () => {
 });
 
 // 메인페이지 바로가기
-const goToByeoldam = () => {
-  chrome.tabs.create({ url: "http://byeoldam.store/main" });
+const goToByeoldam = async () => {
+  try {
+    const { access_token } = await chrome.storage.local.get(["access_token"]);
+    console.log("메인페이지 바로가기 : ", access_token);
+    if (!access_token) {
+      chrome.tabs.create({ url: "http://byeoldam.store/login" });
+      return;
+    }
+
+    const encodedToken = encodeURIComponent(access_token);
+    chrome.tabs.create({
+      url: `http://byeoldam.store/main?token=${encodedToken}`,
+    });
+  } catch (error) {
+    chrome.tabs.create({ url: "http://byeoldam.store/login" });
+  }
 };
 
 // StorageView 렌더링 지연
