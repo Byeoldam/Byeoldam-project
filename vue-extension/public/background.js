@@ -56,7 +56,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       const testLoginData = {
         userId: "jun@naver.com",
         access_token:
-          "eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInVzZXJJZCI6MSwiZW1haWwiOiJqdW5AbmF2ZXIuY29tIiwicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTczOTg3Nzg4OCwiZXhwIjoxNzQwNDc3ODg4fQ.yJA2ifjcWnP2cT9JGWdEOJSWfdUWDgJYJHMjXYQeMiY",
+          "eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInVzZXJJZCI6MSwiZW1haWwiOiJqdW5AbmF2ZXIuY29tIiwicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTczOTg4MTExMSwiZXhwIjoxNzQwNDgxMTExfQ.lCV1MCnAkSNcnP2PAqNFwNo3NGIr1i1Ib8-oHhDyL2U",
       };
       saveLoginData(testLoginData);
 
