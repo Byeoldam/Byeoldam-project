@@ -92,8 +92,7 @@ onMounted(() => {
 //로그인 핸들러
 const handleLogin = async () => {
   try {
-    await userstore.userLogin(email.value, password.value)
-    sessionStorage.setItem("isReloading", "true");
+    await userstore.userLogin(email.value, password.value);
     ElMessage.success('로그인에 성공했습니다.');
   } catch (error) {
     ElMessage.error(error.response?.data?.message || '로그인에 실패했습니다.');

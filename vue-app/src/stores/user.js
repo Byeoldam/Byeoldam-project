@@ -14,6 +14,10 @@ export const useUserStore = defineStore("user", {
     refreshToken: null,
   }),
 
+  getters: {
+    getUserId: (state) => state.user?.userId,
+  },
+
   actions: {
     // ✅ 새로고침 시 `localStorage`에서 데이터 불러와 복원
     restoreSession() {
@@ -46,30 +50,23 @@ export const useUserStore = defineStore("user", {
         if (res.data.success) {
           const { userId, email, nickname, accessToken, refreshToken, profileUrl } = res.data.results;
     
-          // 1. store 상태 업데이트
+          // user 객체에 userId 포함
           this.user = { userId, email, nickname, profileUrl };
           this.accessToken = accessToken;
           this.refreshToken = refreshToken;
     
-          // 2. localStorage에 저장
           localStorage.setItem("user", JSON.stringify(this.user));
           localStorage.setItem("accessToken", accessToken);
           localStorage.setItem("refreshToken", refreshToken);
     
-          // 3. API 인스턴스에 토큰 설정
           api.defaults.headers.common["accessToken"] = accessToken;
     
-          // 4. 확장 프로그램에 로그인 정보 전달
           const loginData = { access_token: accessToken, userId };
           window.postMessage({ type: "LOGIN", data: loginData }, window.location.origin);
     
-          // 5. 컬렉션 store 인스턴스 생성
           const collectionStore = useCollectionStore();
-          
-          // 6. 토큰이 설정된 후에 컬렉션 데이터 요청
           await collectionStore.fetchAllCollections();
     
-          // 7. 페이지 이동
           if (collectionStore.allCollections.length === 0) {
             router.push({ name: "collectionSelect" });
           } else {
@@ -80,7 +77,7 @@ export const useUserStore = defineStore("user", {
         }
       } catch (err) {
         console.error("🚨 로그인 실패:", err);
-        alert(err.response?.data?.message || "ID/PW 정보가 맞지 않습니다.");
+        throw err;
       }
     },
 
