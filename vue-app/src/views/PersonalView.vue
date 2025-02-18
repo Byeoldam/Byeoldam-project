@@ -30,7 +30,11 @@
                             새 컬렉션
                         </button>
                     </div>
-                    <div v-if="selectedCollectionId && selectedCollectionBookmarks.length === 0" class="empty-state">
+                    <div v-if="isLoading" class="loading-spinner">
+                        <div class="spinner"></div>
+                        <p>로딩 중...</p>
+                    </div>
+                    <div v-else-if="selectedCollectionId && selectedCollectionBookmarks.length === 0" class="empty-state">
                         <i class="fas fa-bookmark search-icon"></i>
                         <p class="empty-message">이 컬렉션에는 아직 북마크가 없습니다.</p>
                         <p class="empty-sub-message">새로운 북마크를 추가해보세요!</p>
@@ -86,6 +90,7 @@ const selectedCollectionBookmarks = computed(() =>
     personalCollectionBookmarks.value?.results?.bookmarks || []
 );
 const showCreateModal = ref(false);
+const isLoading = ref(true);
 
 const collections = ref([]);
 
@@ -111,6 +116,7 @@ const handleCollectionClick = async (collectionId, collectionName) => {
 
 onMounted(async () => {
     try {
+        isLoading.value = true;
         // 1. 컬렉션 목록 가져오기
         const response = await collectionStore.fetchPersonalCollection();
         collections.value = response.results || [];
@@ -135,6 +141,8 @@ onMounted(async () => {
         }
     } catch (error) {
         console.error('데이터 로딩 실패:', error);
+    } finally {
+        isLoading.value = false;
     }
 });
 
@@ -296,7 +304,7 @@ const createNewCollection = () => {
 .title-section {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     margin-bottom: 8px;
 }
 
@@ -381,5 +389,29 @@ const createNewCollection = () => {
     color: #718096;
     font-size: 16px;
     line-height: 1.5;
+}
+
+.loading-spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    padding-top: 200px;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #3730A3;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 </style>

@@ -3,10 +3,6 @@
     <h3 class="modal-title">공유 컬렉션으로 복사</h3>
     
     <div class="modal-content">
-      <p class="description">
-        선택한 북마크를 공유 컬렉션으로 복사합니다.
-        복사된 북마크는 선택한 공유 컬렉션에서 확인하실 수 있습니다.
-      </p>
 
       <div class="select-container">
         <label for="collection-select">공유 컬렉션 선택:</label>
@@ -110,6 +106,8 @@ onMounted(async () => {
 <style scoped>
 .bookmark-copy-modal {
   padding: 20px;
+  width: 100%;
+  margin: 0 auto;
 }
 
 .modal-title {
@@ -119,10 +117,6 @@ onMounted(async () => {
     font-weight: bold;
 }
 
-.description {
-  margin-bottom: 20px;
-  color: #666;
-}
 
 .select-container {
   margin-bottom: 20px;

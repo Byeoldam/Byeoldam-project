@@ -93,6 +93,8 @@ const moveBookmark = async () => {
 <style scoped>
 .bookmark-move-modal {
   padding: 20px;
+  width: 100%;
+  margin: 0 auto;
 }
 
 .modal-title {
