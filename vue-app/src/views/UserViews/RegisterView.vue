@@ -151,8 +151,15 @@ import { useRouter } from "vue-router";
   const sendVerificationCode = async () => {
     try {
       const response = await userStore.emailVerification(email.value);
-      if (response.success) {
+      console.log("sendVerificationCode");
+      console.log(response.success);
+      
+      if (response.status) {
+        console.log("인증번호 발송 완료");
+       
+        
         isEmailSent.value = true;
+        console.log(isEmailSent.value);
         modal.value = { 
           visible: true, 
           success: true, 
@@ -172,7 +179,6 @@ import { useRouter } from "vue-router";
   const verifyCode = async () => {
     console.log("인증 코드 확인 시작");
     if (!email.value) {
-      console.log("인증 코드 확인 실패 1");
       modal.value = {
         visible: true,
         success: false,
@@ -186,8 +192,10 @@ import { useRouter } from "vue-router";
       console.log(verificationCode.value);
       
       const response = await userStore.checkCode(email.value,verificationCode.value);
-      if (response.success) {
+      if (response.status) {
         isEmailVerified.value = true;
+        console.log("인증 코드 확인 완료");
+        
         modal.value = {
           visible: true,
           success: true,
@@ -206,6 +214,10 @@ import { useRouter } from "vue-router";
 
   // 회원가입
   const handleRegister = async () => {
+    if (!isEmailVerified.value) {
+      alert("이메일 인증부터 해라~");
+      return;
+    }
     // 비밀번호 확인
     if (password.value !== confirmPassword.value) {
       modal.value = { 
@@ -221,7 +233,7 @@ import { useRouter } from "vue-router";
       password: password.value,
       nickname: nickname.value,
     };
-
+    
     try {
       await userStore.signup(payload);
       router.push({ name: 'login' });
