@@ -565,10 +565,6 @@ onMounted(async () => {
     });
     if (response.data.status) {
       bookmarkOptions.value = response.data.results;
-      console.log(
-        "초기 로드 데이터 : ",
-        JSON.stringify(bookmarkOptions, null, 2)
-      );
 
       // 배지 데이터 저장
       bookmarkStore.setBadges({
@@ -658,16 +654,10 @@ const saveBookmark = async () => {
     return;
   }
 
-  // API 요청 전에 데이터 구조 확인
-  console.log("전송될 데이터 : ", JSON.stringify(bookmarkData, null, 2));
-
   try {
     errorMessage.value = "";
-    console.log("지금테스트 북마크 저장 요청전!!!!! : ", bookmarkData);
     const response = await api.post(apiUrl, bookmarkData);
-    console.log("지금테스트 북마크 저장 요청완료!!!!! : ", bookmarkData);
     if (response.data.status) {
-      console.log("북마크 저장 성공!!!!");
       savedResult.value = response.data; // 전체 응답 데이터를 저장
       isSaved.value = true;
     } else {
@@ -688,13 +678,12 @@ const scribeRSS = async () => {
     errorMessage.value = "";
     const response = await api.post("/subscriptions", webpage.value.siteUrl);
     if (response.data.status) {
-      // console.log("RSS구독에 성공했습니다.);
       isSaved.value = true;
     }
   } catch (error) {
     console.log("RSS구독 요청 실패:", error.response.data.message);
     errorMessage.value = error.response.data.message;
-    // 3초 후 에러 메시지 자동 제거 (선택사항)
+    // 3초 후 에러 메시지 자동 제거
     setTimeout(() => {
       errorMessage.value = "";
     }, 3000);

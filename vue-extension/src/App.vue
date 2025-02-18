@@ -72,7 +72,6 @@ onMounted(async () => {
         name: feed.name,
         isRead: feed.isRead,
       }));
-      console.log("feedData : ", feedData); // isRead 안넘어옴 확인!!
       bookmarkStore.setFeedList(feedData);
     } else {
       console.error(
@@ -94,7 +93,6 @@ onMounted(async () => {
         url: alarm.url,
         createdAt: alarm.createdAt,
       }));
-      console.log("alarmData : ", alarmData);
       bookmarkStore.setAlarmList(alarmData);
     } else {
       console.error(
@@ -112,7 +110,6 @@ onMounted(async () => {
 const goToByeoldam = async () => {
   try {
     const { access_token } = await chrome.storage.local.get(["access_token"]);
-    console.log("메인페이지 바로가기 : ", access_token);
     if (!access_token) {
       chrome.tabs.create({ url: "http://byeoldam.store/login" });
       return;

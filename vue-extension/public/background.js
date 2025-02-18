@@ -33,25 +33,19 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
   if (message.action === "logout") {
     cachedLoginData = null;
-    chrome.storage.local.remove(["userId", "access_token"]);
+    chrome.storage.local.remove([
+      "userId",
+      "access_token",
+      "notificationCount",
+    ]);
   }
 
-  
   // popupOpened 처리 후 로그인 정보 저장
   if (message.action === "popupOpened") {
     if (cachedLoginData) {
       saveLoginData(cachedLoginData);
-      // sendResponse({ status: "success" }); // 응답을 보내 popupOpened 처리가 완료되었음을 알림
     } else {
-      // else >> *********** test용 **************
-      const testLoginData = {
-        userId: "jun@naver.com",
-        access_token:
-          "eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInVzZXJJZCI6MSwiZW1haWwiOiJqdW5AbmF2ZXIuY29tIiwicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTczOTkwNzI3MiwiZXhwIjoxNzQwNTA3MjcyfQ.Fg7odOFS86W6BB9YbPqzc5g7Hd8eY6FL_VZGdCA3KtA",
-      };
-      saveLoginData(testLoginData);
-
-      // chrome.tabs.create({ url: "http://byeoldam.store/login" });
+      chrome.tabs.create({ url: "http://byeoldam.store/login" });
     }
   }
 });

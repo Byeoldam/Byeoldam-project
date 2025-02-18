@@ -26,19 +26,19 @@ api.interceptors.request.use(
       const accessToken = response.access_token;
       if (accessToken) {
         config.headers["accessToken"] = accessToken;
-        console.log("요청 URL:", config.baseURL + config.url);
-        console.log("요청 헤더:", config.headers);
+        // console.log("요청 URL:", config.baseURL + config.url);
+        // console.log("요청 헤더:", config.headers);
       } else {
-        console.log("토큰이 없습니다!");
+        // console.log("토큰이 없습니다!");
       }
       return config;
     } catch (error) {
-      console.error("토큰 가져오기 실패:", error);
+      // console.error("토큰 가져오기 실패:", error);
       return config;
     }
   },
   (error) => {
-    console.error("요청 인터셉터 에러:", error);
+    // console.error("요청 인터셉터 에러:", error);
     return Promise.reject(error);
   }
 );
