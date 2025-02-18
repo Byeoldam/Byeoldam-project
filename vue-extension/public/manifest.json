@@ -1,6 +1,6 @@
 {
   "name": "별담",
-  "description": "북마크와 RSS 피드를 관리하는 크롬 익스텐션",
+  "description": "북마크로 나만의 웹 컬렉션을 만들고 관심 있는 사이트의 새로운 소식을 놓치지 마세요.",
   "version": "1.0.0",
   "manifest_version": 3,
   "action": {

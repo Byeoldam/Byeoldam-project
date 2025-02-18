@@ -14,7 +14,7 @@
       <div
         v-for="feed in feedList"
         :key="feed.rssId"
-        class="flex items-center gap-3 p-2.5 hover:bg-gray-50 rounded-md cursor-pointer border-b last:border-0 border-gray-100"
+        class="flex items-center gap-3 p-2.5 rounded-md cursor-pointer border-b last:border-0 border-gray-100"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -24,7 +24,7 @@
           stroke="currentColor"
           :class="[
             'w-5 h-5',
-            feed.isRead ? 'text-indigo-800' : 'text-gray-500',
+            !feed.isRead ? 'text-indigo-800' : 'text-gray-500',
           ]"
         >
           <path
@@ -36,7 +36,7 @@
         <h2 class="text-sm font-medium text-gray-700 flex-1">
           {{ feed.name }}
         </h2>
-        <div v-if="feed.isRead" class="w-2 h-2 rounded-full bg-red-500"></div>
+        <div v-if="!feed.isRead" class="w-2 h-2 rounded-full bg-red-500"></div>
       </div>
     </div>
 
@@ -78,10 +78,25 @@ const feedList = ref([]);
 
 onMounted(() => {
   feedList.value = bookmarkStore.feedList;
+  console.log(feedList.value);
 });
 
-const openServicePage = () => {
-  chrome.tabs.create({ url: "http://byeoldam.store/feed" });
+const openServicePage = async () => {
+  try {
+    const { access_token } = await chrome.storage.local.get(["access_token"]);
+    console.log("메인페이지 바로가기 : ", access_token);
+    if (!access_token) {
+      chrome.tabs.create({ url: "http://byeoldam.store/login" });
+      return;
+    }
+
+    const encodedToken = encodeURIComponent(access_token);
+    chrome.tabs.create({
+      url: `http://byeoldam.store/feed?token=${encodedToken}`,
+    });
+  } catch (error) {
+    chrome.tabs.create({ url: "http://byeoldam.store/login" });
+  }
 };
 </script>
 

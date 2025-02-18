@@ -45,12 +45,13 @@
 </template>
 
 <script setup>
-import { RouterView } from "vue-router";
-import { onMounted } from "vue";
+import { RouterView, useRouter } from "vue-router";
+import { onMounted, ref, watchEffect } from "vue";
 import api from "@/utils/api";
 import { useBookmarkStore } from "./stores/bookmarkStore";
 
 const bookmarkStore = useBookmarkStore();
+const isDataLoaded = ref(false);
 
 onMounted(async () => {
   // 확장 아이콘 클릭 시 백그라운드로 사용자 정보 Extension Storage 저장 요청 보내기
@@ -101,13 +102,29 @@ onMounted(async () => {
         alarmResponse.reason?.response?.data?.message || alarmResponse.reason
       );
     }
+    isDataLoaded.value = true; // 데이터 로드 완료 후 상태 변경
   } catch (error) {
     console.error("API 요청 중 예기치 않은 오류 발생: ", error.message);
   }
 });
 
-const goToByeoldam = () => {
-  chrome.tabs.create({ url: "http://byeoldam.store/main" });
+// 메인페이지 바로가기
+const goToByeoldam = async () => {
+  try {
+    const { access_token } = await chrome.storage.local.get(["access_token"]);
+    console.log("메인페이지 바로가기 : ", access_token);
+    if (!access_token) {
+      chrome.tabs.create({ url: "http://byeoldam.store/login" });
+      return;
+    }
+
+    const encodedToken = encodeURIComponent(access_token);
+    chrome.tabs.create({
+      url: `http://byeoldam.store/main?token=${encodedToken}`,
+    });
+  } catch (error) {
+    chrome.tabs.create({ url: "http://byeoldam.store/login" });
+  }
 };
 </script>
 
