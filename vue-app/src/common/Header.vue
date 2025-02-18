@@ -12,7 +12,7 @@
         
         <div class="auth-section">
             <div>
-                <p>{{ usernickname }} 님 환영합니다</p>
+                <p class="welcome-message">{{ usernickname }} 님 환영합니다</p>
             </div>
             <img 
                 :src="userProfile || defaultProfileImage" 
@@ -56,7 +56,7 @@ const logout = async () => {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 1rem;
+    padding: 20px 20px;
     background-color: #1E1B4B;  /* 베이스 컬러 */
     /* box-shadow: 0 2px 4px rgba(0,0,0,0.1); */
     height: 60px;  /* 헤더 높이 고정 */
@@ -70,20 +70,24 @@ const logout = async () => {
 }
 
 .logo-image {
-    width: 40px;  /* 로고 이미지 크기 조정 */
-    height: 40px;  /* 로고 이미지 크기 조정 */
+    width: 50px;  /* 로고 이미지 크기 조정 */
+    height: 50px;  /* 로고 이미지 크기 조정 */
     object-fit: contain;  /* 이미지 비율 유지 */
 }
 
 .auth-section {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 13px;
+}
+
+.welcome-message {
+    color: rgba(255, 255, 255, 0.901);
 }
 
 .profile-image {
-    width: 40px;
-    height: 40px;
+    width: 38px;
+    height: 38px;
     border-radius: 50%;
     object-fit: cover;
 }
@@ -91,20 +95,23 @@ const logout = async () => {
 .logo-link {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 7px;
     text-decoration: none;
     color: inherit;
     white-space: nowrap;  /* 줄바꿈 방지 */
+    margin-top: 5px;
+    margin-left: 3px;
 }
 
 .logo-text {
     display: flex;
     align-items: center;  /* 세로 중앙 정렬 */
     gap: 5px;  /* 타이틀과 서브타이틀 사이 간격 */
+    margin-top: 3px;
 }
 
 .logo-title {
-    font-size: 1.8rem;
+    font-size: 1.7rem;
     font-weight: 700;
     color: #ffd900f5;  /* 키 컬러로 변경 */
     letter-spacing: 0.5px;
@@ -112,14 +119,14 @@ const logout = async () => {
 
 .logo-subtitle {
     font-size: 1.2rem;  /* 크기 조정 */
-    color: rgba(255, 255, 255, 0.8);  /* 반투명 흰색 */
+    color: rgba(255, 255, 255, 0.75);  /* 반투명 흰색 */
     letter-spacing: 0.5px;
 }
 
 .logout-button {
     padding: 5px 10px;
-    background-color: #be3232;
-    color: white;
+    background-color: #c34d4d;
+    color: rgba(255, 255, 255, 0.901);
     border: none;
     border-radius: 5px;
     cursor: pointer;
