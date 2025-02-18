@@ -212,12 +212,13 @@ public class SharedCollectionService {
             throw new CustomException("해당 컬렉션에 대한 조회 권한이 없습니다.");
         }
 
-        return users.stream()
+        return sharedUsers.stream()
                 .map(member -> new CollectionMemberResponse(
-                        member.getId(),
-                        member.getEmail(),
-                        member.getNickname(),
-                        member.getProfileUrl()
+                        member.getUser().getId(),
+                        member.getUser().getEmail(),
+                        member.getUser().getNickname(),
+                        member.getUser().getProfileUrl(),
+                        member.getRole()
                 )).toList();
 
     }
