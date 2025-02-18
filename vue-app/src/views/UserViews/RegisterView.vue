@@ -170,7 +170,9 @@ import { useRouter } from "vue-router";
   
   // 인증 코드 확인
   const verifyCode = async () => {
-    if (!isEmailSent.value) {
+    console.log("인증 코드 확인 시작");
+    if (!email.value) {
+      console.log("인증 코드 확인 실패 1");
       modal.value = {
         visible: true,
         success: false,
@@ -180,7 +182,10 @@ import { useRouter } from "vue-router";
     }
 
     try {
-      const response = await userStore.checkCode(verificationCode.value);
+      console.log("인증 코드 확인 시작 서버 전송");
+      console.log(verificationCode.value);
+      
+      const response = await userStore.checkCode(email.value,verificationCode.value);
       if (response.success) {
         isEmailVerified.value = true;
         modal.value = {
