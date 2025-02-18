@@ -35,7 +35,7 @@ const router = useRouter();
 const userStore = useUserStore();
 const usernickname = ref(userStore.user?.nickname || '');
 const defaultProfileImage = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png';
-const userProfile = ref(null);
+const userProfile = ref(userStore.user?.profileUrl || defaultProfileImage);
 
 // 로그아웃 함수 수정
 const logout = async () => {
