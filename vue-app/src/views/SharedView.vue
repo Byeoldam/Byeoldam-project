@@ -1,5 +1,5 @@
 <template>
-    <div class="layout">
+    <div class="layout shared-view">
         <Header class="header" />
         <div class="content-wrapper">
             <SideBar class="sidebar" />
@@ -8,7 +8,7 @@
                     <div class="page-header">
                         <div class="header-content">
                             <div class="title-section">
-                                <i class="fas fa-user title-icon"></i>
+                                <i class="fas fa-users title-icon"></i>
                                 <h2 class="title">공유 컬렉션</h2>
                             </div>
                             <p class="description">나만의 북마크를 체계적으로 관리하고 정리할 수 있는 공간입니다</p>
@@ -91,6 +91,7 @@ import { useBookmarkStore } from '@/stores/bookmark';
 import { storeToRefs } from 'pinia';
 import Card from '@/common/Card.vue';
 import CollectionMembers from '@/component/CollectionMembers.vue';
+import { useRoute } from 'vue-router';
 
 const collectionStore = useCollectionStore();
 const bookmarkStore = useBookmarkStore();
@@ -105,8 +106,9 @@ const collectionMembers = ref([]);
 
 const collections = ref([]);
 
+const route = useRoute();
+
 const handleCollectionClick = async (collectionId, collectionName) => {
-    console.log('Selected Collection ID:', collectionId, 'hakjun0412');
     selectedCollectionId.value = collectionId;
     selectedCollectionName.value = collectionName;
     
@@ -116,7 +118,7 @@ const handleCollectionClick = async (collectionId, collectionName) => {
             loadCollectionMembers(collectionId)
         ]);
     } catch (error) {
-        console.error('데이터 로딩 실패:', error, 'hakjun0412');
+        console.error('데이터 로딩 실패:', error);
     }
 };
 
@@ -132,18 +134,36 @@ const loadCollectionMembers = async (collectionId) => {
 
 onMounted(async () => {
     try {
+        // 1. 컬렉션 목록 가져오기
         const response = await collectionStore.fetchSharedCollection();
-        console.log('Collections Response:', response, 'hakjun0412');
         collections.value = response.results || [];
         
-        // 첫 번째 컬렉션 자동 선택 (옵션)
-        if (collections.value.length > 0) {
+        // 2. URL에서 collectionId 확인
+        const collectionId = parseInt(route.params.collectionId);
+        
+        if (collectionId) {
+            // URL에 collectionId가 있는 경우 해당 컬렉션의 북마크 조회
+            const targetCollection = collections.value.find(c => c.collectionId === collectionId);
+            if (targetCollection) {
+                selectedCollectionId.value = collectionId;
+                selectedCollectionName.value = targetCollection.name;
+                await Promise.all([
+                    bookmarkStore.getSharedCollectionBookmarks(collectionId),
+                    loadCollectionMembers(collectionId)
+                ]);
+            }
+        } else if (collections.value.length > 0) {
+            // URL에 collectionId가 없는 경우 첫 번째 컬렉션의 북마크 조회
             const firstCollection = collections.value[0];
-            handleCollectionClick(firstCollection.collectionId, firstCollection.name);
+            selectedCollectionId.value = firstCollection.collectionId;
+            selectedCollectionName.value = firstCollection.name;
+            await Promise.all([
+                bookmarkStore.getSharedCollectionBookmarks(firstCollection.collectionId),
+                loadCollectionMembers(firstCollection.collectionId)
+            ]);
         }
     } catch (error) {
-        console.error('컬렉션 로딩 실패:', error, 'hakjun0412');
-        collections.value = [];
+        console.error('데이터 로딩 실패:', error);
     }
 });
 
@@ -405,6 +425,7 @@ const createNewCollection = () => {
 .right-section {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 40px;
+    margin-right: 20px;
 }
 </style>

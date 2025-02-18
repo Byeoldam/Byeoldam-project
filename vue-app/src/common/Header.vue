@@ -28,15 +28,26 @@
 <script setup>
 import { ref } from 'vue';
 import { useUserStore } from '@/stores/user';
+import { useRouter } from 'vue-router';
+import { ElMessage } from 'element-plus';
 
+const router = useRouter();
 const userStore = useUserStore();
 const usernickname = ref(userStore.user?.nickname || '');
 const defaultProfileImage = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png';
 const userProfile = ref(null);
 
-// 로그아웃 함수
-const logout = () => {
-    userStore.logout();  // 스토어의 logout() 호출
+// 로그아웃 함수 수정
+const logout = async () => {
+    try {
+        await userStore.logout();
+        ElMessage.success('로그아웃되었습니다.');
+        setTimeout(() => {
+            router.push({ name: 'intro' });
+        }, 100);
+    } catch (error) {
+        ElMessage.error('로그아웃 중 오류가 발생했습니다.');
+    }
 };
 </script>
 

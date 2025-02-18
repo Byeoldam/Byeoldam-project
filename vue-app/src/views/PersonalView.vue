@@ -1,5 +1,5 @@
 <template>
-    <div class="layout">
+    <div class="layout personal-view">
         <Header class="header" />
         <div class="content-wrapper">
             <SideBar class="sidebar" />
@@ -74,6 +74,7 @@ import { useCollectionStore } from '@/stores/collection';
 import { useBookmarkStore } from '@/stores/bookmark';
 import { storeToRefs } from 'pinia';
 import Card from '@/common/Card.vue';
+import { useRoute } from 'vue-router';
 
 const collectionStore = useCollectionStore();
 const bookmarkStore = useBookmarkStore();
@@ -87,6 +88,8 @@ const selectedCollectionBookmarks = computed(() =>
 const showCreateModal = ref(false);
 
 const collections = ref([]);
+
+const route = useRoute();
 
 const filteredCollections = computed(() => {
     return collections.value.filter(collection => 
@@ -108,18 +111,30 @@ const handleCollectionClick = async (collectionId, collectionName) => {
 
 onMounted(async () => {
     try {
+        // 1. 컬렉션 목록 가져오기
         const response = await collectionStore.fetchPersonalCollection();
-        console.log('Collections Response:', response, 'hakjun0412');
         collections.value = response.results || [];
         
-        // 첫 번째 컬렉션 자동 선택 (옵션)
-        if (collections.value.length > 0) {
+        // 2. URL에서 collectionId 확인
+        const collectionId = parseInt(route.params.collectionId);
+        
+        if (collectionId) {
+            // URL에 collectionId가 있는 경우 해당 컬렉션의 북마크 조회
+            const targetCollection = collections.value.find(c => c.collectionId === collectionId);
+            if (targetCollection) {
+                selectedCollectionId.value = collectionId;
+                selectedCollectionName.value = targetCollection.name;
+                await bookmarkStore.getPersonalCollectionBookmarks(collectionId);
+            }
+        } else if (collections.value.length > 0) {
+            // URL에 collectionId가 없는 경우 첫 번째 컬렉션의 북마크 조회
             const firstCollection = collections.value[0];
-            handleCollectionClick(firstCollection.collectionId, firstCollection.name);
+            selectedCollectionId.value = firstCollection.collectionId;
+            selectedCollectionName.value = firstCollection.name;
+            await bookmarkStore.getPersonalCollectionBookmarks(firstCollection.collectionId);
         }
     } catch (error) {
-        console.error('컬렉션 로딩 실패:', error, 'hakjun0412');
-        collections.value = [];
+        console.error('데이터 로딩 실패:', error);
     }
 });
 
@@ -190,6 +205,7 @@ const createNewCollection = () => {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 12px;
+    margin-right: 20px;
 }
 
 .filter-buttons {
