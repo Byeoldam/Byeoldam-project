@@ -216,7 +216,8 @@ public class SharedCollectionService {
                 .map(member -> new CollectionMemberResponse(
                         member.getId(),
                         member.getEmail(),
-                        member.getNickname()
+                        member.getNickname(),
+                        member.getProfileUrl()
                 )).toList();
 
     }
