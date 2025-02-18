@@ -25,6 +25,17 @@ export const useBookmarkStore = defineStore("bookmark", () => {
 
   const setAlarmList = (alarms) => {
     alarmList.value = alarms;
+    badges.value.notificationCnt = alarms.length;
+  };
+
+  const decreaseNotificationCount = () => {
+    if (badges.value.notificationCnt > 0) {
+      badges.value.notificationCnt--;
+    }
+  };
+
+  const clearNotifications = () => {
+    badges.value.notificationCnt = 0;
   };
 
   // 탭 배지 데이터
@@ -43,5 +54,7 @@ export const useBookmarkStore = defineStore("bookmark", () => {
     setAlarmList,
     badges,
     setBadges,
+    decreaseNotificationCount,
+    clearNotifications,
   };
 });

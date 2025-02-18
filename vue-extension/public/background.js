@@ -3,30 +3,20 @@
 // ===============================================================================================
 
 chrome.storage.onChanged.addListener((changes, namespace) => {
-  // 로컬 스토리지에서 notificationCount 가져오기
-  chrome.storage.local.get(["notificationCount"], (result) => {
-    const notificationCount = result.notificationCount || 0;
+  if ("notificationCount" in changes) {
+    const newCount = changes.notificationCount.newValue || 0;
 
-    // 알림 카운트 변경 감지 및 뱃지 업데이트
-    if (notificationCount > 0) {
-      // 뱃지 텍스트 설정
-      let badgeText = notificationCount.toString();
-      if (notificationCount > 99) {
-        badgeText = "99+"; // 99개 이상일 경우 표시 제한
-      }
+    if (newCount > 0) {
+      const badgeText = newCount > 99 ? "99+" : newCount.toString();
 
       // 뱃지 스타일 적용
       chrome.action.setBadgeText({ text: badgeText });
-      chrome.action.setBadgeBackgroundColor({ color: "#3730A3" }); // 진한 남색 배경
-      chrome.action.setBadgeTextColor({ color: "#FFFFFF" }); // 흰색 텍스트
+      chrome.action.setBadgeBackgroundColor({ color: "#3730A3" });
+      chrome.action.setBadgeTextColor({ color: "#FFFFFF" });
     } else {
-      chrome.action.setBadgeText({ text: "" }); // 알림 카운트가 없으면 뱃지 비우기
+      // 알림 카운트가 0이거나 없을 때 뱃지 제거
+      chrome.action.setBadgeText({ text: "" });
     }
-  });
-
-  // 알림 없는 경우 뱃지 제거
-  if (!changes.notificationCount?.newValue) {
-    chrome.action.setBadgeText({ text: "" });
   }
 });
 
@@ -54,9 +44,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     } else {
       // else >> *********** test용 **************
       const testLoginData = {
-        userId: "jun@naver.com",
+        userId: "hyeon@naver.com",
         access_token:
-          "eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInVzZXJJZCI6MSwiZW1haWwiOiJqdW5AbmF2ZXIuY29tIiwicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTczOTg4MTExMSwiZXhwIjoxNzQwNDgxMTExfQ.lCV1MCnAkSNcnP2PAqNFwNo3NGIr1i1Ib8-oHhDyL2U",
+          "eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInVzZXJJZCI6MiwiZW1haWwiOiJoeWVvbkBuYXZlci5jb20iLCJyb2xlIjoiUk9MRV9VU0VSIiwiaWF0IjoxNzM5OTAwOTc4LCJleHAiOjE3NDA1MDA5Nzh9.o4nPJnbTT2qoeAr5OIr4HQhxQfs62uRjXr9N6DOGIyk",
       };
       saveLoginData(testLoginData);
 
@@ -103,9 +93,6 @@ chrome.runtime.onMessage.addListener((message, sender) => {
     pageInfo.title = message.title;
     readingTimeInfo.readingTime = message.readingTime;
     readingTimeInfo.stats = message.stats;
-
-    // console.log("페이지 타이틀 : " , pageInfo.title);
-    // console.log("언어별 전처리 통계:", readingTimeInfo.stats);
   }
 });
 
@@ -118,4 +105,48 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     });
   }
   return true;
+});
+
+// <3> 페이지 정보 업데이트
+async function getPageInfo(tabId) {
+  try {
+    const response = await chrome.tabs.sendMessage(tabId, {
+      action: "COLLECT_PAGE_INFO",
+    });
+    if (response) {
+      pageInfo.siteUrl = response.url;
+      pageInfo.title = response.title;
+      readingTimeInfo.readingTime = response.readingTime;
+      readingTimeInfo.stats = response.stats;
+    }
+  } catch (error) {
+    console.error("Failed to get page info:", error);
+  }
+}
+
+// <4> 사용자 페이지 이동 방식에 따른 페이지 정보 수집
+// 1. 탭 활성화 이벤트
+chrome.tabs.onActivated.addListener(async (activeInfo) => {
+  try {
+    const tab = await chrome.tabs.get(activeInfo.tabId);
+    if (
+      !tab.url?.startsWith("chrome://") &&
+      !tab.url?.startsWith("chrome-extension://")
+    ) {
+      await getPageInfo(activeInfo.tabId);
+    }
+  } catch (error) {
+    console.error("Error handling tab activation:", error);
+  }
+});
+
+// 2.페이지 업데이트 이벤트
+chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+  if (
+    changeInfo.status === "complete" &&
+    !tab.url?.startsWith("chrome://") &&
+    !tab.url?.startsWith("chrome-extension://")
+  ) {
+    await getPageInfo(tabId);
+  }
 });

@@ -188,6 +188,10 @@ const removeAlarm = async (notificationId) => {
     alarmList.value = alarmList.value.filter(
       (alarm) => alarm.notificationId !== notificationId
     );
+    bookmarkStore.decreaseNotificationCount();
+    chrome.storage.local.set({
+      notificationCount: bookmarkStore.badges.notificationCnt,
+    });
   } catch (error) {
     console.error("알림 삭제 실패:", error.response?.data || error.message);
   }
@@ -198,6 +202,10 @@ const clearAllAlarms = async () => {
   try {
     await api.delete("/notifications/read");
     alarmList.value = [];
+    bookmarkStore.clearNotifications();
+    chrome.storage.local.set({
+      notificationCount: 0,
+    });
   } catch (error) {
     console.error(
       "전체 알림 삭제 실패:",
@@ -215,6 +223,10 @@ const acceptInvite = async (notificationId) => {
     alarmList.value = alarmList.value.filter(
       (alarm) => alarm.notificationId !== notificationId
     );
+    bookmarkStore.decreaseNotificationCount();
+    chrome.storage.local.set({
+      notificationCount: bookmarkStore.badges.notificationCnt,
+    });
   } catch (error) {
     console.error("초대 수락 실패:", error.response?.data || error.message);
   }

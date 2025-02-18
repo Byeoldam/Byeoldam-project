@@ -45,8 +45,8 @@
 </template>
 
 <script setup>
-import { RouterView, useRouter } from "vue-router"; 
-import { onMounted, ref, watchEffect} from "vue";
+import { RouterView, useRouter } from "vue-router";
+import { onMounted, ref, watchEffect } from "vue";
 import api from "@/utils/api";
 import { useBookmarkStore } from "./stores/bookmarkStore";
 
@@ -113,10 +113,10 @@ const goToByeoldam = () => {
   chrome.tabs.create({ url: "http://byeoldam.store/main" });
 };
 
-// 라우터 가드 추가
+// StorageView 렌더링 지연
 const router = useRouter();
 router.beforeEach((to, from, next) => {
-  if (to.name === 'storage') {
+  if (to.name === "storage") {
     if (isDataLoaded.value) {
       next();
     } else {
