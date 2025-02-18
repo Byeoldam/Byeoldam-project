@@ -125,26 +125,28 @@ import { useRouter } from "vue-router";
 
   const isEmailVerified = ref(false);
   const isEmailSent = ref(false);
-///////////////////////////////////////////////////////////////////////////////////////////
+
+  // 별 그림자 상태를 저장할 ref 변수들 추가
+  const starsStyle = ref('');
+  const stars2Style = ref('');
+  const stars3Style = ref('');
+
+  // 컴포넌트가 마운트될 때 한 번만 실행
+  onMounted(() => {
+    starsStyle.value = generateStarsShadow(700, 1);
+    stars2Style.value = generateStarsShadow(200, 2);
+    stars3Style.value = generateStarsShadow(100, 3);
+  });
+
   // 폼 유효성 검사를 위한 computed 속성 추가
-  // const isFormValid = computed(() => {
-  //   return email.value &&
-  //     verificationCode.value &&
-  //     nickname.value &&
-  //     password.value &&
-  //     confirmPassword.value &&
-  //     isEmailVerified.value &&
-  //     password.value === confirmPassword.value;
-  // });
   const isFormValid = computed(() => {
     return email.value &&
       nickname.value &&
       password.value &&
       confirmPassword.value &&
-      // isEmailVerified.value && // 이메일 인증 체크 제거
       password.value === confirmPassword.value;
   });
-///////////////////////////////////////////////////////////////////////////////////////////
+
   // 인증번호 발송
   const sendVerificationCode = async () => {
     try {
@@ -196,19 +198,9 @@ import { useRouter } from "vue-router";
       };
     }
   };
-  ///////////////////////////////////////////////////////////////////////////////////////////
+
   // 회원가입
   const handleRegister = async () => {
-    // 이메일 인증 확인
-    // if (!isEmailVerified.value) {
-    //   modal.value = { 
-    //     visible: true, 
-    //     success: false, 
-    //     message: "이메일 인증을 완료해주세요" 
-    //   };
-    //   return;
-    // }
-///////////////////////////////////////////////////////////////////////////////////////////
     // 비밀번호 확인
     if (password.value !== confirmPassword.value) {
       modal.value = { 
@@ -325,7 +317,7 @@ import { useRouter } from "vue-router";
     width: 1px;
     height: 1px;
     background: transparent;
-    box-shadow: v-bind('generateStarsShadow(700, 1)');
+    box-shadow: v-bind('starsStyle');
     animation: 
         animStar 50s linear infinite,
         twinkle-1 3s ease-in-out infinite;
@@ -338,7 +330,7 @@ import { useRouter } from "vue-router";
     width: 2px;
     height: 2px;
     background: transparent;
-    box-shadow: v-bind('generateStarsShadow(200, 2)');
+    box-shadow: v-bind('stars2Style');
     animation: 
         animStar 100s linear infinite,
         twinkle-2 4s ease-in-out infinite;
@@ -351,7 +343,7 @@ import { useRouter } from "vue-router";
     width: 3px;
     height: 3px;
     background: transparent;
-    box-shadow: v-bind('generateStarsShadow(100, 3)');
+    box-shadow: v-bind('stars3Style');
     animation: 
         animStar 150s linear infinite,
         twinkle-3 5s ease-in-out infinite;
@@ -367,7 +359,7 @@ import { useRouter } from "vue-router";
     width: 1px;
     height: 1px;
     background: transparent;
-    box-shadow: v-bind('generateStarsShadow(700, 1)');
+    box-shadow: v-bind('starsStyle');
     animation: twinkle-1 3s ease-in-out infinite;
 }
 
@@ -378,7 +370,7 @@ import { useRouter } from "vue-router";
     width: 2px;
     height: 2px;
     background: transparent;
-    box-shadow: v-bind('generateStarsShadow(200, 2)');
+    box-shadow: v-bind('stars2Style');
     animation: twinkle-2 4s ease-in-out infinite;
 }
 
@@ -389,7 +381,7 @@ import { useRouter } from "vue-router";
     width: 3px;
     height: 3px;
     background: transparent;
-    box-shadow: v-bind('generateStarsShadow(100, 3)');
+    box-shadow: v-bind('stars3Style');
     animation: twinkle-3 5s ease-in-out infinite;
 }
 
