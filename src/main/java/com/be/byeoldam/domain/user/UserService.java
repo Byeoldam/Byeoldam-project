@@ -43,6 +43,8 @@ public class UserService {
 
     // 이메일 인증번호 발송(이메일 중복 확인 + 유효 코드 보내기)
     void sendEmailVerificationCode(UserEmailRequest userEmailRequest) {
+        System.out.println("UserService.sendEmailVerificationCode");
+
         String newEmail = userEmailRequest.getEmail();
         if(userRepository.existsByEmail(newEmail)) {
             throw new CustomException("이미 존재하는 이메일이니다.");
@@ -50,6 +52,7 @@ public class UserService {
 
         // 6자리 인증번호
         String verificationCode = generateVerificationCode();
+        System.out.println("UserService.sendEmailVerificationCode:"  + verificationCode);
 
         // 이메일 발송
         SimpleMailMessage message = new SimpleMailMessage();
@@ -60,7 +63,7 @@ public class UserService {
                 + "인증 코드: " + verificationCode + "\n\n"
                 + "인증 코드는 10분 동안만 유효합니다. 인증을 완료해 주세요.\n\n"
                 + "감사합니다.\n"
-                + "- 별다이 팀 드림"); // 이메일 본문
+                + "- 별담 팀 드림"); // 이메일 본문
         message.setFrom(senderEmail+"@naver.com"); // 보내는 사람 이메일 (네이버 이메일 주소), secret에 넣은거랑 같아야만 함.
         javaMailSender.send(message); // 이메일 전송
 
@@ -69,6 +72,7 @@ public class UserService {
         String value = verificationCode;
         ValueOperations<String, String> stringValueOperations = stringRedisTemplate.opsForValue();
         stringValueOperations.set(key, value, REDIS_EXPIRATION);
+        System.out.println("Redis 저장 완료");
     }
 
 
@@ -95,7 +99,6 @@ public class UserService {
             // 비밀번호 암호화 풀기
             String encodedPassword = passwordEncoder.encode(user.getPassword());
             user.encodePassword(encodedPassword);
-            System.out.println("암호화된 비밀번호:" + encodedPassword);
             //user.encodePassword(user.getPassword());
 
             user.updateProfileImage(s3Util.getDefaultProfileImageUrl());
