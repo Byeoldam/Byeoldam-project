@@ -44,7 +44,7 @@
 <style scoped>
 .sidebar {
     width: 240px;
-    background-color: #1E1B4B;  /* 베이스 컬러 */
+    background: radial-gradient(ellipse at bottom, #1B2735 0%, #1E1B4B 100%);
     color: white;
     height: 100%;
     padding: 20px;
