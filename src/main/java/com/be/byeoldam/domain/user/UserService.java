@@ -9,6 +9,7 @@ import com.be.byeoldam.exception.CustomException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.mail.SimpleMailMessage;
@@ -89,24 +90,28 @@ public class UserService {
     // 회원 가입
     @Transactional
     UserRegisterResponse registerUser(UserRegisterRequest registerRequest) {
-        User user = registerRequest.toEntity();
-        // 비밀번호 암호화 풀기
-        String encodedPassword = passwordEncoder.encode(user.getPassword());
-        user.encodePassword(encodedPassword);
-        System.out.println("암호화된 비밀번호:" + encodedPassword);
-        //user.encodePassword(user.getPassword());
+        try {
+            User user = registerRequest.toEntity();
+            // 비밀번호 암호화 풀기
+            String encodedPassword = passwordEncoder.encode(user.getPassword());
+            user.encodePassword(encodedPassword);
+            System.out.println("암호화된 비밀번호:" + encodedPassword);
+            //user.encodePassword(user.getPassword());
 
-        user.updateProfileImage(s3Util.getDefaultProfileImageUrl());
-        user = userRepository.save(user);
+            user.updateProfileImage(s3Util.getDefaultProfileImageUrl());
+            user = userRepository.save(user);
 
-        Map<String, String> tokens = generateTokens(user);
-        user.updateRefreshToken(tokens.get("refresh"));
-        userRepository.save(user);
+            Map<String, String> tokens = generateTokens(user);
+            user.updateRefreshToken(tokens.get("refresh"));
+            userRepository.save(user);
 
-        UserRegisterResponse userRegisterResponse = UserRegisterResponse.fromEntity(user);
-        userRegisterResponse.addTokens(tokens.get("access"), tokens.get("refresh"));
+            UserRegisterResponse userRegisterResponse = UserRegisterResponse.fromEntity(user);
+            userRegisterResponse.addTokens(tokens.get("access"), tokens.get("refresh"));
 
-        return userRegisterResponse;
+            return userRegisterResponse;
+        } catch (DataIntegrityViolationException e) {
+            throw new CustomException("이미 존재하는 이메일입니다.");
+        }
     }
 
     // 로그인
