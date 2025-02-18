@@ -77,13 +77,11 @@
 <script setup>
 import { RouterLink } from 'vue-router';
 
-// 별을 생성하는 함수
-function generateStarsShadow(count) {
+function generateStarsShadow(count, size) {
     let shadows = [];
     for(let i = 0; i < count; i++) {
-        // 범위를 더 넓게 설정 (4000px)
-        const x = Math.floor(Math.random() * 4000) - 2000; // -2000px ~ 2000px
-        const y = Math.floor(Math.random() * 4000) - 2000; // -2000px ~ 2000px
+        const x = Math.floor(Math.random() * 2000);
+        const y = Math.floor(Math.random() * 2000);
         shadows.push(`${x}px ${y}px #FFF`);
     }
     return shadows.join(', ');
@@ -116,8 +114,8 @@ function generateStarsShadow(count) {
     box-shadow: v-bind('generateStarsShadow(700)');
     animation: animStar 50s linear infinite;
     position: absolute;
-    top: 50%;
-    left: 50%;
+    top: 0;
+    left: 0;
 }
 
 .stars2 {
@@ -127,8 +125,8 @@ function generateStarsShadow(count) {
     box-shadow: v-bind('generateStarsShadow(200)');
     animation: animStar 100s linear infinite;
     position: absolute;
-    top: 50%;
-    left: 50%;
+    top: 0;
+    left: 0;
 }
 
 .stars3 {
@@ -138,8 +136,8 @@ function generateStarsShadow(count) {
     box-shadow: v-bind('generateStarsShadow(100)');
     animation: animStar 150s linear infinite;
     position: absolute;
-    top: 50%;
-    left: 50%;
+    top: 0;
+    left: 0;
 }
 
 .stars:after {

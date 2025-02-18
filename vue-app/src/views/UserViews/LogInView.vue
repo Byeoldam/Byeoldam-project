@@ -121,7 +121,7 @@ function generateStarsShadow(count, size) {
 .body-container {
   position: relative;
   overflow: hidden;
-  background-color: #1E1B4B;
+  background: radial-gradient(ellipse at bottom, #1B2735 0%, #1E1B4B 100%);
   /* background-image: linear-gradient(to bottom right, #1E1B4B, #3730A3); */
   min-height: 100vh;
   width: 100%;
