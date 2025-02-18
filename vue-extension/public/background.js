@@ -53,14 +53,14 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       // sendResponse({ status: "success" }); // 응답을 보내 popupOpened 처리가 완료되었음을 알림
     } else {
       // else >> *********** test용 **************
-      // const testLoginData = {
-      //   userId: "hyeon@naver.com",
-      //   access_token:
-      //     "eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInVzZXJJZCI6MiwiZW1haWwiOiJoeWVvbkBuYXZlci5jb20iLCJyb2xlIjoiUk9MRV9VU0VSIiwiaWF0IjoxNzM5ODE0MDc5LCJleHAiOjE3NDA0MTQwNzl9.MztYBLPbRu6xAugptvfc9uHsdwhm-xAzISzUngJorII",
-      // };
-      // saveLoginData(testLoginData);
+      const testLoginData = {
+        userId: "jun@naver.com",
+        access_token:
+          "eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInVzZXJJZCI6MSwiZW1haWwiOiJqdW5AbmF2ZXIuY29tIiwicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTczOTg3Nzg4OCwiZXhwIjoxNzQwNDc3ODg4fQ.yJA2ifjcWnP2cT9JGWdEOJSWfdUWDgJYJHMjXYQeMiY",
+      };
+      saveLoginData(testLoginData);
 
-      chrome.tabs.create({ url: "http://byeoldam.store/login" });
+      // chrome.tabs.create({ url: "http://byeoldam.store/login" });
     }
   }
 });
