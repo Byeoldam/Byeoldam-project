@@ -46,6 +46,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     chrome.storage.local.remove(["userId", "access_token"]);
   }
 
+  
   // popupOpened 처리 후 로그인 정보 저장
   if (message.action === "popupOpened") {
     if (cachedLoginData) {
