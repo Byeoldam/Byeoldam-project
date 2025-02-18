@@ -215,8 +215,18 @@
       });
       
       if (response.data.status) {
+        // userStore의 user 정보 업데이트
+        const updatedUser = {
+          ...userstore.user,
+          nickname: editedNickname.value
+        };
+        
+        // userStore와 localStorage 모두 업데이트
+        userstore.user = updatedUser;
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+        
         alert('변경사항이 저장되었습니다.');
-        router.push('/main'); // 메인 페이지로 이동
+        router.push('/main');
       }
     } catch (error) {
       console.error('정보 업데이트 실패:', error);
