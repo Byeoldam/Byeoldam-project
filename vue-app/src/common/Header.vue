@@ -11,15 +11,16 @@
         </div>
         
         <div class="auth-section">
-            <div>
-                <p>{{ usernickname }} 님 환영합니다</p>
+            <div class="profile-area" @click="goToMyPage">
+                <div>
+                    <p>{{ usernickname }} 님 환영합니다</p>
+                </div>
+                <img 
+                    :src="userProfile || defaultProfileImage" 
+                    alt="프로필 사진" 
+                    class="profile-image"
+                />
             </div>
-            <img 
-                :src="userProfile || defaultProfileImage" 
-                alt="프로필 사진" 
-                class="profile-image"
-            />
-            <!-- 로그아웃 버튼 추가 -->
             <button @click="logout" class="logout-button">로그아웃</button>
         </div>
     </header>
@@ -49,6 +50,11 @@ const logout = async () => {
         ElMessage.error('로그아웃 중 오류가 발생했습니다.');
     }
 };
+
+// 마이페이지 이동 함수 추가
+const goToMyPage = () => {
+    router.push({ name: 'mypage' });
+};
 </script>
 
 <style scoped>
@@ -57,7 +63,7 @@ const logout = async () => {
     justify-content: space-between;
     align-items: center;
     padding: 1rem 1rem;
-    background-color: #1E1B4B;  /* 베이스 컬러 */
+    background: radial-gradient(ellipse at bottom, #1B2735 0%, #1E1B4B 100%);
     /* box-shadow: 0 2px 4px rgba(0,0,0,0.1); */
     height: 60px;  /* 헤더 높이 고정 */
     color: white;
@@ -129,5 +135,19 @@ const logout = async () => {
 
 .logout-button:hover {
     background-color: rgb(212, 110, 110);
+}
+
+.profile-area {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.profile-area:hover {
+    background-color: rgba(255, 255, 255, 0.1);
 }
 </style>
