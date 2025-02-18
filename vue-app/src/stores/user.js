@@ -106,8 +106,10 @@ export const useUserStore = defineStore("user", {
 
     // ✅ 이메일 인증 요청
     async emailVerification(email) {
+      console.log("이메일 인증 요청 시작");
       try {
         const response = await axios.post(`${REST_API_URL}/users/email/send`, { email });
+        console.log("이메일 인증 요청 완료");
         return response.data;
       } catch (error) {
         console.error("이메일 인증 요청 실패:", error);
@@ -116,9 +118,11 @@ export const useUserStore = defineStore("user", {
     },
 
     // ✅ 인증코드 확인
-    async checkCode(verifyCode) {
+    async checkCode(email, verificationCode) {
+      console.log("인증코드 확인 시작 서버 전송");
       try {
-        const response = await axios.post(`${REST_API_URL}/users/email/verify`, { verifyCode });
+        const response = await axios.post(`${REST_API_URL}/users/email/verify`, { email, verificationCode });
+        console.log(response.data);
         return response.data;
       } catch (error) {
         console.error("인증코드 확인 실패:", error);

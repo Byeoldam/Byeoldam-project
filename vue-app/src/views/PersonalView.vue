@@ -1,5 +1,5 @@
 <template>
-    <div class="layout">
+    <div class="layout personal-view">
         <Header class="header" />
         <div class="content-wrapper">
             <SideBar class="sidebar" />
@@ -74,6 +74,7 @@ import { useCollectionStore } from '@/stores/collection';
 import { useBookmarkStore } from '@/stores/bookmark';
 import { storeToRefs } from 'pinia';
 import Card from '@/common/Card.vue';
+import { useRoute } from 'vue-router';
 
 const collectionStore = useCollectionStore();
 const bookmarkStore = useBookmarkStore();
@@ -87,6 +88,8 @@ const selectedCollectionBookmarks = computed(() =>
 const showCreateModal = ref(false);
 
 const collections = ref([]);
+
+const route = useRoute();
 
 const filteredCollections = computed(() => {
     return collections.value.filter(collection => 
@@ -109,17 +112,20 @@ const handleCollectionClick = async (collectionId, collectionName) => {
 onMounted(async () => {
     try {
         const response = await collectionStore.fetchPersonalCollection();
-        console.log('Collections Response:', response, 'hakjun0412');
         collections.value = response.results || [];
         
-        // 첫 번째 컬렉션 자동 선택 (옵션)
-        if (collections.value.length > 0) {
-            const firstCollection = collections.value[0];
-            handleCollectionClick(firstCollection.collectionId, firstCollection.name);
+        const collectionId = parseInt(route.params.collectionId);
+        if (collectionId) {
+            const targetCollection = collections.value.find(c => c.collectionId === collectionId);
+            if (targetCollection) {
+                selectedCollectionId.value = collectionId;
+                selectedCollectionName.value = targetCollection.name;
+                
+                await bookmarkStore.getPersonalCollectionBookmarks(collectionId);
+            }
         }
     } catch (error) {
-        console.error('컬렉션 로딩 실패:', error, 'hakjun0412');
-        collections.value = [];
+        console.error('데이터 로딩 실패:', error);
     }
 });
 
