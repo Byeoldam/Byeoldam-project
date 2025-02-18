@@ -64,11 +64,12 @@
                         
                         <div v-else class="memo-list">
                             <div v-for="memo in memos" :key="memo.id" class="memo-item">
-                                <div class="memo-header">
-                                    <span class="memo-user">{{ memo.userName }}</span>
-                                    <span class="memo-date">{{ memo.date }}</span>
+                                <div class="memo-user">
+                                    <img v-if="memo.imageUrl" :src="memo.imageUrl" class="user-avatar" alt="사용자 프로필">
+                                    <span>{{ memo.userName }}</span>
                                 </div>
                                 <div class="memo-content">{{ memo.content }}</div>
+                                <div class="memo-date">{{ memo.date }}</div>
                                 <button 
                                     @click="deleteMemo(memo.id)" 
                                     class="delete-memo-btn"
@@ -245,6 +246,7 @@ onUnmounted(() => {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    background-color: #F5F5F5;
 }
 
 .header {
@@ -253,29 +255,28 @@ onUnmounted(() => {
     left: 0;
     right: 0;
     z-index: 100;
-    /* background: white; */
 }
 
 .content-wrapper {
     display: flex;
-    margin-top: 60px; /* 헤더 높이만큼 여백 추가 */
-    height: calc(100vh - 60px); /* 전체 높이에서 헤더 높이를 뺀 만큼 설정 */
+    margin-top: 60px;
+    height: calc(100vh - 60px);
+    min-height: 0;
 }
 
 .sidebar {
     position: fixed;
     left: 0;
-    top: 60px; /* 헤더 높이만큼 떨어뜨림 */
+    top: 60px;
     bottom: 0;
-    width: 240px; /* 사이드바 너비 */
-    /* background: white; */
+    width: 240px;
     z-index: 99;
 }
 
 .main-content {
     flex: 1;
-    margin-left: 240px; /* 사이드바 너비만큼 여백 */
-    overflow-y: auto; /* 본문 내용만 스크롤 가능하도록 */
+    margin-left: 240px;
+    overflow-y: auto;
     height: 100%;
 }
 
@@ -286,23 +287,56 @@ onUnmounted(() => {
 .detail-view {
     flex: 1;
     padding: 20px;
-    overflow-y: auto;
     display: grid;
     grid-template-columns: 7fr 3fr;
     gap: 20px;
+    height: calc(100vh - 80px);
+    overflow: hidden;
 }
 
-.preview-section, .memo-section {
-    background: white;
-    border-radius: 12px;
+.preview-section {
+    background: #F5F5F5;
+    padding: 20px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.memo-section {
+    background: #F5F5F5;
     padding: 20px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
 h2 {
-    font-size: 1.5rem;
-    margin-bottom: 20px;
-    color: #333;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #2D3748;
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+    border-bottom: 2px solid #E2E8F0;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+
+/* 각 섹션별 아이콘 추가를 위한 스타일 */
+.preview-section h2::before {
+    content: '🔗';
+    margin-right: 8px;
+    font-size: 1.2rem;
+}
+
+.memo-section h2::before {
+    content: '📝';
+    margin-right: 8px;
+    font-size: 1.2rem;
 }
 
 .main-image {
@@ -343,11 +377,7 @@ h2 {
 }
 
 .memo-section {
-    background: white;
-    border-radius: 12px;
-    padding: 15px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    max-width: 400px;
+    max-width: none;
 }
 
 textarea {
@@ -376,28 +406,50 @@ textarea {
     margin-bottom: 8px;
     position: relative;
     font-size: 0.9rem;
-}
-
-.memo-header {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
-}
-
-.memo-user {
-    font-weight: 500;
-    color: #333;
-    font-size: 0.9rem;
-}
-
-.memo-date {
-    color: #666;
-    font-size: 0.8rem;
+    flex-direction: column;
 }
 
 .memo-content {
     margin-bottom: 8px;
+    padding-right: 70px; /* 삭제 버튼 공간 확보 */
+    word-break: break-all; /* 긴 텍스트 줄바꿈 */
+    white-space: pre-wrap; /* 줄바꿈 유지 */
+}
+
+.memo-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid #edf2f7;
+    margin-bottom: 8px;
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.memo-user span {
+    font-weight: 500;
+    color: #2d3748;
+    font-size: 0.95rem;
+}
+
+/* 이미지가 없을 때의 대체 스타일 */
+.memo-user:not(:has(img)) span {
+    margin-left: 8px;
+}
+
+.memo-date {
+    font-size: 0.8rem;
+    color: #666;
+    margin-top: auto;
 }
 
 .delete-memo-btn {
@@ -405,32 +457,43 @@ textarea {
     top: 8px;
     right: 8px;
     padding: 4px 8px;
-    background: #dc3545;
+    background: #ce3e3ebc;
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    min-width: 60px; /* 버튼 최소 너비 설정 */
+}
+
+.preview-section .content {
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* 컨테이너 전체 높이 사용 */
+}
+
+.action-buttons {
+    margin-bottom: 10px; /* 여백 축소 */
+    text-align: right;
+    flex-shrink: 0; /* 버튼 영역 크기 고정 */
 }
 
 .website-preview {
     width: 100%;
-    height: 600px;
+    flex: 1; /* 남은 공간 모두 사용 */
     border: 1px solid #ddd;
     border-radius: 8px;
-    margin: 10px 0;
+    margin: 0; /* 마진 제거 */
 }
 
 .iframe-fallback {
+    flex: 1; /* 에러 시에도 공간 채우기 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
-    padding: 20px;
     background: #f8f9fa;
     border-radius: 8px;
-    margin: 10px 0;
-}
-
-.action-buttons {
-    margin-bottom: 20px;
-    text-align: right;
+    margin: 0;
 }
 
 .original-link-btn {
@@ -438,7 +501,7 @@ textarea {
     align-items: center;
     gap: 8px;
     padding: 12px 24px;
-    background-color: #007bff;
+    background-color: #3730A3;
     color: white;
     border: none;
     border-radius: 8px;
@@ -473,5 +536,11 @@ textarea {
 button:disabled {
     opacity: 0.7;
     cursor: not-allowed;
+}
+
+.memo-list {
+    flex: 1;
+    overflow-y: auto;
+    margin-top: 10px;
 }
 </style>
