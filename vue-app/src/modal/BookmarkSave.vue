@@ -290,7 +290,7 @@ watch(selectedCollection, (newVal) => {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    padding: 8px 0;
+    /* padding: 8px 0; */
 }
 
 .tag-item {
