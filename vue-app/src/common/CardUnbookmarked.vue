@@ -157,7 +157,7 @@ const openModal = () => {
 }
 
 .card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-4px);
     box-shadow: 0 6px 12px rgba(0,0,0,0.15);
 
 }
@@ -172,7 +172,7 @@ const openModal = () => {
 
 
 .card:hover .card-image {
-  transform: scale(1.05);
+  transform: scale(1.03);
 }
 
 .card-content {
