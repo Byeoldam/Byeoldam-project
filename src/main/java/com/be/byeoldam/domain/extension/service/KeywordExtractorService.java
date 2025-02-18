@@ -19,6 +19,9 @@ public class KeywordExtractorService {
 
     private final ChatClient chatClient;
     private final TagRepository tagRepository;
+    private static final int EXPECTED_KEYWORD_COUNT = 3;
+    private static final int MAX_KEYWORD_LENGTH = 20;
+    private static final String DEFAULT_KEYWORD = "기타";
 
     @Autowired
     public KeywordExtractorService(ChatClient chatClient, TagRepository tagRepository) {
@@ -29,7 +32,6 @@ public class KeywordExtractorService {
     public List<String> extractKeywords(ExtensionRequest request) {
         List<String> tagList = tagRepository.getAllNames();
         log.info("태그목록 : " + tagList);
-
 
         SystemMessage systemMessage = new SystemMessage("""
                     당신은 웹 콘텐츠 태깅 및 키워드 추출 전문가입니다.
@@ -104,26 +106,56 @@ public class KeywordExtractorService {
                 
                     6. 응답 형식:
                        - 응답은 키워드들이 쉼표로 구분되고, 각 키워드 뒤에는 공백 한 칸이 포함됩니다.
-                       - 예시: 키워드1, 키워드2, 키워드3
+                       - 예시: [키워드1, 키워드2, 키워드3]
                 """.formatted(tagList.toString()));
 
-
         UserMessage userMessage = new UserMessage("""
-                다음 웹페이지의 내용을 분석하여 적절한 태그나 키워드를 추출해주세요:
+                다음 웹페이지의 URL과 제목을 분석하여 적절한 태그나 키워드를 추출해주세요:
                 URL: %s
                 제목: %s
                 """.formatted(request.getSiteUrl(), request.getTitle()));
-
 
         Prompt prompt = new Prompt(List.of(systemMessage, userMessage));
 
         try {
             String responseContent = chatClient.call(prompt).getResult().getOutput().getContent();
-            return Arrays.asList(responseContent.split(",\\s*"));
+
+            // 대괄호 제거하고 키워드 분리
+            String cleanedResponse = responseContent
+                    .replaceAll("[\\[\\]]", "")  // 대괄호 제거
+                    .replaceAll("->\\s*", "")    // 화살표와 그 뒤의 공백 제거
+                    .trim();
+
+            List<String> keywords = Arrays.asList(cleanedResponse.split(",\\s*"));
+
+            // 응답 유효성 검사
+            if (isValidKeywordResponse(keywords)) {
+                return keywords;
+            }
+            log.warn("유효하지 않은 키워드 응답: {}", responseContent);
         } catch (Exception e) {
-            log.error(e.getMessage());
-            return List.of();
+            log.error("키워드 추출 중 오류 발생: {}", e.getMessage());
         }
 
+        return List.of(DEFAULT_KEYWORD);
+    }
+
+    private boolean isValidKeywordResponse(List<String> keywords) {
+        // 키워드 개수 체크
+        if (keywords.size() != EXPECTED_KEYWORD_COUNT) {
+            log.debug("키워드 개수 불일치. 예상: {}, 실제: {}", EXPECTED_KEYWORD_COUNT, keywords.size());
+            return false;
+        }
+
+        // 각 키워드 유효성 검사
+        for (String keyword : keywords) {
+            if (keyword == null || keyword.trim().isEmpty() ||
+                    keyword.trim().length() > MAX_KEYWORD_LENGTH) {
+                log.debug("유효하지 않은 키워드: {}", keyword);
+                return false;
+            }
+        }
+
+        return true;
     }
 }
