@@ -69,6 +69,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
                 .userId(userDetails.getUserId())
                 .email(userDetails.getEmail())
                 .nickname(userDetails.getNickname())
+                .profileUrl(userDetails.getProfileUrl())
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
