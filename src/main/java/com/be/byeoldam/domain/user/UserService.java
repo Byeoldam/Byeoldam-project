@@ -42,6 +42,8 @@ public class UserService {
 
     // 이메일 인증번호 발송(이메일 중복 확인 + 유효 코드 보내기)
     void sendEmailVerificationCode(UserEmailRequest userEmailRequest) {
+        System.out.println("UserService.sendEmailVerificationCode");
+
         String newEmail = userEmailRequest.getEmail();
         if(userRepository.existsByEmail(newEmail)) {
             throw new CustomException("이미 존재하는 이메일이니다.");
@@ -49,6 +51,7 @@ public class UserService {
 
         // 6자리 인증번호
         String verificationCode = generateVerificationCode();
+        System.out.println("UserService.sendEmailVerificationCode:"  + verificationCode);
 
         // 이메일 발송
         SimpleMailMessage message = new SimpleMailMessage();
@@ -68,6 +71,7 @@ public class UserService {
         String value = verificationCode;
         ValueOperations<String, String> stringValueOperations = stringRedisTemplate.opsForValue();
         stringValueOperations.set(key, value, REDIS_EXPIRATION);
+        System.out.println("Redis 저장 완료");
     }
 
 

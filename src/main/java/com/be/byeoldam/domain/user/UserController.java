@@ -48,7 +48,10 @@ public class UserController {
     )
     @PostMapping("/email/send")
     public ResponseTemplate<String> sendVerificationEmail(@RequestBody UserEmailRequest request){
+        System.out.println("UserController.sendVerificationEmail");
+        System.out.println(request.getEmail());
         userService.sendEmailVerificationCode(request);
+        System.out.println("UserController.sendVerificationEmail 종료");
         return ResponseTemplate.ok("이메일 인증 코드가 전송되었습니다.");
     }
 
@@ -58,6 +61,9 @@ public class UserController {
     )
     @PostMapping("/email/verify")
     public ResponseTemplate<String> verifyEmailCode(@RequestBody UserVerificationCodeRequest request) {
+        System.out.println("UserController.verifyEmailCode");
+        System.out.println(request.getEmail());
+        System.out.println(request.getVerificationCode());
         userService.checkVerificationCode(request);
         return ResponseTemplate.ok("인증 완료!");
     }
