@@ -214,9 +214,9 @@ const createNewCollection = () => {
 }
 
 .filter-btn.active {
-    background: #3730A3;
+    background: #4338CA;
     color: rgba(255, 255, 255, 0.901);
-    border-color: #3730A3;
+    border-color: #4338CA;
 }
 
 .new-collection-btn {

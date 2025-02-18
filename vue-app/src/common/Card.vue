@@ -52,6 +52,7 @@
                     </span>
                 </div>
                 <div v-if="props.readingTime" class="read-time">
+                  <i class="far fa-clock"></i>
                     {{ props.readingTime }}분
                 </div>
             </div>

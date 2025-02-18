@@ -15,15 +15,17 @@
                         </div>
                     </div>
                     
-                    <div class="filter-buttons">
-                        <button 
-                            v-for="tag in tags" 
-                            :key="tag.tagName"
-                            :class="['filter-btn', selectedTag === tag.tagName ? 'active' : '']"
-                            @click="handleTagClick(tag.tagName)"
-                        >
-                            {{ tag.tagName }}
-                        </button>
+                    <div class="top-section">
+                        <div class="filter-buttons">
+                            <button 
+                                v-for="tag in tags" 
+                                :key="tag.tagName"
+                                :class="['filter-btn', selectedTag === tag.tagName ? 'active' : '']"
+                                @click="handleTagClick(tag.tagName)"
+                            >
+                                {{ tag.tagName }}
+                            </button>
+                        </div>
                     </div>
 
                     <!-- 추천 북마크 카드 표시 영역 -->
@@ -234,7 +236,7 @@ onUnmounted(() => {
     /* background: linear-gradient(to right, #f8f9fa, #ffffff); */
     padding: 16px 24px;
     border-radius: 12px;
-    margin-bottom: 24px;
+    margin-bottom: 12px;
 }
 
 .header-content {
@@ -267,6 +269,18 @@ onUnmounted(() => {
     line-height: 1.4;
 }
 
+.top-section {
+    position: sticky;
+    top: 0;
+    background-color: #F5F5F5;
+    padding: 10px 20px;
+    z-index: 98;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
 .filter-buttons {
     display: flex;
     gap: 10px;
@@ -289,9 +303,9 @@ onUnmounted(() => {
 }
 
 .filter-btn.active {
-    background: #3730A3;
+    background: #4338CA;
     color: rgba(255, 255, 255, 0.901);
-    border-color: #3730A3;
+    border-color: #4338CA;
 
 }
 
@@ -341,7 +355,7 @@ onUnmounted(() => {
 
 .cards-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     gap: 20px;
     padding: 20px;
 }

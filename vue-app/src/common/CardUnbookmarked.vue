@@ -146,93 +146,113 @@ const openModal = () => {
 <style scoped>
 .card {
     position: relative;
-    border-radius: 8px;
-    background: white;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-radius: 18px;
+    background: #ffffff;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     overflow: hidden;
-    transition: transform 0.2s;
+    transition: all 0.3s ease;
     width: 240px;
+    position: relative;
+
 }
 
 .card:hover {
-    transform: translateY(-4px);
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+
 }
 
 .card-image {
-    width: 100%;
-    height: 140px;
-    object-fit: cover;
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+
+.card:hover .card-image {
+  transform: scale(1.05);
 }
 
 .card-content {
-    padding: 12px;
-    height: 140px;
-    display: flex;
-    flex-direction: column;
+  padding: 13px;
+  height: 160px;
+  display: flex;
+  flex-direction: column;
 }
 
+
 .card-title {
-    margin: 0 0 8px 0;
-    font-size: 1.1rem;
-    color: #333;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  margin: 0 0 8px 0;
+  font-size: 1.1rem;
+  color: #333;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .card-description {
-    color: #666;
-    font-size: 0.9rem;
-    line-height: 1.4;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin-bottom: 6px;
+  color: #666;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 8px;
 }
 
 .card-url {
-    font-size: 0.8rem;
-    color: #666;
-    margin-bottom: 6px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  font-size: 0.7rem;
+  color: #999;
+  margin-bottom: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .card-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding: 0 px;
 }
 
 .tags-container {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    flex-wrap: nowrap;
-    overflow: hidden;
-    max-width: 70%;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: nowrap;
+  overflow: hidden;
+  max-width: 70%;
 }
 
 .tag {
-    padding: 2px 6px;
-    border-radius: 12px;
-    white-space: nowrap;
-    border: 1px solid;
-    font-size: 0.8rem;
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap;
+  border: none;
+  color: rgb(95, 93, 93);;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: all 0.2s ease;
 }
-
 .remaining-count {
-    color: #888;
-    font-size: 0.8rem;
+  color: #888;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
 }
 
 .card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px 12px;
+    padding: 10px 16px;
 }
 
 .priority {
@@ -257,11 +277,10 @@ const openModal = () => {
 }
 
 .read-time {
-    color: #666;
-    font-size: 0.8rem;
-    display: flex;
-    align-items: center;
-    gap: 4px;
+  white-space: nowrap;
+  color: #666;
+  font-size: 0.8rem;
+  font-weight: 500;
 }
 
 .save-button {
