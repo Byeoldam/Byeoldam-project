@@ -1,5 +1,5 @@
 <template>
-  <div class="collection-card" @click="!showModal && $emit('click')">
+  <div class="collection-card" @click="handleCollectionClick">
     <div class="card-content">
       <div class="collection-header">
         <h3>{{ collection.name }}</h3>
@@ -69,6 +69,16 @@ const props = defineProps({
 const emit = defineEmits(['click', 'action']);
 
 const collectionStore = useCollectionStore();
+
+const handleCollectionClick = () => {
+  if (!showModal.value) {
+    emit('click', {
+      collectionId: props.collection.collectionId,
+      isPersonal: props.collection.isPersonal,
+      name: props.collection.name
+    });
+  }
+};
 
 const openSettings = () => {
   if (props.collection.isPersonal) {
