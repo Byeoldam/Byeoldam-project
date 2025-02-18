@@ -44,9 +44,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     } else {
       // else >> *********** test용 **************
       const testLoginData = {
-        userId: "hyeon@naver.com",
+        userId: "jun@naver.com",
         access_token:
-          "eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInVzZXJJZCI6MiwiZW1haWwiOiJoeWVvbkBuYXZlci5jb20iLCJyb2xlIjoiUk9MRV9VU0VSIiwiaWF0IjoxNzM5OTAwOTc4LCJleHAiOjE3NDA1MDA5Nzh9.o4nPJnbTT2qoeAr5OIr4HQhxQfs62uRjXr9N6DOGIyk",
+          "eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInVzZXJJZCI6MSwiZW1haWwiOiJqdW5AbmF2ZXIuY29tIiwicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTczOTkwNzI3MiwiZXhwIjoxNzQwNTA3MjcyfQ.Fg7odOFS86W6BB9YbPqzc5g7Hd8eY6FL_VZGdCA3KtA",
       };
       saveLoginData(testLoginData);
 
