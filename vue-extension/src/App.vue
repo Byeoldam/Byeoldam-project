@@ -126,25 +126,6 @@ const goToByeoldam = async () => {
     chrome.tabs.create({ url: "http://byeoldam.store/login" });
   }
 };
-
-// StorageView 렌더링 지연
-const router = useRouter();
-router.beforeEach((to, from, next) => {
-  if (to.name === "storage") {
-    if (isDataLoaded.value) {
-      next();
-    } else {
-      const unwatch = watchEffect(() => {
-        if (isDataLoaded.value) {
-          unwatch();
-          next();
-        }
-      });
-    }
-  } else {
-    next();
-  }
-});
 </script>
 
 <style scoped>
