@@ -90,18 +90,15 @@ export const useUserStore = defineStore("user", {
         await api.post(`${REST_API_URL}/users/logout`);
         window.postMessage({ type: "LOGOUT" }, window.location.origin);
 
-        // ✅ 상태 초기화
+        // 상태 초기화
         this.user = null;
         this.accessToken = null;
         this.refreshToken = null;
 
-        // ✅ `localStorage`에서 데이터 삭제
+        // localStorage에서 데이터 삭제
         localStorage.removeItem("user");
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
-
-        alert("정상적으로 로그아웃 처리되었습니다.");
-        router.push({ name: "intro" });
       } catch (error) {
         console.error("🚨 로그아웃 실패:", error);
       }
@@ -138,15 +135,14 @@ export const useUserStore = defineStore("user", {
           nickname: form.nickname,
         });
 
-        if (response.data.success) {
-          alert("회원가입이 성공적으로 완료되었습니다.");
+        if (response.data.status) {
           router.push({ name: "login" });
         } else {
-          alert(response.data.message || "회원가입에 실패했습니다.");
+          throw new Error(response.data.message || "회원가입에 실패했습니다.");
         }
       } catch (err) {
         console.error("회원가입 요청 실패:", err);
-        alert(err.response?.data?.message || "회원가입에 실패했습니다. 다시 시도해주세요.");
+        throw err;
       }
     },
   },

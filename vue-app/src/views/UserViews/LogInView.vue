@@ -69,6 +69,8 @@ import { ref } from "vue";
 import { useUserStore } from "@/stores/user";
 import { RouterLink } from "vue-router";
 import { useRouter } from "vue-router";
+import { ElMessage } from 'element-plus';
+
 const router = useRouter()
 const userstore = useUserStore()
 
@@ -80,8 +82,9 @@ const handleLogin = async () => {
   try {
     await userstore.userLogin(email.value, password.value)
     sessionStorage.setItem("isReloading", "true");
+    ElMessage.success('로그인에 성공했습니다.');
   } catch (error) {
-    alert('로그인 실패: ' + error.message)
+    ElMessage.error(error.response?.data?.message || '로그인에 실패했습니다.');
   }
 }
 

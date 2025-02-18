@@ -79,6 +79,7 @@ import CreateCollection from '@/modal/CreateCollection.vue';
 import CollectionEdit from '@/modal/CollectionEdit.vue';
 import CollectionDel from '@/modal/CollectionDel.vue';
 import { useCollectionStore } from '@/stores/collection';
+import { ElMessage } from 'element-plus';
 
 const router = useRouter();
 const collectionStore = useCollectionStore();
@@ -127,6 +128,18 @@ const navigateToCollection = (collection) => {
             name: 'shared',
             query: { collection: collection.name }
         });
+    }
+};
+
+const handleLogout = async () => {
+    try {
+        await userStore.logout();
+        ElMessage.success('로그아웃되었습니다.');
+        setTimeout(() => {
+            router.push({ name: 'intro' });
+        }, 2000);
+    } catch (error) {
+        ElMessage.error('로그아웃 중 오류가 발생했습니다.');
     }
 };
 
