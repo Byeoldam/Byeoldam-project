@@ -221,7 +221,7 @@
     }
   };
   
-  // 이미지 삭제
+  // 이미지 삭제ff
   const handleDeleteImage = async () => {
     try {
       await myPageStore.deleteProfileImage();
