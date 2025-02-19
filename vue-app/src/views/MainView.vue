@@ -146,9 +146,20 @@ const handleLogout = async () => {
 onMounted(async () => {
     try {
         isLoading.value = true;
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
+        
+        if (token) {
+            // 1. URL에서 토큰 파라미터 제거
+            window.history.replaceState({}, document.title, "/collections");
+            // 2. localStorage에 토큰 저장
+            localStorage.setItem('accessToken', token);
+        }
+
+        // 컬렉션 데이터 로드
         await collectionStore.fetchAllCollections();
     } catch (error) {
-        console.error('컬렉션 로딩 실패:', error);
+        console.error('데이터 로딩 실패:', error);
     } finally {
         isLoading.value = false;
     }
