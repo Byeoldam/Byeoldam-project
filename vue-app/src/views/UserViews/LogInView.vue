@@ -100,8 +100,16 @@ const handleLogin = async () => {
 }
 
 const handleGoogleLogin = () => {
+  console.log("시도2");
+  
   console.log("Google 로그인 시도");
   // Google 로그인 로직 추가
+  const clientId = "437503882211-tmj75mbfqs56nmm01ddncp6og4hfghdg.apps.googleusercontent.com";
+  const GOOGLE_AUTH_URL = `https://accounts.google.com/o/oauth2/auth?client_id=${clientId}&redirect_uri=http://localhost:8080/login/oauth2/code/google&response_type=code&scope=openid%20email%20profile`;
+;
+
+  window.location.href = GOOGLE_AUTH_URL;
+
 };
 
 // 별을 생성하는 함수
