@@ -57,11 +57,13 @@ export const useMyPageStore = defineStore("myPage", () => {
 
     //마이페이지 프로필 이미지 변경
     const updateProfileImage = async (profileImage) => {
-        const response = await api.put("/mypage/profile-image", profileImage, {
+        const response = await api.post("/mypage/profile-image", profileImage, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
         });
+        console.log('updateProfileImage');
+        console.log(response.data.results.s3Url);
         await getMyPage();
         return response;
     };
