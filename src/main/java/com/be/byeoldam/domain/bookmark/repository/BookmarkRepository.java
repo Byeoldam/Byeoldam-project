@@ -37,4 +37,6 @@ public interface BookmarkRepository extends JpaRepository<Bookmark, Long> {
     List<Bookmark> findBySharedCollection(SharedCollection collection);
 
     boolean existsByBookmarkUrlAndSharedCollection(BookmarkUrl bookmarkUrl, SharedCollection collection);
+
+    boolean existsByBookmarkUrlAndUser(BookmarkUrl url, User user);
 }
