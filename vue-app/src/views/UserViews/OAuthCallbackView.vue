@@ -7,7 +7,8 @@
   <script setup>
   import { useRouter } from 'vue-router';
   import { onMounted } from 'vue';
-  
+  import api from "@/utils/api";
+  import { useCollectionStore } from '@/stores/collection';
   // Vue Router 사용
   const router = useRouter();
   
@@ -31,12 +32,29 @@
             redirectUri: "http://localhost:5173/oauth/callback",
           }),
         });
-        
-        
         const data = await response.json();
         console.log(data);
+        
         if(data.status){
-            router.push({ name: "main" });
+            const { userId, email, nickname, accessToken, refreshToken, profileUrl } = data.results;
+            
+            localStorage.setItem("accessToken", accessToken);
+            localStorage.setItem("refreshToken", refreshToken);
+
+            api.defaults.headers.common["accessToken"] = accessToken;
+            
+            const loginData = { access_token: accessToken, userId };
+            window.postMessage({ type: "LOGIN", data: loginData }, window.location.origin);
+        
+            const collectionStore = useCollectionStore();
+            await collectionStore.fetchAllCollections();
+
+            if (collectionStore.allCollections.length === 0) {
+                router.push({ name: "collectionSelect" });
+            } else {
+                router.push({ name: "main" });
+            }
+
         }else{
             router.push("/");
         }
