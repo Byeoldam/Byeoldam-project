@@ -27,7 +27,7 @@ public class JWTFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         System.out.println("JWTFilter.doFilterInternal");
 
-            // 로그인 요청일 경우, 토큰이 없어도 패스
+        // 로그인 요청일 경우, 토큰이 없어도 패스
         String requestURI = request.getRequestURI();
         if (requestURI.contains("/api/users/login") || requestURI.contains("/api/users/register")) {
             filterChain.doFilter(request, response);
