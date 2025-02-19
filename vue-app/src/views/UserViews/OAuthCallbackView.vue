@@ -31,20 +31,15 @@
             redirectUri: "http://localhost:5173/oauth/callback",
           }),
         });
-  
-        if (!response.ok) {
-          throw new Error("OAuth2 로그인 실패");
-        }
-  
+        
+        
         const data = await response.json();
         console.log(data);
-        
-        
-
-        console.log("가져온 데이터");
-  
-        // ✅ 로그인 후 홈으로 리디렉트
-        router.push("/");
+        if(data.status){
+            router.push({ name: "main" });
+        }else{
+            router.push("/");
+        }
       } catch (error) {
         console.error("OAuth2 로그인 에러:", error);
         alert("OAuth 로그인 중 오류가 발생했습니다.");

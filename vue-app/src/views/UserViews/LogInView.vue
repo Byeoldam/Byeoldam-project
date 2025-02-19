@@ -109,7 +109,7 @@ const handleGoogleLogin = () => {
 ;
 
   window.location.href = GOOGLE_AUTH_URL;
-
+  
 };
 
 // 별을 생성하는 함수
