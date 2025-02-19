@@ -354,7 +354,7 @@ public class BookmarkService {
             PersonalCollection collection = personalCollectionRepository.findById(request.getCollectionId())
                     .orElseThrow(() -> new CustomException("해당 개인컬렉션이 없습니다."));
 
-            if (bookmarkRepository.existsByBookmarkUrlAndPersonalCollection(url, collection)) {
+            if (bookmarkRepository.existsByBookmarkUrlAndUser(url, user)) {
                 throw new CustomException("개인 컬렉션에 담은 페이지입니다.");
             }
 
