@@ -34,7 +34,7 @@
   
           <button
             type="submit"
-            class="w-full text-gray-900 py-2 rounded-md hover:bg-[#e6c300] transition duration-300 cursor-pointer hover:shadow-md hover:scale-[1.02] active:scale-[0.98]"
+            class="w-full text-gray-900 py-2 rounded-md hover:bg-[#e6c300] transition duration-300 cursor-pointer hover:shadow-md hover:scale-[1.02] active:scale-[0.98] text-lg font-medium"
             style="background-color: #FFD900F5"
           >
             로그인
@@ -44,7 +44,7 @@
         <div class="mt-4">
           <button
             @click="handleGoogleLogin"
-            class="w-full flex items-center justify-center border border-[#FFD900F5] text-[#FFD900F5] py-2 rounded-md hover:bg-yellow-50 transition duration-300 cursor-pointer hover:shadow-md hover:scale-[1.02] active:scale-[0.98]"
+            class="w-full flex items-center justify-center border border-[#FFD900F5] text-[#FFD900F5] py-2 rounded-md hover:bg-yellow-50 transition duration-300 cursor-pointer hover:shadow-md hover:scale-[1.02] active:scale-[0.98] text-lg font-medium"
           >
             <img src="@/assets/google-icon.png" alt="Google" class="w-5 h-5 mr-2" />
             Google로 로그인
@@ -54,7 +54,7 @@
         <div class="mt-4 text-center">
           <RouterLink 
             :to="{ name: 'register' }" 
-            class="text-[#3730A3] hover:text-[#2d2682] font-medium"
+            class="text-[#3730A3] hover:text-[#2d2682] font-normal"
           >
             회원가입하기
           </RouterLink>
