@@ -34,6 +34,14 @@
                         <div class="spinner"></div>
                         <p>로딩 중...</p>
                     </div>
+                    <div v-else-if="collections.length === 0" class="empty-state">
+                        <i class="fas fa-folder-open empty-icon"></i>
+                        <p class="empty-text">개인 컬렉션이 존재하지 않습니다.</p>
+                        <p class="empty-description">
+                            상단의 '새 컬렉션' 버튼을 클릭하여<br>
+                            새로운 컬렉션을 만들어보세요!
+                        </p>
+                    </div>
                     <div v-else-if="selectedCollectionId && selectedCollectionBookmarks.length === 0" class="empty-state">
                         <i class="fas fa-bookmark search-icon"></i>
                         <p class="empty-message">이 컬렉션에는 아직 북마크가 없습니다.</p>
@@ -413,5 +421,24 @@ const createNewCollection = () => {
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+.empty-icon {
+    font-size: 48px;
+    color: #ddd;
+    margin-bottom: 20px;
+}
+
+.empty-text {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 8px;
+}
+
+.empty-description {
+    font-size: 1rem;
+    color: #888;
+    text-align: center;
+    line-height: 1.5;
 }
 </style>

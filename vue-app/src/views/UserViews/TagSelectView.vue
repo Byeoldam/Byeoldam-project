@@ -165,6 +165,7 @@ const addTag = (tagName) => {
             tagColor,
             tagBolder
         });
+        console.log('현재 선택된 태그들:', selectedTags.value);
         newTag.value = "";
     }
 };
@@ -173,22 +174,22 @@ const removeTag = (tag) => {
     selectedTags.value = selectedTags.value.filter(t => t.tagName !== tag.tagName);
 };
 
+
 const saveSelectedTags = async () => {
   try {
-    // tagList 형식에 맞춰 데이터 구조화
-    const tagsData = {
-      tagList: selectedTags.value.map(tag => ({
-        tagName: tag.tagName,
-        tagColor: tag.tagColor,
-        tagBolder: tag.tagBolder
-      }))
-    };
-    
-    await bookmarkStore.saveUserDefineTags(tagsData);
-    errorStore.setSuccess("태그가 성공적으로 저장되었습니다.");
+    // 모든 태그를 한 번에 전송
+    const tagsToSave = selectedTags.value.map(tag => ({
+      tagName: tag.tagName,
+      tagColor: tag.tagColor,
+      tagBolder: tag.tagBolder
+    }));
+
+    const response = await bookmarkStore.saveUserDefineTags(tagsToSave);
+    console.log('저장 응답:', response);
+    // alert("태그가 성공적으로 저장되었습니다.");
   } catch (error) {
     console.error("태그 저장 중 오류 발생:", error);
-    errorStore.setError("태그 저장에 실패했습니다.");
+    // alert("태그 저장에 실패했습니다.");
   }
 };
 </script>

@@ -11,13 +11,13 @@
                                 <i class="fas fa-clock title-icon"></i>
                                 <h2 class="title">오래된 북마크</h2>
                             </div>
-                            <p class="description">오랜기간 읽지 않은 북마크들을 모아서 보여드립니다</p>
+                            <p class="description">북마크 등록 후 30일이 지난 북마크는 오래된 북마크로 분류됩니다.</p>
                         </div>
                     </div>
                     
                     <div v-if="!bookmarkResults.length" class="empty-state">
-                        <i class="fas fa-star empty-icon"></i>
-                        <p class="empty-text">오랜기간 읽지않은 북마크가 없습니다.</p>
+                        <i class="fas fa-clock empty-icon"></i>
+                        <p class="empty-text">등록된지 30일 이상 지난 북마크가 없습니다.</p>
                         <p class="empty-description">북마크 등록 후 30일이 지난 북마크는 오래된 북마크로 분류됩니다.</p>
                     </div>
                 

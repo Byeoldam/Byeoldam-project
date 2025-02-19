@@ -23,7 +23,7 @@
                     <div v-else-if="!bookmarkResults.length" class="empty-state">
                         <i class="fas fa-star empty-icon"></i>
                         <p class="empty-text">중요 표시된 북마크가 없습니다.</p>
-                        <p class="empty-description">북마크에 별표를 클릭하여 중요 북마크로 지정할 수 있습니다.</p>
+                        <p class="empty-description">북마크의 중요도를 설정하여 중요 북마크를 모아 볼 수 있습니다.</p>
                     </div>
                     
                     <div v-else class="cards-grid">

@@ -116,6 +116,7 @@
   import { useUserStore } from "@/stores/user";
   import { useMyPageStore } from "@/stores/myPage";
   import { useRouter } from "vue-router";
+  import { ElMessage } from 'element-plus';
   
   const router = useRouter()
   const userstore = useUserStore()
@@ -250,12 +251,18 @@
         userstore.user = updatedUser;
         localStorage.setItem("user", JSON.stringify(updatedUser));
         
-        alert('변경사항이 저장되었습니다.');
+        ElMessage({
+          message: '변경사항이 저장되었습니다.',
+          type: 'success'
+        });
         router.push('/main');
       }
     } catch (error) {
       console.error('정보 업데이트 실패:', error);
-      alert('정보 업데이트에 실패했습니다.');
+      ElMessage({
+        message: '정보 업데이트에 실패했습니다.',
+        type: 'error'
+      });
     }
   };
   

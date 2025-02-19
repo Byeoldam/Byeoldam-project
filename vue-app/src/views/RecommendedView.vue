@@ -11,12 +11,12 @@
                                 <i class="fas fa-thumbs-up title-icon"></i>
                                 <h2 class="title">추천 태그</h2>
                             </div>
-                            <p class="description">자주 사용되는 태그들을 확인해보세요</p>
+                            <p class="description">내가 설정한 태그들을 기반으로 추천 북마크를 만나보세요</p>
                         </div>
                     </div>
                     
                     <div class="top-section">
-                        <div class="filter-buttons">
+                        <div v-if="tags.length > 0" class="filter-buttons">
                             <button 
                                 v-for="tag in tags" 
                                 :key="tag.tagName"
@@ -26,12 +26,28 @@
                                 {{ tag.tagName }}
                             </button>
                         </div>
+                        <!-- <div v-else class="empty-state">
+                            <i class="fas fa-tags empty-icon"></i>
+                            <p class="empty-text">관심 태그가 설정되어 있지 않습니다.</p>
+                            <p class="empty-description">
+                                마이페이지에서 관심 태그를 설정하시면<br>
+                                맞춤 북마크를 추천해드립니다!
+                            </p>
+                        </div> -->
                     </div>
 
                     <!-- 추천 북마크 카드 표시 영역 -->
                     <Suspense>
                         <template #default>
-                            <div v-if="isLoading" class="loading-spinner">
+                            <div v-if="tags.length === 0" class="empty-state">
+                                <i class="fas fa-tags empty-icon"></i>
+                                <p class="empty-text">관심 태그가 설정되어 있지 않습니다.</p>
+                                <p class="empty-description">
+                                    마이페이지에서 관심 태그를 설정하시면<br>
+                                    맞춤 북마크를 추천해드립니다!
+                                </p>
+                            </div>
+                            <div v-else-if="isLoading" class="loading-spinner">
                                 <div class="spinner"></div>
                                 <p>로딩 중...</p>
                             </div>
@@ -337,9 +353,22 @@ onUnmounted(() => {
 }
 
 .empty-icon {
-    font-size: 3rem;
+    font-size: 48px;
     color: #ddd;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
+}
+
+.empty-text {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 8px;
+}
+
+.empty-description {
+    font-size: 1rem;
+    color: #888;
+    text-align: center;
+    line-height: 1.5;
 }
 
 .empty-message {
