@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 
 
@@ -39,11 +38,6 @@ public class ExtensionService {
 
         // url 핵심 키워드
         List<String> keywords = keywordExtractorService.extractKeywords(request);
-
-        if (keywords == null || keywords.isEmpty()) {
-            keywords = Collections.singletonList("기타");
-            log.warn("키워드가 비어 있어 디폴트 키워드를 설정했습니다");
-        }
 
         // RSS 구독 가능 여부
         boolean canSubscribeRss = rssService.isSubscribed(request.getSiteUrl());
