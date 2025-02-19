@@ -137,7 +137,29 @@ public class UserService {
         return userLoginResponse;
     }
 
-    // 로그아웃
+    // 구글 로그인
+    @Transactional
+    UserLoginResponse googleLogin(String email, String nickname) {
+        System.out.println("UserService.googleLogin");
+
+        // 구글 회원이 신규 일 경우 저장하기.
+        User user = userRepository.findByEmail(email)
+                .orElseGet(() -> userRepository.save(User.builder()
+                        .email(email)
+                        .provider(User.Provider.GOOGLE)
+                        .nickname(nickname)
+                        .password("**")
+                        .build()));
+        System.out.println("USER:" + user.getNickname());
+        // token 불러오기
+        Map<String, String> tokens = generateTokens(user);
+        user.updateRefreshToken(tokens.get("refresh"));
+        UserLoginResponse userLoginResponse = UserLoginResponse.fromEntity(user);
+        userLoginResponse.addTokens(tokens.get("access"), tokens.get("refresh"));
+
+        return userLoginResponse;
+    }
+        // 로그아웃
     @Transactional
     public void logout() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
