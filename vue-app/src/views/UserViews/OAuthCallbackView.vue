@@ -9,6 +9,8 @@
   import { onMounted } from 'vue';
   import api from "@/utils/api";
   import { useCollectionStore } from '@/stores/collection';
+  import { useUserStore } from '@/stores/user';  // 상단에 import 추가
+
   // Vue Router 사용
   const router = useRouter();
   
@@ -44,6 +46,13 @@
                 nickname,
                 profileUrl
             };
+            
+               // Pinia store에 저장
+    const userStore = useUserStore();
+    userStore.user = user;
+    userStore.accessToken = accessToken;
+    userStore.refreshToken = refreshToken;
+
             // user 저장장
             localStorage.setItem("user", JSON.stringify(user));
             localStorage.setItem("accessToken", accessToken);
