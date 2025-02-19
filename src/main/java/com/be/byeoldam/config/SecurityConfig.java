@@ -5,6 +5,7 @@ import java.util.List;
 import com.be.byeoldam.common.filter.JWTFilter;
 import com.be.byeoldam.common.filter.LoginFilter;
 import com.be.byeoldam.common.jwt.JwtUtil;
+import com.be.byeoldam.common.oauth.handler.OAuth2LoginSuccessHandler;
 import com.be.byeoldam.common.oauth.service.CustomOAuth2UserService;
 import com.be.byeoldam.domain.user.UserService;
 
@@ -34,6 +35,7 @@ public class SecurityConfig {
     private final JwtUtil jwtUtil;
     private final UserDetailsService userDetailsService;
     private final CustomOAuth2UserService customOAuth2UserService;
+    private final OAuth2LoginSuccessHandler  oAuth2LoginSuccessHandler;
 
     // 비밀번호 암호화를 위해 사용 (Security에서 제공)
     @Bean
@@ -85,6 +87,13 @@ public class SecurityConfig {
         loginFilter.setFilterProcessesUrl("/api/users/login");
         http.addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(new JWTFilter(jwtUtil, userDetailsService), LoginFilter.class);
+
+
+        // ✅ OAuth2 로그인 설정 추가
+        http.oauth2Login(oauth2 -> oauth2
+                .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
+                .successHandler(oAuth2LoginSuccessHandler) // ✅ 로그인 성공 후 JWT 발급
+        );
 
         return http.build();
     }
