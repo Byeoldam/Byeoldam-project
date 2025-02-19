@@ -181,13 +181,26 @@
       }
 
       const formData = new FormData();
-      // MultipartFile 형식으로 전송
-      formData.append('multipartFile', file);
+      // 'upload'로 키 값 변경
+      formData.append('upload', file);
 
       try {
         const response = await myPageStore.updateProfileImage(formData);
         if (response.data.status) {
+          console.log('성공');
+          console.log(response.data.results.s3Url);
+          
+          const updatedUser = {
+            ...userstore.user,
+            profileUrl: response.data.results.s3Url
+          };
+        
+          // userStore와 localStorage 모두 업데이트
+          userstore.user = updatedUser;
+          localStorage.setItem("user", JSON.stringify(updatedUser));
+        
           alert('프로필 이미지가 성공적으로 변경되었습니다.');
+
         }
       } catch (error) {
         console.error('이미지 업로드 실패:', error);
