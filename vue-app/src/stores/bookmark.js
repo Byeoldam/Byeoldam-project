@@ -285,18 +285,12 @@ export const useBookmarkStore = defineStore("bookmark", () => {
         })
       
       //사용자 정의 태그 저장
-      const saveUserDefineTags = async (tagList) => {
+      const saveUserDefineTags = async (tags) => {
         const request = {
-          "tagList": [
-            {
-              "tagName": tagList.tagName,
-              "tagColor": tagList.tagColor,
-              "tagBolder": tagList.tagBolder
-            }
-          ]
-        }
+          tagList: Array.isArray(tags) ? tags : [tags]
+        };
         const response = await api.post('/tags', request);
-        console.log(response.data);
+        return response.data;
       };
 
       //추천 태그 기반 북마크 실제 response

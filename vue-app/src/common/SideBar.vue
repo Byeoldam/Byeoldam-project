@@ -3,15 +3,15 @@
         <nav>
             <router-link :to="{ name: 'main'}" class="nav-item">
                 <i class="fas fa-home"></i>
-                <span>메인페이지</span>
+                <span>메인 페이지</span>
             </router-link>
             <router-link :to="{ name: 'important'}" class="nav-item">
                 <i class="fas fa-star"></i>
-                <span>중요페이지</span>
+                <span>중요 북마크</span>
             </router-link>
             <router-link :to="{ name: 'recommended'}" class="nav-item">
                 <i class="fas fa-thumbs-up"></i>
-                <span>추천페이지</span>
+                <span>추천 북마크</span>
             </router-link>
             <router-link :to="{ name: 'personal'}" class="nav-item">
                 <i class="fas fa-folder"></i>

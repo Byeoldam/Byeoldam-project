@@ -11,7 +11,7 @@
                                 <i class="fas fa-users title-icon"></i>
                                 <h2 class="title">공유 컬렉션</h2>
                             </div>
-                            <p class="description">나만의 북마크를 체계적으로 관리하고 정리할 수 있는 공간입니다</p>
+                            <p class="description">다른 사용자와 공유하는 북마크를 확인하고 관리할 수 있는 공간입니다</p>
                         </div>
                     </div>
                     <div class="top-section">
@@ -61,6 +61,7 @@
                     <div class="content-section">
                         <div class="cards-section">
                             <div v-if="selectedCollectionId && selectedCollectionBookmarks.length === 0" class="empty-state">
+                                <i class="fas fa-bookmark search-icon"></i>
                                 <p class="empty-message">이 컬렉션에는 아직 북마크가 없습니다.</p>
                                 <p class="empty-sub-message">새로운 북마크를 추가해보세요!</p>
                             </div>
@@ -83,12 +84,13 @@
                             </div>
                         </div>
                     </div>
-                    <div v-if="!selectedCollectionId" class="initial-message">
-                        <div class="message-box">
-                            <i class="fas fa-share-alt search-icon"></i>
-                            <h3>공유된 북마크가 없습니다.</h3>
-                            <p>다른 사용자와 북마크를 공유해보세요</p>
-                        </div>
+                    <div v-if="!selectedCollectionId" class="empty-state">
+                        <i class="fas fa-folder-open empty-icon"></i>
+                        <p class="empty-text">공유 컬렉션이 존재하지 않습니다.</p>
+                        <p class="empty-description">
+                            상단의 '새 컬렉션' 버튼을 클릭하여<br>
+                            새로운 컬렉션을 만들어보세요!
+                        </p>
                     </div>
                 </div>
             </div>
@@ -579,5 +581,24 @@ const handleCollectionNameSave = async () => {
 
 .collection-name-input:focus {
     border-bottom-color: #2d2682;
+}
+
+.empty-icon {
+    font-size: 48px;
+    color: #ddd;
+    margin-bottom: 20px;
+}
+
+.empty-text {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 8px;
+}
+
+.empty-description {
+    font-size: 1rem;
+    color: #888;
+    text-align: center;
+    line-height: 1.5;
 }
 </style>
