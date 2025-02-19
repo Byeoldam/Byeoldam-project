@@ -17,26 +17,7 @@
           </button>
           <h2>마이페이지</h2>
         </div>
-
-        <div class="form-group">
-          <label>닉네임</label>
-          <div class="input-with-button">
-            <input v-model="editedNickname" 
-                   class="form-input"
-                   :placeholder="myPageStore.myPage.results.nickname">
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label>알림 날짜</label>
-          <div class="input-with-button">
-            <input v-model="editedAlertDay" 
-                   type="number" 
-                   class="form-input"
-                   min="0">
-          </div>
-        </div>
-
+        
         <div class="form-group">
           <label>프로필 이미지</label>
           <div class="profile-section">
@@ -54,34 +35,55 @@
             </div>
           </div>
         </div>
-
-        <div class="form-group">
-          <label>태그 목록</label>
-          <div class="tag-list">
-            <div v-for="(tag, index) in tags" 
-                 :key="index" 
-                 class="tag-item"
-                 :style="{ backgroundColor: tag.tagColor, 
-                          border: `1px solid ${tag.tagBolder}` }">
-              {{ tag.tagName }}
-              <button @click="removeTag(index)" class="tag-delete-btn">×</button>
+        <div class="info-section">
+          <div class="form-group">
+            <label>닉네임</label>
+            <div class="input-with-button">
+              <input v-model="editedNickname" 
+                     class="form-input"
+                     :placeholder="myPageStore.myPage.results.nickname">
             </div>
           </div>
-          <div class="input-with-button">
-            <input v-model="newTag.tagName" 
-                   placeholder="태그 이름" 
-                   class="form-input">
-            <button @click="addTag" class="button-primary">추가</button>
-          </div>
-        </div>
 
-        <button @click="showPasswordModal = true" class="button-secondary full-width">
-            비밀번호 변경
-        </button>
-        <button @click="saveChanges" class="button-primary full-width">변경사항 저장</button>
-        <button @click="confirmDelete" class="button-danger full-width">
-          회원 탈퇴
-        </button>
+          <div class="form-group">
+            <label>알림 날짜</label>
+            <div class="input-with-button">
+              <input v-model="editedAlertDay" 
+                     type="number" 
+                     class="form-input"
+                     min="0">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>태그 목록</label>
+            <div class="tag-list">
+              <div v-for="(tag, index) in tags" 
+                   :key="index" 
+                   class="tag-item"
+                   :style="{ backgroundColor: tag.tagColor }">
+                {{ tag.tagName }}
+                <button @click="removeTag(index)" class="tag-delete-btn">×</button>
+              </div>
+            </div>
+            <div class="input-with-button">
+              <input v-model="newTag.tagName" 
+                     placeholder="태그를 작성 후 엔터를 눌러 추가해주세요" 
+                     class="form-input"
+                     @keydown.enter="addTag">
+            </div>
+          </div>
+
+          <button @click="saveChanges" class="button-primary full-width">변경사항 저장</button>
+        </div>
+        <div class="button-container">
+          <button @click="showPasswordModal = true" class="button-secondary">
+              비밀번호 변경
+          </button>
+          <button @click="confirmDelete" class="button-danger">
+            회원 탈퇴
+          </button>
+        </div>
       </div>
 
       <!-- 비밀번호 변경 모달 -->
@@ -137,6 +139,10 @@
     tagName: ''
   });
   
+  // 이전 색상들을 저장할 배열
+  const previousHues = ref([]);
+  const MIN_HUE_DIFFERENCE = 30;
+  
   onMounted(() => {
     starsStyle.value = generateStarsShadow(700, 1);
     stars2Style.value = generateStarsShadow(200, 2);
@@ -181,22 +187,41 @@
       }
 
       const formData = new FormData();
-      // MultipartFile 형식으로 전송
-      formData.append('multipartFile', file);
+      // 'upload'로 키 값 변경
+      formData.append('upload', file);
 
       try {
         const response = await myPageStore.updateProfileImage(formData);
         if (response.data.status) {
-          alert('프로필 이미지가 성공적으로 변경되었습니다.');
+          console.log('성공');
+          console.log(response.data.results.s3Url);
+          
+          const updatedUser = {
+            ...userstore.user,
+            profileUrl: response.data.results.s3Url
+          };
+        
+          // userStore와 localStorage 모두 업데이트
+          userstore.user = updatedUser;
+          localStorage.setItem("user", JSON.stringify(updatedUser));
+        
+          ElMessage({
+            message: '프로필 이미지가 성공적으로 변경되었습니다.',
+            type: 'success'
+          });
+
         }
       } catch (error) {
         console.error('이미지 업로드 실패:', error);
-        alert('이미지 업로드에 실패했습니다. 다시 시도해주세요.');
+        ElMessage({
+          message: '이미지 업로드에 실패했습니다. 다시 시도해주세요.',
+          type: 'error'
+        });
       }
     }
   };
   
-  // 이미지 삭제
+  // 이미지 삭제ff
   const handleDeleteImage = async () => {
     try {
       await myPageStore.deleteProfileImage();
@@ -261,35 +286,92 @@
     }
   };
   
-  // 랜덤 색상 생성 함수
-  const getRandomColor = () => {
-    // 부드러운 파스텔톤 색상을 위해 채도와 명도 조정
-    const hue = Math.floor(Math.random() * 360); // 0-359 색상
-    const saturation = Math.floor(Math.random() * 30) + 70; // 70-100% 채도
-    const lightness = Math.floor(Math.random() * 15) + 75; // 75-90% 명도
-    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+  // HSL을 HEX로 변환하는 함수
+  const hslToHex = (h, s, l) => {
+    s /= 100;
+    l /= 100;
+    const c = (1 - Math.abs(2 * l - 1)) * s;
+    const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+    const m = l - c / 2;
+    let r = 0, g = 0, b = 0;
+
+    if (0 <= h && h < 60) { r = c; g = x; b = 0; }
+    else if (60 <= h && h < 120) { r = x; g = c; b = 0; }
+    else if (120 <= h && h < 180) { r = 0; g = c; b = x; }
+    else if (180 <= h && h < 240) { r = 0; g = x; b = c; }
+    else if (240 <= h && h < 300) { r = x; g = 0; b = c; }
+    else if (300 <= h && h < 360) { r = c; g = 0; b = x; }
+
+    const toHex = (value) => {
+        const hex = Math.round((value + m) * 255).toString(16);
+        return hex.length === 1 ? "0" + hex : hex;
+    };
+
+    return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
   };
-  
+
+  // 새로운 색상이 이전 색상들과 충분히 다른지 확인
+  const isDistinctHue = (hue) => {
+    return previousHues.value.every((prevHue) => {
+        const diff = Math.abs(hue - prevHue);
+        return Math.min(diff, 360 - diff) >= MIN_HUE_DIFFERENCE;
+    });
+  };
+
+  // 구분되는 새로운 색상 생성
+  const getDistinctHue = () => {
+    let attempts = 0;
+    let hue;
+
+    do {
+        hue = Math.floor(Math.random() * 359);
+        attempts++;
+        if (attempts > 100) {
+            previousHues.value = [];
+            break;
+        }
+    } while (!isDistinctHue(hue));
+
+    if (previousHues.value.length >= 10) {
+        previousHues.value.shift();
+    }
+    previousHues.value.push(hue);
+
+    return hue;
+  };
+
+  // 태그 색상 생성 함수
+  const getRandomColor = () => {
+    const hue = getDistinctHue();
+    const saturation = 85 + Math.random() * 10;
+    const lightness = 92 + Math.random() * 3;
+    return hslToHex(hue, saturation - 50, lightness);
+  };
+
+  // 테두리 색상 생성 함수
+  const generateDarkerColor = (baseColor) => {
+    const hue = getDistinctHue();
+    const saturation = 85 + Math.random() * 10;
+    const lightness = 92 + Math.random() * 3;
+    return hslToHex(hue, saturation - 20, lightness - 25);
+  };
+
   // 태그 추가 함수 수정
   const addTag = () => {
     if (newTag.value.tagName.trim()) {
-      const backgroundColor = getRandomColor();
-      // 테두리 색상은 배경색보다 약간 어둡게
-      const borderColor = backgroundColor.replace(
-        /lightness\)/, 
-        'lightness) darken(15%)'
-      );
-      
-      tags.value.push({
-        tagName: newTag.value.tagName,
-        tagColor: backgroundColor,
-        tagBolder: borderColor
-      });
-      
-      newTag.value.tagName = '';
+        const tagColor = getRandomColor();
+        const tagBolder = generateDarkerColor(tagColor);
+        
+        tags.value.push({
+            tagName: newTag.value.tagName,
+            tagColor,
+            tagBolder
+        });
+        
+        newTag.value.tagName = '';
     }
   };
-  
+
   const removeTag = (index) => {
     tags.value.splice(index, 1);
   };
@@ -349,7 +431,7 @@
     position: relative;
     z-index: 1;
     background: rgba(255, 255, 255, 0.95);
-    padding: 2rem;
+    padding: 1rem;
     border-radius: 15px;
     width: 100%;
     max-width: 450px;
@@ -358,7 +440,7 @@
 
   .header-section {
     position: relative;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
   }
 
   .back-button {
@@ -389,14 +471,14 @@
 
   h2 {
     text-align: center;
-    margin: 0;
+    margin: 0 0 0.8rem 0;
     color: #1a1a1a;
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     font-weight: 600;
   }
 
   .form-group {
-    margin-bottom: 1rem;
+    margin-bottom: 0.6rem;
   }
 
   label {
@@ -508,23 +590,29 @@
   .tag-list {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.4rem;
-    margin-bottom: 0.8rem;
-    padding: 0.3rem;
+    gap: 0.3rem;
+    margin-bottom: 0.6rem;
+    padding: 0.2rem;
   }
 
   .tag-item {
-    padding: 0.3rem 0.8rem;
+    padding: 4px 8px;
     border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    white-space: nowrap;
+    border: none;
+    color: rgb(95, 93, 93);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.2s ease;
     display: flex;
     align-items: center;
     gap: 0.3rem;
-    font-size: 0.8rem;
-    transition: transform 0.2s;
   }
 
   .tag-item:hover {
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
   }
 
   .tag-delete-btn {
@@ -662,6 +750,26 @@
     color: #4B48EC;
     font-weight: 500;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  }
+
+  .info-section {
+    background: rgba(255, 255, 255, 0.7);
+    padding: 0.8rem;
+    border-radius: 10px;
+    margin-bottom: 0.8rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .button-container {
+    display: flex;
+    gap: 0.8rem;
+    margin-top: 0.8rem;
+  }
+
+  .button-container button {
+    flex: 1;
+    margin: 0;
   }
   </style>
     

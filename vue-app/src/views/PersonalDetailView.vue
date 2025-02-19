@@ -100,6 +100,7 @@ const bookmark = computed(() =>
   bookmarkStore.findBookmarkById(Number(route.params.bookmarkId))
 );
 
+//상태 관리 
 const bookmarkId = computed(() => Number(route.params.id));
 const newMemo = ref('');
 const memos = ref([]);
@@ -142,7 +143,7 @@ const addMemo = async () => {
         isSubmitting.value = true;
         error.value = null;
         
-        const response = await bookmarkStore.createMemo(bookmark.value.id, newMemo.value);
+        const response = await bookmarkStore.createMemo(route.params.bookmarkId, newMemo.value);
         if (response.data.status) {
             const newMemoData = response.data.results;
             memos.value.push({
@@ -172,7 +173,7 @@ const deleteMemo = async (memoId) => {
         isSubmitting.value = true;
         error.value = null;
         
-        const response = await bookmarkStore.deleteMemo(bookmark.value.id, memoId);
+        const response = await bookmarkStore.deleteMemo(route.params.bookmarkId, memoId);
         if (response.data.status) {
             memos.value = memos.value.filter(memo => memo.id !== memoId);
         }

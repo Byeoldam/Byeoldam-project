@@ -37,10 +37,10 @@ export default {
       userStore.refreshToken = null
     }
 
-    if(!sessionStorage.getItem('isReloading')){
-      console.log("isReloading 없음");
-      clearUserData()
-    }
+    // if(!sessionStorage.getItem('isReloading')){
+    //   console.log("isReloading 없음");
+    //   clearUserData()
+    // }
 
     onMounted(() => {
       console.log("새로 고침 시");

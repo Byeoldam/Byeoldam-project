@@ -174,14 +174,15 @@ function generateStarsShadow(count, size) {
 .header {
     position: fixed;
     width: 100%;
-    padding: 1.0rem 1.5rem;
+    padding: clamp(0.5rem, 1vw, 1rem) clamp(1.5rem, 3vw, 3rem);
+    height: 10vh;
     z-index: 10;
-    background-color: rgba(30, 27, 75, 0.9);
-    backdrop-filter: blur(12px);
+    /* background-color: rgba(30, 27, 75, 0.9); */
+    /* backdrop-filter: blur(12px); */
 }
 
 .header-content {
-    max-width: 80rem;
+    max-width: min(80rem, 90vw);
     margin: 0 auto;
     display: flex;
     justify-content: space-between;
@@ -195,13 +196,13 @@ function generateStarsShadow(count, size) {
 }
 
 .logo-title {
-    font-size: 1.875rem;
+    font-size: clamp(1.3rem, 2.5vw, 2.2rem);
     font-weight: bold;
     color: #ffd900f5;
 }
 
 .logo-subtitle {
-    font-size: 1rem;
+    font-size: clamp(0.8rem, 1.2vw, 1.1rem);
     color: rgba(255, 255, 255, 0.7);
     font-weight: normal;
 }
@@ -212,7 +213,8 @@ function generateStarsShadow(count, size) {
 }
 
 .register-btn, .login-btn {
-    padding: 0.5rem 1.5rem;
+    padding: clamp(0.4rem, 0.8vw, 0.6rem) clamp(1rem, 1.5vw, 1.8rem);
+    font-size: clamp(0.8rem, 1vw, 1.1rem);
     font-weight: bold;
     border-radius: 9999px;
     transition: all 0.3s ease;
@@ -239,23 +241,24 @@ function generateStarsShadow(count, size) {
 }
 
 .hero-section {
-    padding-top: 4rem;
+    padding-top: 0;
+    height: 45vh;
     flex: 1;
     display: flex;
     align-items: center;
 }
 
 .hero-content {
-    max-width: 80rem;
+    max-width: min(80rem, 90vw);
     margin: 0 auto;
     text-align: center;
 }
 
 .hero-title {
-    font-size: 2.5rem;
+    font-size: clamp(1.8rem, 3vw, 3.5rem);
     font-weight: bold;
     color: white;
-    margin-bottom: 1rem;
+    margin-bottom: clamp(0.5rem, 1vw, 1rem);
 }
 
 .highlight {
@@ -263,23 +266,22 @@ function generateStarsShadow(count, size) {
 }
 
 .hero-description {
-    font-size: 1rem;
+    font-size: clamp(0.9rem, 1.2vw, 1.3rem);
     color: rgb(209, 213, 219);
-    margin-bottom: 2rem;
+    margin-bottom: clamp(1rem, 2vw, 2rem);
     line-height: 1.7;
 }
 
 .start-btn {
-    padding: 1rem 2rem;
+    padding: clamp(0.6rem, 1vw, 1rem) clamp(1.2rem, 2vw, 2.5rem);
     background-color: #FFD900F5;
     color: #1E1B4B;
-    font-size: 1.25rem;
+    font-size: clamp(0.9rem, 1.3vw, 1.5rem);
     font-weight: bold;
     border-radius: 9999px;
     transition: all 0.3s ease;
     box-shadow: 0 4px 6px rgba(255, 217, 0, 0.1);
     cursor: pointer;
-
 }
 
 .start-btn:hover {
@@ -288,26 +290,27 @@ function generateStarsShadow(count, size) {
 }
 
 .features-section {
-    padding: 2rem 1.5rem;
+    height: 40vh;
+    padding: clamp(1rem, 2vw, 2rem);
 }
 
 .features-content {
-    max-width: 80rem;
+    max-width: min(80rem, 90vw);
     margin: 0 auto;
 }
 
 .features-title {
-    font-size: 1.5rem;
+    font-size: clamp(1.2rem, 2vw, 2rem);
     font-weight: bold;
     color: white;
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: clamp(1rem, 2vw, 2rem);
 }
 
 .features-grid {
     display: grid;
     grid-template-columns: repeat(1, 1fr);
-    gap: 2rem;
+    gap: clamp(1rem, 1.5vw, 2rem);
 }
 
 @media (min-width: 768px) {
@@ -325,7 +328,7 @@ function generateStarsShadow(count, size) {
 .feature-card {
     background-color: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(12px);
-    padding: 1.5rem;
+    padding: clamp(0.8rem, 1.5vw, 1.5rem);
     border-radius: 1rem;
     transition: transform 0.3s ease;
 }
@@ -335,31 +338,33 @@ function generateStarsShadow(count, size) {
 }
 
 .feature-icon {
-    width: 3rem;
-    height: 3rem;
+    width: clamp(2rem, 3vw, 3rem);
+    height: clamp(2rem, 3vw, 3rem);
     background-color: #F5f5f5;
     border-radius: 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
+    font-size: clamp(1rem, 1.5vw, 1.8rem);
+    margin-bottom: clamp(0.5rem, 0.8vw, 1rem);
 }
 
 .feature-card-title {
-    font-size: 1rem;
+    font-size: clamp(0.9rem, 1.2vw, 1.3rem);
     font-weight: bold;
     color: white;
-    margin-bottom: 0.5rem;
+    margin-bottom: clamp(0.3rem, 0.5vw, 0.8rem);
 }
 
 .feature-description {
     color: rgb(209, 213, 219);
-    font-size: 0.875rem;
+    font-size: clamp(0.8rem, 1vw, 1.1rem);
+    line-height: 1.3;
 }
 
 .footer {
-    padding: 1rem;
+    height: 5vh;
+    padding: clamp(0.5rem, 1vw, 1rem);
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     position: relative;
     z-index: 5;
@@ -387,5 +392,30 @@ function generateStarsShadow(count, size) {
         height: 100%;
         animation: twinkle 4s infinite;
     }
+}
+
+/* 대형 화면 최적화 */
+@media (min-width: 1800px) {
+    .header-content,
+    .hero-content,
+    .features-content {
+        max-width: 100rem;
+    }
+}
+
+/* 별 애니메이션 크기 조정 */
+.stars, .stars2, .stars3 {
+    width: clamp(1px, 0.1vw, 2px);
+    height: clamp(1px, 0.1vw, 2px);
+}
+
+.stars2 {
+    width: clamp(2px, 0.15vw, 3px);
+    height: clamp(2px, 0.15vw, 3px);
+}
+
+.stars3 {
+    width: clamp(3px, 0.2vw, 4px);
+    height: clamp(3px, 0.2vw, 4px);
 }
 </style>

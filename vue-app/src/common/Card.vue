@@ -141,7 +141,7 @@ const imageSrc = computed(() => {
 const handleCardClick = () => {
   // URL은 깔끔하게 bookmarkId만 전달
   router.push({
-    name: 'bookmark-detail',
+    name: props.isPersonal ? 'personal-bookmark-detail' : 'shared-bookmark-detail',
     params: { bookmarkId: props.bookmarkId }
   });
 };

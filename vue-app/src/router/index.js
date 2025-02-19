@@ -76,22 +76,22 @@ const router = createRouter({
       name: 'personal',
       component: PersonalView,
     },
-    {
-      path: '/collections/personal/:collectionId',
-      name: 'personal-collection',
-      component: PersonalView
-    },
+    // {
+    //   path: '/collections/personal/:collectionId',
+    //   name: 'personal-collection',
+    //   component: PersonalView
+    // },
     // 공유 컬렉션
     {
       path: '/shared',
       name: 'shared',
       component: SharedView,
     },
-    {
-      path: '/collections/shared/:collectionId',
-      name: 'shared-collection',
-      component: SharedView
-    },
+    // {
+    //   path: '/collections/shared/:collectionId',
+    //   name: 'shared-collection',
+    //   component: SharedView
+    // },
     // 검색 페이지
     {
       path: '/search',
@@ -112,9 +112,16 @@ const router = createRouter({
     },
     // 개인 컬렉션 북마크 상세
     {
-      path: '/api/bookmarks/:bookmarkId',
-      name: 'bookmark-detail',
+      path: '/personal/bookmarks/:bookmarkId',
+      name: 'personal-bookmark-detail',
       component: PersonalDetailView,
+      props: true
+    },
+    // 공유 컬렉션 북마크 상세
+    {
+      path: '/shared/bookmarks/:bookmarkId',
+      name: 'shared-bookmark-detail',
+      component: SharedDetailView,
       props: true
     },
     // 마이페이지
