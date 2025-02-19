@@ -5,6 +5,7 @@ import java.util.List;
 import com.be.byeoldam.common.filter.JWTFilter;
 import com.be.byeoldam.common.filter.LoginFilter;
 import com.be.byeoldam.common.jwt.JwtUtil;
+import com.be.byeoldam.common.oauth.service.CustomOAuth2UserService;
 import com.be.byeoldam.domain.user.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,7 @@ public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JwtUtil jwtUtil;
     private final UserDetailsService userDetailsService;
+    private final CustomOAuth2UserService customOAuth2UserService;
 
     // 비밀번호 암호화를 위해 사용 (Security에서 제공)
     @Bean
