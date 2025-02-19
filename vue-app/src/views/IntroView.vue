@@ -255,7 +255,7 @@ function generateStarsShadow(count, size) {
 }
 
 .hero-title {
-    font-size: clamp(1.8rem, 3vw, 3.5rem);
+    font-size: clamp(2.5rem, 4vw, 4.5rem);
     font-weight: bold;
     color: white;
     margin-bottom: clamp(0.5rem, 1vw, 1rem);
