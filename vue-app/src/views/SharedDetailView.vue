@@ -99,8 +99,12 @@ const route = useRoute();
 const router = useRouter();
 const bookmarkStore = useBookmarkStore();
 
+// bookmarkId로 북마크 정보 찾기
+const bookmark = computed(() => 
+  bookmarkStore.findBookmarkById(Number(route.params.bookmarkId))
+);
+
 // 상태 관리
-const bookmark = ref(null);
 const bookmarkId = computed(() => Number(route.params.id));
 const newMemo = ref('');
 const memos = ref([]);
@@ -113,18 +117,11 @@ const isComponentMounted = ref(true);
 
 // 메모 목록 조회
 const fetchMemos = async () => {
-    if (!bookmark.value?.id) {
-        console.log('No bookmark ID available for fetching memos');
-        return;
-    }
+    if (!route.params.bookmarkId) return;
     
     try {
-        isLoading.value = true;
-        error.value = null;
-        
-        console.log('Fetching memos for bookmark ID:', bookmark.value.id);
-        const response = await bookmarkStore.getMemo(bookmark.value.id);
-        console.log('Memos response:', response);
+        isLoading.value = true;      
+        const response = await bookmarkStore.getMemo(route.params.bookmarkId);
 
         if (response?.data?.status) {
             memos.value = response.data.results.map(memo => ({
@@ -134,18 +131,11 @@ const fetchMemos = async () => {
                 userName: memo.nickname,
                 imageUrl: memo.imageUrl
             }));
-            console.log('Processed memos:', memos.value);
-        } else {
-            console.log('No memos found or invalid response structure');
-            memos.value = [];
         }
     } catch (err) {
         error.value = '메모 로딩 실패: ' + err.message;
-        console.error('메모 로딩 실패:', err);
     } finally {
-        if (isComponentMounted.value) {
-            isLoading.value = false;
-        }
+        isLoading.value = false;
     }
 };
 
@@ -157,7 +147,7 @@ const addMemo = async () => {
         isSubmitting.value = true;
         error.value = null;
         
-        const response = await bookmarkStore.createMemo(bookmark.value.id, newMemo.value);
+        const response = await bookmarkStore.createMemo(route.params.bookmarkId, newMemo.value);
         if (response.data.status) {
             const newMemoData = response.data.results;
             memos.value.push({
@@ -171,7 +161,6 @@ const addMemo = async () => {
         }
     } catch (err) {
         error.value = '메모 추가 실패: ' + err.message;
-        console.error('메모 추가 실패:', err);
     } finally {
         if (isComponentMounted.value) {
             isSubmitting.value = false;
@@ -187,13 +176,12 @@ const deleteMemo = async (memoId) => {
         isSubmitting.value = true;
         error.value = null;
         
-        const response = await bookmarkStore.deleteMemo(bookmark.value.id, memoId);
+        const response = await bookmarkStore.deleteMemo(route.params.bookmarkId, memoId);
         if (response.data.status) {
             memos.value = memos.value.filter(memo => memo.id !== memoId);
         }
     } catch (err) {
         error.value = '메모 삭제 실패: ' + err.message;
-        console.error('메모 삭제 실패:', err);
     } finally {
         if (isComponentMounted.value) {
             isSubmitting.value = false;
@@ -209,32 +197,15 @@ const handleIframeError = () => {
 onMounted(async () => {
     try {
         isInitializing.value = true;
-        error.value = null;
         
-        console.log('Route query:', route.query);
-        console.log('Route params:', route.params);
-
-        // URL query에서 북마크 데이터 가져오기
-        if (route.query.data) {
-            try {
-                bookmark.value = JSON.parse(route.query.data);
-                console.log('Bookmark data from query:', bookmark.value);
-                await fetchMemos(); // 메모만 가져오기
-            } catch (parseError) {
-                console.error('Failed to parse bookmark data:', parseError);
-                error.value = '북마크 데이터 파싱 실패';
-            }
-        } else {
-            console.log('No bookmark data in query');
-            error.value = '북마크 데이터를 찾을 수 없습니다.';
+        // 메모 목록만 조회
+        if (route.params.bookmarkId) {
+            await fetchMemos();
         }
     } catch (err) {
-        error.value = '데이터 로딩 실패: ' + err.message;
-        console.error('메모 로딩 실패:', err);
+        error.value = '메모 로딩 실패: ' + err.message;
     } finally {
-        if (isComponentMounted.value) {
-            isInitializing.value = false;
-        }
+        isInitializing.value = false;
     }
 });
 
