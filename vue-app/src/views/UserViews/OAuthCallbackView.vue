@@ -38,6 +38,14 @@
         if(data.status){
             const { userId, email, nickname, accessToken, refreshToken, profileUrl } = data.results;
             
+            const user = {
+                userId,
+                email,
+                nickname,
+                profileUrl
+            };
+            // user 저장장
+            localStorage.setItem("user", JSON.stringify(user));
             localStorage.setItem("accessToken", accessToken);
             localStorage.setItem("refreshToken", refreshToken);
 
