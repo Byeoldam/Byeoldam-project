@@ -72,8 +72,10 @@
                                 </div>
                                 <div class="memo-content">{{ memo.content }}</div>
                                 <div class="memo-date">{{ memo.date }}</div>
+                                <!-- 문제가 되는 부분: memo의 Response에 UserId가 없고 nickname만 있음
+                                 만약, nickname이 일치하면 삭제 버튼울 모두에게 보여주게 됨. -->
                                 <button 
-                                    v-if="memo.userId === userStore.user.id" 
+                                    v-if="logAndCheckUser(memo.userName, userStore.user.nickname)" 
                                     @click="deleteMemo(memo.id)" 
                                     class="delete-memo-btn"
                                     :disabled="isSubmitting"
@@ -195,6 +197,14 @@ const deleteMemo = async (memoId) => {
 // iframe 에러 처리
 const handleIframeError = () => {
     iframeError.value = true;
+};
+
+// methods 안에 이 함수를 추가하세요:
+const logAndCheckUser = (memoUserId, currentUserId) => {
+    console.log('메모 작성자 ID:', memoUserId);
+    console.log('현재 로그인한 사용자 ID:', currentUserId);
+    console.log('일치 여부:', memoUserId === currentUserId);
+    return memoUserId === currentUserId;
 };
 
 onMounted(async () => {
