@@ -105,23 +105,23 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 // <3> 페이지 정보 업데이트
 async function getPageInfo(tabId) {
   try {
-    // 먼저 content script가 로드되었는지 확인
+    // 1.content script가 해당 탭에 주입 가능한지 체크
     try {
       await chrome.scripting.executeScript({
         target: { tabId: tabId },
         func: () => true 
       });
     } catch (e) {
-      // console.log("Cannot access this page");
-      return; // 접근 불가능한 페이지는 조용히 리턴
+      return;
     }
 
-    // 타임아웃 설정
+    // 2. content script에 페이지 정보 수집 요청
     const response = await Promise.race([
       chrome.tabs.sendMessage(tabId, { action: "COLLECT_PAGE_INFO" }),
       new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 3000))
     ]);
 
+    // 3. 응답이 있으면 페이지 정보 업데이트
     if (response) {
       pageInfo.siteUrl = response.url;
       pageInfo.title = response.title;
@@ -135,8 +135,8 @@ async function getPageInfo(tabId) {
   }
 }
 
-// <4> 사용자 페이지 이동 방식에 따른 페이지 정보 수집
-// 1. 탭 활성화 이벤트
+// <4> 사용자 페이지 이동 방식에 따른 페이지 정보 요청
+// 1. 탭 활성화 될때
 chrome.tabs.onActivated.addListener(async (activeInfo) => {
   try {
     const tab = await chrome.tabs.get(activeInfo.tabId);
@@ -151,7 +151,7 @@ chrome.tabs.onActivated.addListener(async (activeInfo) => {
   }
 });
 
-// 2.페이지 업데이트 이벤트
+// 2.페이지 업데이트 될때
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   if (
     changeInfo.status === "complete" &&

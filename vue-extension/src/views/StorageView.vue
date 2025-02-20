@@ -678,6 +678,15 @@ const scribeRSS = async () => {
     errorMessage.value = "";
     const response = await api.post("/subscriptions", webpage.value.siteUrl);
     if (response.data.status) {
+      const feedResponse = await api.get("/subscriptions");
+      if (feedResponse.data.status) {
+        const feedData = feedResponse.data.results.map((feed) => ({
+          rssId: feed.rssId,
+          name: feed.name,
+          isRead: feed.isRead,
+        }));
+        bookmarkStore.setFeedList(feedData); 
+      }
       isSaved.value = true;
     }
   } catch (error) {

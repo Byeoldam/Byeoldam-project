@@ -60,6 +60,7 @@ onMounted(async () => {
     const maxRetries = 3;
     const retryDelay = 1000;
 
+    // 재시도 요청
     for (let i = 0; i < maxRetries; i++) {
       try {
         const response = await apiCall();

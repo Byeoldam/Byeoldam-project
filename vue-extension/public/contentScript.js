@@ -86,7 +86,7 @@ function cleanupContent(content) {
   return tempDiv;
 }
 
-// <3> 메시지 리스너를 통한 페이지 정보 수집
+// <3> 페이지 정보 수집
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "COLLECT_PAGE_INFO") {
     try {
@@ -106,10 +106,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       sendResponse(null);
     }
   }
-  return true; // 비동기 응답을 위해 true 반환
+  return true;
 });
 
-// <4> 페이지 로드 시 초기 정보 전송
+// <4> 페이지 로드 시 페이지 정보 전송
 window.addEventListener('load', () => {
   const readingTimeInfo = calculateReadingTime();
   const pageTitle =
