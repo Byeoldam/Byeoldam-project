@@ -139,7 +139,7 @@ public class UserService {
 
     // 구글 로그인
     @Transactional
-    UserLoginResponse googleLogin(String email, String nickname) {
+    UserLoginResponse googleLogin(String email, String nickname, String profileUrl) {
         System.out.println("UserService.googleLogin");
 
         // 구글 회원이 신규 일 경우 저장하기.
@@ -149,6 +149,7 @@ public class UserService {
                         .provider(User.Provider.GOOGLE)
                         .nickname(nickname)
                         .password("**")
+                        .profileUrl(profileUrl)
                         .build()));
         System.out.println("USER:" + user.getNickname());
         // token 불러오기

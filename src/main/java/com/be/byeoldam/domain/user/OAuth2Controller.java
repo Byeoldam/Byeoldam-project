@@ -86,10 +86,9 @@ public class OAuth2Controller {
 
         String email = (String) userInfoResponse.getBody().get("email");
         String name = (String) userInfoResponse.getBody().get("name");
+        String picture = (String) userInfoResponse.getBody().get("picture");
 
-        System.out.println("email: " + email);
-        System.out.println("name: " + name);
-        UserLoginResponse userLoginResponse = userService.googleLogin(email, name);
+        UserLoginResponse userLoginResponse = userService.googleLogin(email, name, picture);
         System.out.println(userLoginResponse.toString());
         // ✅ Google에서 받은 사용자 정보 반환
         return ResponseTemplate.ok(userLoginResponse);
