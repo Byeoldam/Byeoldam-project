@@ -32,8 +32,8 @@ public class TagBookmarkUrlRepositoryCustomImpl implements TagBookmarkUrlReposit
                 .from(tagBookmarkUrl)
                 .join(tagBookmarkUrl.tag, tag)
                 .join(tagBookmarkUrl.bookmarkUrl, bookmarkUrl)
-                .where(tagName != null ? tag.name.eq(tagName) : null) // 조건 동적 추가
-                .orderBy(tagBookmarkUrl.bookmarkUrl.referenceCount.desc()) // desc 정렬
+                .where(tag.name.eq(tagName)) // 태그 이름이 '여행'인 경우 필터링
+                .orderBy(bookmarkUrl.referenceCount.desc()) // 참조 횟수 내림차순 정렬
                 .offset(offset) // OFFSET 추가
                 .limit(size) // size만큼 가져오기
                 .fetch();

@@ -152,8 +152,7 @@ public class TagService {
                 }).toList();
 
         // 2. 추천 URL
-        List<RecommendedUrlResponse> recommendedUrlList = tagBookmarkUrlRepository.findBookmarkUrlsByTagName(tagName, cursorId * size, size);
-
+        List<RecommendedUrlResponse> recommendedUrlList = tagBookmarkUrlRepository.findBookmarkUrlsByTagName(tagName, (cursorId-1) * size, size);
         TagSearchResponse response = TagSearchResponse.of(personalBookmarkResponseList, recommendedUrlList);
         return TagSearchResponse.of(personalBookmarkResponseList, recommendedUrlList);
     }
@@ -162,8 +161,8 @@ public class TagService {
     // 태그 기반 검색, URL 추천(무한 스크롤)   ->    관심 태그 추천 페이지 / 태그 기반 검색 페이지
     @Transactional(readOnly = true)
     List<RecommendedUrlResponse> getBookmarkUrlsByTagName(String tagName, int cursorId, int size) {
-        List<RecommendedUrlResponse> urlList = tagBookmarkUrlRepository.findBookmarkUrlsByTagName(tagName,cursorId*size, size);
-
+        List<RecommendedUrlResponse> urlList = tagBookmarkUrlRepository.findBookmarkUrlsByTagName(tagName,(cursorId-1)
+                *size, size);
         return urlList;
     }
 
