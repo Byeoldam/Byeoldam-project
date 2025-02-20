@@ -1,19 +1,43 @@
 <template>
     <div class="callback-container">
-      <h2>OAuth 로그인 처리 중...</h2>
+      <div class="stars"></div>
+      <div class="stars2"></div>
+      <div class="stars3"></div>
+      <div class="loading-message">
+        <h2>로그인 진행 중</h2>
+        <div class="loading-dots">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
     </div>
   </template>
   
   <script setup>
   import { useRouter } from 'vue-router';
-  import { onMounted } from 'vue';
+  import { onMounted, ref } from 'vue';
   import api from "@/utils/api";
   import { useCollectionStore } from '@/stores/collection';
   import { useUserStore } from '@/stores/user';  // 상단에 import 추가
 
   // Vue Router 사용
   const router = useRouter();
-  
+
+  const starsStyle = ref('');
+  const stars2Style = ref('');
+  const stars3Style = ref('');
+
+  function generateStarsShadow(count, size) {
+    let shadows = [];
+    for(let i = 0; i < count; i++) {
+        const x = Math.floor(Math.random() * 2000);
+        const y = Math.floor(Math.random() * 2000);
+        shadows.push(`${x}px ${y}px #FFF`);
+    }
+    return shadows.join(', ');
+  }
+
   onMounted(async () => {
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get("code");
@@ -85,16 +109,105 @@
       alert("OAuth 로그인에 실패했습니다.");
       router.push("/login"); // 실패 시 로그인 페이지로 이동
     }
+
+    starsStyle.value = generateStarsShadow(700, 1);
+    stars2Style.value = generateStarsShadow(200, 2);
+    stars3Style.value = generateStarsShadow(100, 3);
   });
+
   </script>
   
   <style scoped>
   .callback-container {
+    position: relative;
+    overflow: hidden;
+    background: radial-gradient(ellipse at bottom, #1B2735 0%, #1E1B4B 100%);
+    min-height: 100vh;
+    width: 100%;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    font-size: 18px;
+    color: #ffd900f5;
+  }
+
+  @keyframes animStar {
+    from { transform: translateY(0); }
+    to { transform: translateY(-2000px); }
+  }
+
+  .stars, .stars2, .stars3 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: transparent;
+  }
+
+  .stars {
+    width: 1px;
+    height: 1px;
+    box-shadow: v-bind('starsStyle');
+    animation: animStar 50s linear infinite;
+  }
+
+  .stars2 {
+    width: 2px;
+    height: 2px;
+    box-shadow: v-bind('stars2Style');
+    animation: animStar 100s linear infinite;
+  }
+
+  .stars3 {
+    width: 3px;
+    height: 3px;
+    box-shadow: v-bind('stars3Style');
+    animation: animStar 150s linear infinite;
+  }
+
+  .loading-message {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+  }
+
+  h2 {
+    position: relative;
+    z-index: 1;
+    font-size: 24px;
+    font-weight: 500;
+    margin-bottom: 15px;
+    color: #ffd900f5;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  .loading-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .loading-dots span {
+    width: 8px;
+    height: 8px;
+    background-color: #ffd900f5;
+    border-radius: 50%;
+    display: inline-block;
+    animation: bounce 1.4s infinite ease-in-out both;
+  }
+
+  .loading-dots span:nth-child(1) {
+    animation-delay: -0.32s;
+  }
+
+  .loading-dots span:nth-child(2) {
+    animation-delay: -0.16s;
+  }
+
+  @keyframes bounce {
+    0%, 80%, 100% { 
+      transform: scale(0);
+    } 
+    40% { 
+      transform: scale(1);
+    }
   }
   </style>
