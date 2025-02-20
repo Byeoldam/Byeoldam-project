@@ -15,6 +15,7 @@ import OldView from '@/views/OldView.vue'
 import PersonalDetailView from '@/views/PersonalDetailView.vue'
 import SharedDetailView from '@/views/SharedDetailView.vue'
 import MyPageView from '@/views/UserViews/MyPageView.vue'
+import OAuthCallbackView from '@/views/UserViews/OAuthCallbackView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -132,6 +133,12 @@ const router = createRouter({
       meta: {
         requiresAuth: true  // 로그인이 필요한 페이지라면 추가
       }
+    },
+    // OAuth 콜백 페이지
+    {
+      path: '/oauth/callback',
+      name: 'oauth-callback',
+      component: OAuthCallbackView,
     }
   ],
 })
