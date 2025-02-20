@@ -5,6 +5,8 @@ import java.util.List;
 import com.be.byeoldam.common.filter.JWTFilter;
 import com.be.byeoldam.common.filter.LoginFilter;
 import com.be.byeoldam.common.jwt.JwtUtil;
+import com.be.byeoldam.common.oauth.handler.OAuth2LoginSuccessHandler;
+import com.be.byeoldam.common.oauth.service.CustomOAuth2UserService;
 import com.be.byeoldam.domain.user.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -32,6 +34,8 @@ public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JwtUtil jwtUtil;
     private final UserDetailsService userDetailsService;
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final OAuth2LoginSuccessHandler  oAuth2LoginSuccessHandler;
 
     // 비밀번호 암호화를 위해 사용 (Security에서 제공)
     @Bean
@@ -70,6 +74,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests((auth) -> auth
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/v3/api-docs.yaml", "/v3/api-docs/swagger-config").permitAll() //swagger
                 .requestMatchers("/login", "/api/users/register","/api/users/refresh","/api/users/email/send","/api/users/email/verify").permitAll() //모든 사용자
+                .requestMatchers("/api/oauth2/**").permitAll()
                 .requestMatchers("/admin").hasRole("ADMIN") //role이 ADMIN인 유저만(추후에 수정하기)
                 .requestMatchers("/","/api/test").permitAll()
                 .anyRequest().authenticated()); //나머지는 로그인한 유저만
@@ -83,6 +88,13 @@ public class SecurityConfig {
         loginFilter.setFilterProcessesUrl("/api/users/login");
         http.addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(new JWTFilter(jwtUtil, userDetailsService), LoginFilter.class);
+
+
+        // ✅ OAuth2 로그인 설정 추가
+        http.oauth2Login(oauth2 -> oauth2
+                .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
+                .successHandler(oAuth2LoginSuccessHandler) // ✅ 로그인 성공 후 JWT 발급
+        );
 
         return http.build();
     }
