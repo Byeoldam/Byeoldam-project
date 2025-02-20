@@ -104,8 +104,8 @@ const handleGoogleLogin = () => {
   
   console.log("Google 로그인 시도");
   // Google 로그인 로직 추가
-  const clientId = "437503882211-pe35rp8jt8bnq49aj31i8o0hg4d1g2ke.apps.googleusercontent.com";
-  const GOOGLE_AUTH_URL = `https://accounts.google.com/o/oauth2/auth?client_id=${clientId}&redirect_uri=http://localhost:5173/oauth/callback&response_type=code&scope=openid%20email%20profile`;
+  const clientId = "437503882211-rnoojrom2bu4ut0vpd2vtju71eqm8fuu.apps.googleusercontent.com";
+  const GOOGLE_AUTH_URL = `https://accounts.google.com/o/oauth2/auth?client_id=${clientId}&redirect_uri=https://byeoldam.store/oauth/callback&response_type=code&scope=openid%20email%20profile`;
 ;
 
   window.location.href = GOOGLE_AUTH_URL;
