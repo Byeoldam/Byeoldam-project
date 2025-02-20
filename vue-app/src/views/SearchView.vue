@@ -133,7 +133,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { ref, onMounted, onUnmounted, computed, watch } from 'vue'
 import { useBookmarkStore } from '@/stores/bookmark'
 import { storeToRefs } from 'pinia'
 import Header from '@/common/Header.vue'
@@ -142,7 +142,7 @@ import Card from '@/common/Card.vue'
 import BookmarkSave from '@/modal/BookmarkSave.vue'
 
 const bookmarkStore = useBookmarkStore()
-const { searchBookmarksByTag } = storeToRefs(bookmarkStore)
+const { searchBookmarksByTag, currentSearchState } = storeToRefs(bookmarkStore)
 const searchTag = ref('')
 const loading = ref(false)
 const hasSearched = ref(false)
@@ -157,7 +157,6 @@ const bookmarks = computed(() => {
 const recommendedBookmarks = computed(() => {
     return searchBookmarksByTag.value?.results?.recommendedUrlList || []
 })
-
 
 const handleSearch = async () => {
     if (!searchTag.value.trim()) return
@@ -183,7 +182,6 @@ const handleSearch = async () => {
         loading.value = false
     }
 }
-
 
 const goToUrl = (url) => {
     window.open(url, '_blank')
@@ -255,6 +253,23 @@ onMounted(() => {
     if (mainContent) {
         mainContent.addEventListener('scroll', handleScroll)
     }
+
+    // 이전 검색 상태가 있다면 복원
+    if (currentSearchState.value.searchTag) {
+        searchTag.value = currentSearchState.value.searchTag
+        hasSearched.value = true
+        lastCursorId.value = currentSearchState.value.cursorId
+        handleSearch()
+    }
+})
+
+// 검색 상태가 변경될 때마다 자동으로 검색 실행
+watch(() => currentSearchState.value.searchTag, (newTag) => {
+    if (newTag) {
+        searchTag.value = newTag
+        hasSearched.value = true
+        handleSearch()
+    }
 })
 
 onUnmounted(() => {
@@ -262,13 +277,6 @@ onUnmounted(() => {
     if (mainContent) {
         mainContent.removeEventListener('scroll', handleScroll)
     }
-    
-    // 컴포넌트 언마운트 시 검색 관련 상태 초기화
-    bookmarkStore.clearSearchResults()  // store에 이 메서드를 추가해야 합니다
-    hasSearched.value = false
-    searchTag.value = ''
-    lastCursorId.value = null
-    hasMore.value = true
 })
 </script>
 

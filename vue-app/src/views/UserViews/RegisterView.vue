@@ -283,10 +283,11 @@ import { ElMessage } from 'element-plus';
     border-radius: 0.375rem;
     white-space: nowrap;
     transition: all 0.3s;
+    cursor: pointer;
 }
 
 .verify-button:hover:not(:disabled) {
-    background-color: #3730A3;
+    background-color: #655dcf;
 }
 
 .verify-button:disabled {
@@ -303,6 +304,7 @@ import { ElMessage } from 'element-plus';
     font-weight: 600;
     margin-top: 1.5rem;
     transition: all 0.3s;
+    cursor: pointer;
 }
 
 .submit-button:hover {
@@ -321,6 +323,7 @@ import { ElMessage } from 'element-plus';
     border-radius: 0.375rem;
     font-weight: 600;
     transition: all 0.3s;
+    cursor: pointer;
 }
 
 .google-button:hover {

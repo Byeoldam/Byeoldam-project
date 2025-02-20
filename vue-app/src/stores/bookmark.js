@@ -469,17 +469,36 @@ export const useBookmarkStore = defineStore("bookmark", () => {
       //태그 기반 검색 실제 response
       const searchBookmarksByTag = ref({});
 
-      //태그 기반 검색 불러오는 함수
-      const getSearchBookmarksByTag = async (tagName, cursorId = 1, size = 10) => {
-        const response = await api.get(`/tags/search?cursorId=${cursorId}&size=${size}&tag=${tagName}`);
-        searchBookmarksByTag.value = response.data;
-        console.log("------------getSearchBookmarksByTag------------");
-        console.log(response.data);
+      // 검색 상태를 저장할 ref 추가
+      const currentSearchState = ref({
+          searchTag: '',
+          cursorId: null,
+          size: 10
+      });
+
+      // 검색 상태 설정 함수
+      const setSearchState = (state) => {
+          currentSearchState.value = state;
       };
 
-      // 검색 결과 초기화 함수 추가
+      // 검색 함수 수정
+      const getSearchBookmarksByTag = async (tagName, cursorId = 1, size = 10) => {
+          const response = await api.get(`/tags/search?cursorId=${cursorId}&size=${size}&tag=${tagName}`);
+          searchBookmarksByTag.value = response.data;
+          // 검색 상태 저장
+          setSearchState({ searchTag: tagName, cursorId, size });
+          console.log("------------getSearchBookmarksByTag------------");
+          console.log(response.data);
+      };
+
+      // 검색 결과 초기화 함수 수정
       const clearSearchResults = () => {
-        searchBookmarksByTag.value = {};
+          searchBookmarksByTag.value = {};
+          currentSearchState.value = {
+              searchTag: '',
+              cursorId: null,
+              size: 10
+          };
       };
 
       //태그 기반 검색 예시 response
@@ -746,6 +765,8 @@ export const useBookmarkStore = defineStore("bookmark", () => {
         clearSearchResults,
         selectedBookmark,
         setSelectedBookmark,
-        findBookmarkById
+        findBookmarkById,
+        currentSearchState,
+        setSearchState
     };
 });
