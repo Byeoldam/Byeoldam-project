@@ -31,7 +31,8 @@ public class BookmarkTagRepositoryCustomImpl implements BookmarkTagRepositoryCus
                 .join(bookmarkTag.tag, tag) // BookmarkTag → Tag 조인
                 .where(
                         bookmark.user.id.eq(userId), // 유저 필터링
-                        tag.name.eq(tagName) // 태그 이름 필터링
+                        tag.name.eq(tagName), // 태그 이름 필터링
+                        bookmark.sharedCollection.isNull()
                 )
                 .offset(offset) // 페이징 시작 위치
                 .limit(limit)   // 가져올 데이터 개수

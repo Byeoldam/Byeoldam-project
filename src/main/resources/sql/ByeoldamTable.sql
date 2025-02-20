@@ -54,7 +54,7 @@ CREATE TABLE `bookmark_url` (
   `reading_time` int DEFAULT NULL,
   `id` bigint NOT NULL AUTO_INCREMENT,
   `reference_count` bigint NOT NULL,
-  `url` varchar(255) NOT NULL,
+  `url` varchar(2048) NOT NULL,
   `img` varchar(255) NOT NULL,
   `title` varchar(255) NOT NULL,
   `description` varchar(255) NOT NULL,
