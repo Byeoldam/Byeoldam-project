@@ -48,14 +48,14 @@
         console.log("OAuth2 로그인 성공! 서버에 코드 전송 중...");
   
         // 백엔드로 OAuth2 인증 코드 전송하여 JWT 발급 요청
-        const response = await fetch("http://localhost:8080/api/oauth2/token", {
+        const response = await fetch("https://byeoldam.store/api/oauth2/token", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
             code: code,
-            redirectUri: "http://localhost:5173/oauth/callback",
+            redirectUri: "https://byeoldam.store/oauth/callback",
           }),
         });
         const data = await response.json();
