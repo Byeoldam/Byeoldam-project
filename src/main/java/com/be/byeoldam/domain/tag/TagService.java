@@ -140,7 +140,7 @@ public class TagService {
 
 
         // 1. 사용자 북마크
-        List<Bookmark> bookmarkUrlList = bookmarkTagRepository.findBookmarksByUserIdAndTagNameWithPaging(userId, tagName, cursorId * size, size);
+        List<Bookmark> bookmarkUrlList = bookmarkTagRepository.findBookmarksByUserIdAndTagNameWithPaging(userId, tagName, (cursorId-1) * size, size);
         List<PersonalBookmarkResponse> personalBookmarkResponseList = bookmarkUrlList.stream()
                 .map(bookmark -> {
                     List<TagDto> tagDtos = bookmarkTagRepository.findByBookmark(bookmark).stream()
