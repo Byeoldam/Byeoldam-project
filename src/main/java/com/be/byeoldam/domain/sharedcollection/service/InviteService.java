@@ -1,6 +1,8 @@
 package com.be.byeoldam.domain.sharedcollection.service;
 
 import com.be.byeoldam.domain.notification.NotificationRepository;
+import com.be.byeoldam.domain.notification.dto.NotificationMessage;
+import com.be.byeoldam.domain.notification.event.NotificationProducer;
 import com.be.byeoldam.domain.notification.model.InviteNotification;
 import com.be.byeoldam.domain.sharedcollection.dto.InviteRequest;
 import com.be.byeoldam.domain.sharedcollection.model.SharedCollection;
@@ -20,7 +22,7 @@ public class InviteService {
     private final SharedCollectionRepository sharedCollectionRepository;
     private final SharedUserRepository sharedUserRepository;
     private final UserRepository userRepository;
-    private final NotificationRepository notificationRepository;
+    private final NotificationProducer notificationProducer;
 
     @Transactional
     public void inviteUser(Long inviterId, Long collectionId, InviteRequest request) {
@@ -47,15 +49,14 @@ public class InviteService {
             throw new CustomException("이미 멤버인 사용자입니다.");
         }
 
-        // 초대 알림 생성
-        InviteNotification notification = InviteNotification.builder()
-                .nickname(inviter.getNickname())
-                .message(inviter.getNickname() + "님이 공유 컬렉션에 초대하였습니다.")
-                .collection(sharedCollection)
-                .user(invitee)
-                .build();
+        NotificationMessage message = new NotificationMessage(
+                invitee.getId(),
+                "INVITE",
+                inviter.getNickname() + "님이 공유 컬렉션에 초대하였습니다.",
+                collectionId
+        );
 
-        notificationRepository.save(notification);
+        notificationProducer.sendNotification(message);
 
     }
 

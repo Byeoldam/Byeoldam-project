@@ -3,6 +3,8 @@ package com.be.byeoldam.domain.notification.service;
 import com.be.byeoldam.domain.bookmark.model.Bookmark;
 import com.be.byeoldam.domain.bookmark.repository.BookmarkRepository;
 import com.be.byeoldam.domain.notification.NotificationRepository;
+import com.be.byeoldam.domain.notification.dto.NotificationMessage;
+import com.be.byeoldam.domain.notification.event.NotificationProducer;
 import com.be.byeoldam.domain.notification.model.BookmarkNotification;
 import com.be.byeoldam.domain.user.model.User;
 import com.be.byeoldam.domain.user.repository.UserRepository;
@@ -18,7 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class NotificationSchedulerService {
 
-    private final NotificationRepository notificationRepository;
+    private final NotificationProducer notificationProducer;
     private final UserRepository userRepository;
     private final BookmarkRepository bookmarkRepository;
 
@@ -39,13 +41,14 @@ public class NotificationSchedulerService {
 
             // 북마크 알림 생성
             for (Bookmark bookmark : bookmarks) {
-                BookmarkNotification notification = BookmarkNotification.builder()
-                        .user(user)
-                        .bookmark(bookmark)
-                        .message("북마크한 글이 " + alertDay + "일 지났습니다.")
-                        .build();
+                NotificationMessage message = new NotificationMessage(
+                        user.getId(),
+                        "BOOKMARK",
+                        "북마크한 글이 " + alertDay + "일 지났습니다.",
+                        bookmark.getId()
+                );
 
-                notificationRepository.save(notification);
+                notificationProducer.sendNotification(message);
             }
         }
     }
