@@ -54,19 +54,36 @@ const bookmarkStore = useBookmarkStore();
 const isDataLoaded = ref(false);
 
 onMounted(async () => {
-  // 확장 아이콘 클릭 시 백그라운드로 사용자 정보 Extension Storage 저장 요청 보내기
   chrome.runtime.sendMessage({ action: "popupOpened" });
 
-  // 알림/피드 데이터 로드 API 요청
+  const fetchWithRetry = async (apiCall) => {
+    const maxRetries = 3;
+    const retryDelay = 1000;
+
+    for (let i = 0; i < maxRetries; i++) {
+      try {
+        const response = await apiCall();
+        if (response.data.status) {
+          return response;
+        }
+      } catch (error) {
+        if (i === maxRetries - 1) {
+          return null;
+        }
+        await new Promise(resolve => setTimeout(resolve, retryDelay));
+      }
+    }
+    return null;
+  };
+
   try {
-    // 알림/피드 데이터 로드 API 요청
     const [feedResponse, alarmResponse] = await Promise.allSettled([
-      api.get("/subscriptions"),
-      api.get("/notifications"),
+      fetchWithRetry(() => api.get("/subscriptions")),
+      fetchWithRetry(() => api.get("/notifications"))
     ]);
 
     // 피드 데이터 처리
-    if (feedResponse.status === "fulfilled" && feedResponse.value.data.status) {
+    if (feedResponse.status === "fulfilled" && feedResponse.value?.data.status) {
       const feedData = feedResponse.value.data.results.map((feed) => ({
         rssId: feed.rssId,
         name: feed.name,
@@ -81,10 +98,7 @@ onMounted(async () => {
     }
 
     // 알림 데이터 처리
-    if (
-      alarmResponse.status === "fulfilled" &&
-      alarmResponse.value.data.status
-    ) {
+    if (alarmResponse.status === "fulfilled" && alarmResponse.value?.data.status) {
       const alarmData = alarmResponse.value.data.results.map((alarm) => ({
         notificationId: alarm.notificationId,
         type: alarm.type,
@@ -100,7 +114,7 @@ onMounted(async () => {
         alarmResponse.reason?.response?.data?.message || alarmResponse.reason
       );
     }
-    isDataLoaded.value = true; // 데이터 로드 완료 후 상태 변경
+    isDataLoaded.value = true;
   } catch (error) {
     console.error("API 요청 중 예기치 않은 오류 발생: ", error.message);
   }

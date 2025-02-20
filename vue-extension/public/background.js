@@ -105,9 +105,23 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 // <3> 페이지 정보 업데이트
 async function getPageInfo(tabId) {
   try {
-    const response = await chrome.tabs.sendMessage(tabId, {
-      action: "COLLECT_PAGE_INFO",
-    });
+    // 먼저 content script가 로드되었는지 확인
+    try {
+      await chrome.scripting.executeScript({
+        target: { tabId: tabId },
+        func: () => true 
+      });
+    } catch (e) {
+      // console.log("Cannot access this page");
+      return; // 접근 불가능한 페이지는 조용히 리턴
+    }
+
+    // 타임아웃 설정
+    const response = await Promise.race([
+      chrome.tabs.sendMessage(tabId, { action: "COLLECT_PAGE_INFO" }),
+      new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 3000))
+    ]);
+
     if (response) {
       pageInfo.siteUrl = response.url;
       pageInfo.title = response.title;
@@ -115,7 +129,9 @@ async function getPageInfo(tabId) {
       readingTimeInfo.stats = response.stats;
     }
   } catch (error) {
-    console.error("Failed to get page info:", error);
+    if (!error.message?.includes('Timeout')) {
+      console.error("Failed to get page info:", error);
+    }
   }
 }
 

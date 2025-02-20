@@ -89,30 +89,42 @@ function cleanupContent(content) {
 // <3> 메시지 리스너를 통한 페이지 정보 수집
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "COLLECT_PAGE_INFO") {
-    const readingTimeInfo = calculateReadingTime();
-    const pageTitle =
-      document.querySelector('meta[property="og:title"]')?.content ||
-      document.title;
+    try {
+      const readingTimeInfo = calculateReadingTime();
+      const pageTitle =
+        document.querySelector('meta[property="og:title"]')?.content ||
+        document.title;
 
-    sendResponse({
-      url: window.location.href,
-      title: pageTitle,
-      readingTime: readingTimeInfo.totalTime,
-      stats: readingTimeInfo.stats,
-    });
+      sendResponse({
+        url: window.location.href,
+        title: pageTitle,
+        readingTime: readingTimeInfo.totalTime,
+        stats: readingTimeInfo.stats,
+      });
+    } catch (error) {
+      console.error("Error collecting page info:", error);
+      sendResponse(null);
+    }
   }
-  return true;
+  return true; // 비동기 응답을 위해 true 반환
 });
 
 // <4> 페이지 로드 시 초기 정보 전송
-const readingTimeInfo = calculateReadingTime();
-const pageTitle =
-  document.querySelector('meta[property="og:title"]')?.content ||
-  document.title;
-chrome.runtime.sendMessage({
-  action: "GET_PAGE_INFO_FROM_SITE",
-  url: window.location.href,
-  title: pageTitle,
-  readingTime: readingTimeInfo.totalTime,
-  stats: readingTimeInfo.stats,
+window.addEventListener('load', () => {
+  const readingTimeInfo = calculateReadingTime();
+  const pageTitle =
+    document.querySelector('meta[property="og:title"]')?.content ||
+    document.title;
+
+  chrome.runtime.sendMessage({
+    action: "GET_PAGE_INFO_FROM_SITE",
+    url: window.location.href,
+    title: pageTitle,
+    readingTime: readingTimeInfo.totalTime,
+    stats: readingTimeInfo.stats,
+  }, (response) => {
+    if (chrome.runtime.lastError) {
+      console.error('Failed to send initial page info:', chrome.runtime.lastError);
+    }
+  });
 });
