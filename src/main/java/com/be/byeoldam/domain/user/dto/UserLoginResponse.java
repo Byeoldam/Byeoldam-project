@@ -4,10 +4,12 @@ import com.be.byeoldam.domain.user.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
 @AllArgsConstructor
 @Builder
+@ToString
 public class UserLoginResponse {
     private Long userId;
     private String email;
@@ -24,7 +26,7 @@ public class UserLoginResponse {
     }
 
     public static UserLoginResponse fromEntity(User user){
-        return new UserLoginResponse(user.getId(), user.getEmail(), user.getEmail(), user.getProfileUrl());
+        return new UserLoginResponse(user.getId(), user.getEmail(), user.getNickname(), user.getProfileUrl());
     }
 
     public void addTokens(String accessToken, String refreshToken) {

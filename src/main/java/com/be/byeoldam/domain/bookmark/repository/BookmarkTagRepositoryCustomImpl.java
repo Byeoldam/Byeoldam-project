@@ -20,6 +20,8 @@ public class BookmarkTagRepositoryCustomImpl implements BookmarkTagRepositoryCus
         QBookmark bookmark = QBookmark.bookmark;
         QBookmarkTag bookmarkTag = QBookmarkTag.bookmarkTag;
         QTag tag = QTag.tag;
+        System.out.println("tagName: " + tagName);
+        System.out.println("offset: " + offset + " limit: " + limit);
 
         return queryFactory
                 .select(bookmark)

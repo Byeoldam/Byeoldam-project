@@ -311,7 +311,7 @@ public class BookmarkService {
 
             // 예외 1. 북마크의 userId 와 요청한 userId 일치하지 않으면
             if (!bookmark.getUser().getId().equals(user.getId())) {
-                throw new CustomException("해당 북마크에 대한 권한이 없습니다ㅣ.");
+                throw new CustomException("해당 북마크에 대한 권한이 없습니다.");
             }
 
             log.info("PersonalCollection: {}", bookmark.getPersonalCollection());
@@ -321,11 +321,17 @@ public class BookmarkService {
 
         // 나머지 경우는 복사 처리
         Bookmark newBookmark = bookmark.copy();
+        BookmarkUrl url = bookmark.getBookmarkUrl();
 
         // 개인 > 공유
         if (!request.isPersonal() && bookmark.getPersonalCollection() != null) {
             SharedCollection collection = sharedCollectionRepository.findById(request.getCollectionId())
                     .orElseThrow(() -> new CustomException("해당 공유컬렉션이 없습니다."));
+
+            // 해당 url이 공유컬렉션에 존재하면
+            if (bookmarkRepository.existsByBookmarkUrlAndSharedCollection(url, collection)) {
+                throw new CustomException("이미 공유컬렉션에 담은 페이지입니다.");
+            }
 
             log.info("SharedCollection: {}", bookmark.getSharedCollection());
             newBookmark.updatePersonalCollection(null); // 개인 컬렉션 해제
@@ -334,7 +340,11 @@ public class BookmarkService {
         // 공유 > 공유
         } else if (!request.isPersonal() && bookmark.getSharedCollection() != null) {
             SharedCollection collection = sharedCollectionRepository.findById(request.getCollectionId())
-                    .orElseThrow(() -> new CustomException("해당 개인컬렉션이 없습니다."));
+                    .orElseThrow(() -> new CustomException("해당 공유컬렉션이 없습니다."));
+
+            if (bookmarkRepository.existsByBookmarkUrlAndSharedCollection(url, collection)) {
+                throw new CustomException("이미 공유컬렉션에 담은 페이지입니다.");
+            }
 
             log.info("SharedCollection: {}", bookmark.getSharedCollection());
             newBookmark.updateSharedCollection(collection);
@@ -344,8 +354,13 @@ public class BookmarkService {
             PersonalCollection collection = personalCollectionRepository.findById(request.getCollectionId())
                     .orElseThrow(() -> new CustomException("해당 개인컬렉션이 없습니다."));
 
+            if (bookmarkRepository.existsByBookmarkUrlAndUser(url, user)) {
+                throw new CustomException("개인 컬렉션에 담은 페이지입니다.");
+            }
+
             log.info("PersonalCollection: {}", bookmark.getPersonalCollection());
             newBookmark.updateSharedCollection(null); // 공유 컬렉션 해제
+            newBookmark.updateUser(user);
             newBookmark.updatePersonalCollection(collection);
         }
 

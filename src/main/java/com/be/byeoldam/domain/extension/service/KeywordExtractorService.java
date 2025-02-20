@@ -116,6 +116,7 @@ public class KeywordExtractorService {
                 """.formatted(request.getSiteUrl(), request.getTitle()));
 
         Prompt prompt = new Prompt(List.of(systemMessage, userMessage));
+        log.info("gpt 요청완료");
 
         try {
             String responseContent = chatClient.call(prompt).getResult().getOutput().getContent();
@@ -130,7 +131,7 @@ public class KeywordExtractorService {
 
             // 응답 유효성 검사
             if (isValidKeywordResponse(keywords)) {
-                return keywords;
+                return keywords.subList(0, EXPECTED_KEYWORD_COUNT);
             }
             log.warn("유효하지 않은 키워드 응답: {}", responseContent);
         } catch (Exception e) {
@@ -142,13 +143,14 @@ public class KeywordExtractorService {
 
     private boolean isValidKeywordResponse(List<String> keywords) {
         // 키워드 개수 체크
-        if (keywords.size() != EXPECTED_KEYWORD_COUNT) {
-            log.debug("키워드 개수 불일치. 예상: {}, 실제: {}", EXPECTED_KEYWORD_COUNT, keywords.size());
+        if (keywords.size() < EXPECTED_KEYWORD_COUNT) {
+            log.debug("추천 키워드 수 적음. 예상: {}, 실제: {}", EXPECTED_KEYWORD_COUNT, keywords.size());
             return false;
         }
 
-        // 각 키워드 유효성 검사
-        for (String keyword : keywords) {
+        // 각 키워드 유효성 검사 (앞의 EXPECTED_KEYWORD_COUNT개만)
+        for (int i = 0; i < EXPECTED_KEYWORD_COUNT; i++) {
+            String keyword = keywords.get(i);
             if (keyword == null || keyword.trim().isEmpty() ||
                     keyword.trim().length() > MAX_KEYWORD_LENGTH) {
                 log.debug("유효하지 않은 키워드: {}", keyword);

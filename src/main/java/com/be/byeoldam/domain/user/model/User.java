@@ -120,7 +120,7 @@ public class User extends BaseTimeEntity{
             this.isActive = AccountStatus.ACTIVE;
         }
         if(this.profileUrl == null) {
-            profileUrl ="https://byeol-mypage.s3.ap-northeast-2.amazonaws.com/free-icon-user-9386837.PNG";
+            profileUrl ="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
         }
         if(this.role == null){
             role = "ROLE_USER";

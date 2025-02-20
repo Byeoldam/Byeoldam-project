@@ -1,5 +1,6 @@
 package com.be.byeoldam.domain.sharedcollection.dto;
 
+import com.be.byeoldam.domain.sharedcollection.model.Role;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,5 +15,5 @@ public class CollectionMemberResponse {
     private String email;
     private String nickname;
     private String profileUrl;
-
+    private Role role;
 }

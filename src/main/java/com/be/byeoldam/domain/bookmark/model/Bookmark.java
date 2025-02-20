@@ -112,4 +112,6 @@ public class Bookmark extends BaseTimeEntity {
     public void updateRead() {
         this.isRead = !this.isRead;
     }
+
+    public void updateUser(User user) {this.user = user;}
 }
