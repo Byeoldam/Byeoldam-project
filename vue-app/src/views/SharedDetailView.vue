@@ -73,6 +73,7 @@
                                 <div class="memo-content">{{ memo.content }}</div>
                                 <div class="memo-date">{{ memo.date }}</div>
                                 <button 
+                                    v-if="memo.userId === userStore.user.id" 
                                     @click="deleteMemo(memo.id)" 
                                     class="delete-memo-btn"
                                     :disabled="isSubmitting"
@@ -92,12 +93,14 @@
 import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useBookmarkStore } from '@/stores/bookmark';
+import { useUserStore } from '@/stores/user';
 import Header from '@/common/Header.vue';
 import SideBar from '@/common/SideBar.vue';
 
 const route = useRoute();
 const router = useRouter();
 const bookmarkStore = useBookmarkStore();
+const userStore = useUserStore();
 
 // bookmarkId로 북마크 정보 찾기
 const bookmark = computed(() => 

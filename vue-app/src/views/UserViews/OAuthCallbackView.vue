@@ -20,6 +20,7 @@
   import api from "@/utils/api";
   import { useCollectionStore } from '@/stores/collection';
   import { useUserStore } from '@/stores/user';  // 상단에 import 추가
+  import { ElMessage } from 'element-plus';
 
   // Vue Router 사용
   const router = useRouter();
@@ -101,12 +102,12 @@
         }
       } catch (error) {
         console.error("OAuth2 로그인 에러:", error);
-        alert("OAuth 로그인 중 오류가 발생했습니다.");
+        ElMessage.error("OAuth 로그인 중 오류가 발생했습니다.");
         router.push("/login"); // 실패 시 로그인 페이지로 이동
       }
     } else {
       console.error("OAuth2 로그인 실패: 인증 코드 없음");
-      alert("OAuth 로그인에 실패했습니다.");
+      ElMessage.error("OAuth 로그인에 실패했습니다.");
       router.push("/login"); // 실패 시 로그인 페이지로 이동
     }
 
