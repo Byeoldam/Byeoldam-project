@@ -325,9 +325,10 @@ onUnmounted(() => {
 }
 .search-page {
     padding: 20px;
-    max-width: 1200px;
-    margin: 0 auto;
+    width: 100%; /* 컨테이너의 전체 너비를 사용 */
+    margin: 0;
     margin-right: 20px;
+    box-sizing: border-box; /* 패딩을 포함한 전체 너비 계산 */
 }
 
 .search-container {
@@ -382,8 +383,9 @@ onUnmounted(() => {
 
 .bookmarks-grid {
     display: grid;
-    grid-template-columns: repeat(3, 240px); /* 3개의 카드를 위한 그리드 설정 */
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); /* 반응형 그리드 */
     gap: 20px;
+    width: 100%;
 }
 
 .recommended-list {
@@ -585,6 +587,19 @@ onUnmounted(() => {
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+/* 화면 크기에 따른 그리드 조정 */
+@media (min-width: 1200px) {
+    .bookmarks-grid {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+}
+
+@media (min-width: 1600px) {
+    .bookmarks-grid {
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    }
 }
 </style>
 
