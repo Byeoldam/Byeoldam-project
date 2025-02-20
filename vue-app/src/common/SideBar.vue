@@ -21,7 +21,11 @@
                 <i class="fas fa-share-alt"></i>
                 <span>공유 컬렉션</span>
             </router-link>
-            <router-link :to="{ name: 'search'}" class="nav-item">
+            <router-link 
+                :to="{ name: 'search'}" 
+                class="nav-item"
+                @click="clearSearch"
+            >
                 <i class="fas fa-search"></i>
                 <span>검색</span>
             </router-link>
@@ -38,7 +42,14 @@
 </template>
 
 <script setup>
-// Font Awesome을 사용하기 위해서는 별도 설치가 필요합니다
+import { useBookmarkStore } from '@/stores/bookmark'
+
+const bookmarkStore = useBookmarkStore()
+
+const clearSearch = () => {
+    // 검색 결과와 상태를 초기화
+    bookmarkStore.clearSearchResults()
+}
 </script>
 
 <style scoped>
