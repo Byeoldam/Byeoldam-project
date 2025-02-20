@@ -467,13 +467,18 @@ export const useBookmarkStore = defineStore("bookmark", () => {
       )
       ///////////////////////////////////////////////////////////////////////////////////////////////
       //태그 기반 검색 실제 response
-      const searchBookmarksByTag = ref({});
+      const searchBookmarksByTag = ref({
+          results: {
+              personalBookmarkList: [], // 기존 결과를 유지할 배열
+              recommendedUrlList: []    // 추천 URL 목록
+          }
+      });
 
       // 검색 상태를 저장할 ref 추가
       const currentSearchState = ref({
           searchTag: '',
           cursorId: null,
-          size: 10
+          size: 12
       });
 
       // 검색 상태 설정 함수
@@ -482,24 +487,47 @@ export const useBookmarkStore = defineStore("bookmark", () => {
       };
 
       // 검색 함수 수정
-      const getSearchBookmarksByTag = async (tagName, cursorId = 1, size = 10) => {
-          const response = await api.get(`/tags/search?cursorId=${cursorId}&size=${size}&tag=${tagName}`);
-          searchBookmarksByTag.value = response.data;
-          // 검색 상태 저장
-          setSearchState({ searchTag: tagName, cursorId, size });
-          console.log("------------getSearchBookmarksByTag------------");
-          console.log(response.data);
+      const getSearchBookmarksByTag = async (tagName, cursorId = 1, size = 12) => {
+          try {
+              const response = await api.get(`/tags/search?cursorId=${cursorId}&size=${size}&tag=${tagName}`);
+              
+              if (cursorId === 1) {
+                  // 첫 검색일 경우 결과를 새로 설정
+                  searchBookmarksByTag.value = response.data;
+              } else {
+                  // 추가 데이터 로드의 경우 personalBookmarkList만 추가하고 나머지는 유지
+                  searchBookmarksByTag.value = {
+                      ...searchBookmarksByTag.value,
+                      results: {
+                          ...searchBookmarksByTag.value.results,
+                          personalBookmarkList: [
+                              ...searchBookmarksByTag.value.results.personalBookmarkList,
+                              ...response.data.results.personalBookmarkList
+                          ],
+                          recommendedUrlList: searchBookmarksByTag.value.results.recommendedUrlList // 기존 추천 목록 유지
+                      }
+                  };
+              }
+
+              // 검색 상태 저장
+              setSearchState({ searchTag: tagName, cursorId, size });
+              
+              return response.data;
+          } catch (error) {
+              console.error('태그 검색 중 오류 발생:', error);
+              throw error;
+          }
       };
 
       // 검색 결과 초기화 함수 수정
-      const clearSearchResults = () => {
-          searchBookmarksByTag.value = {};
-          currentSearchState.value = {
-              searchTag: '',
-              cursorId: null,
-              size: 10
-          };
-      };
+    //   const clearSearchResults = () => {
+    //       searchBookmarksByTag.value = {};
+    //       currentSearchState.value = {
+    //           searchTag: '',
+    //           cursorId: null,
+    //           size: 12
+    //       };
+    //   };
 
       //태그 기반 검색 예시 response
       const exampleSearchedBookmarksByTag = ref({
@@ -762,7 +790,7 @@ export const useBookmarkStore = defineStore("bookmark", () => {
         topTags,
         refreshCurrentPage,
         currentCollection,
-        clearSearchResults,
+        // clearSearchResults,
         selectedBookmark,
         setSelectedBookmark,
         findBookmarkById,

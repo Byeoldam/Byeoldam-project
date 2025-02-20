@@ -110,7 +110,7 @@ const handleInvite = async () => {
     inviteEmail.value = '';
     emit('refresh');
   } catch (error) {
-    ElMessage.error('초대 실패: ' + error.message);
+    ElMessage.error('초대 실패: ' + error.response.data.message);
   }
 };
 

@@ -2,8 +2,16 @@
     <div class="card">
         <div class="card-header">
             <div class="priority" v-show="props.isPersonal !== false">
-                <span v-if="props.priority" class="star-icon">★</span>
-                <span v-else class="star-icon empty">☆</span>
+                <span 
+                    v-if="props.priority" 
+                    class="star-icon" 
+                    @click="newHandlePriorityToggle"
+                >★</span>
+                <span 
+                    v-else 
+                    class="star-icon empty"
+                    @click="newHandlePriorityToggle"
+                >☆</span>
             </div>
             <div class="settings">
                 <BookmarkSettings 
@@ -66,6 +74,7 @@ import { ref, computed } from 'vue';
 import BookmarkSettings from '@/common/BookmarkSettings.vue';
 import { useRouter } from 'vue-router';
 import { useBookmarkStore } from '@/stores/bookmark';
+import { ElMessage } from 'element-plus';
 
 const props = defineProps({
     key: {
@@ -150,6 +159,25 @@ const emit = defineEmits(['update:priority']);
 
 const handlePriorityToggle = () => {
     emit('update:priority', !props.priority);
+};
+
+const newHandlePriorityToggle = async () => {
+    try {
+        const success = await bookmarkStore.changePriority(
+            props.bookmarkId,
+            !props.priority
+        );
+        
+        if (success) {
+            ElMessage.success('중요도 변경에 성공했습니다.');
+            emit('update:priority', !props.priority);
+        } else {
+            ElMessage.error('중요도 변경에 실패했습니다.');
+        }
+    } catch (error) {
+        console.error('중요도 변경 중 오류 발생:', error);
+        ElMessage.error('중요도 변경 중 오류가 발생했습니다.');
+    }
 };
 </script>
 
@@ -284,6 +312,7 @@ const handlePriorityToggle = () => {
   font-size: 1.2rem;
   text-shadow: 0 2px 4px rgba(0,0,0,0.1);
   transition: all 0.2s ease;
+  cursor: pointer;
 }
 
 .star-icon.empty {

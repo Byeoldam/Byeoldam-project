@@ -167,7 +167,7 @@ const handleSearch = async () => {
         lastCursorId.value = null
         hasMore.value = true
         
-        await bookmarkStore.getSearchBookmarksByTag(searchTag.value, undefined, 10)
+        await bookmarkStore.getSearchBookmarksByTag(searchTag.value)
         
         if (bookmarks.value.length < 10) {
             hasMore.value = false

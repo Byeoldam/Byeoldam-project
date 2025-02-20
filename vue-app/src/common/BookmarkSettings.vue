@@ -148,12 +148,10 @@ const togglePriority = async () => {
   try {
     const success = await bookmarkStore.changePriority(
       props.bookmarkId, 
-      !props.priority, 
-      props.collectionId,
-      props.isPersonal
+      !props.priority
     );
     if (success) {
-      ElMessage.success(props.priority ? '중요 북마크가 해제되었습니다.' : '중요 북마크로 설정되었습니다.')
+      ElMessage.success('중요도 변경에 성공했습니다.')
       emit('update:priority', !props.priority)
       isVisible.value = false
     } else {
