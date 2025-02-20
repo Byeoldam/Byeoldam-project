@@ -18,6 +18,11 @@ export const useBookmarkStore = defineStore("bookmark", () => {
 
   const setFeedList = (feeds) => {
     feedList.value = feeds;
+    const hasUnreadFeed = feeds.some((feed) => !feed.isRead);
+    badges.value = {
+      ...badges.value,
+      hasNewFeed: hasUnreadFeed,
+    };
   };
 
   // 알림 목록
@@ -39,7 +44,7 @@ export const useBookmarkStore = defineStore("bookmark", () => {
   };
 
   // 탭 배지 데이터
-  const badges = ref([{ notificationCnt: 0, hasNewFeed: false }]);
+  const badges = ref({ notificationCnt: 0, hasNewFeed: false });
 
   const setBadges = (badge) => {
     badges.value = badge;

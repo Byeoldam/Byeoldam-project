@@ -11,7 +11,7 @@
       "128": "icon-128x128.png"
     }
   },
-  "permissions": ["storage", "activeTab", "tabs"],
+  "permissions": ["storage", "activeTab"],
   "background": {
     "service_worker": "background.js"
   },

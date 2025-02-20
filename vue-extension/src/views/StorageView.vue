@@ -685,7 +685,12 @@ const scribeRSS = async () => {
           name: feed.name,
           isRead: feed.isRead,
         }));
-        bookmarkStore.setFeedList(feedData); 
+        bookmarkStore.setFeedList(feedData);
+
+        bookmarkStore.setBadges({
+          ...bookmarkStore.badges,
+          hasNewFeed: true,
+        });
       }
       isSaved.value = true;
     }
