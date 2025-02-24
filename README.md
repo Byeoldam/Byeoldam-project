@@ -5,6 +5,153 @@
 
 <br>
 
+## 👥 팀 소개
+
+<table width="500" align="center">
+<tbody>
+<tr>
+<th>Pictures</th>
+<td width="100" align="center">
+<a href="https://github.com/eenzzi">
+<img src="https://avatars.githubusercontent.com/u/142785172?v=4" width="60" height="60">
+</a>
+</td>
+<td width="100" align="center">
+<a href="https://github.com/jyoooooung">
+<img src="https://imgur.com/m7qRBUS" width="60" height="60">
+</a>
+</td>
+<td width="100" align="center">
+<a href="https://github.com/lhj4499">
+<img src="https://avatars.githubusercontent.com/u/142785172?v=4" width="60" height="60">
+</a>
+</td>
+</tr>
+<tr>
+<th>Name</th>
+<td width="100" align="center">이은지</td>
+<td width="100" align="center">김진영</td>
+<td width="100" align="center">이학준</td>
+
+</tr>
+<tr>
+<th>Role</th>
+<td width="150" align="center">
+
+ **팀장<br>
+백엔드 리더**<br>
+알림, RSS 담당<br>
+</td>
+<td width="150" align="center">
+
+ **백엔드**<br>
+북마크, 컬렉션 담당<br>
+</td>
+<td width="150" align="center">
+
+ **백엔드**<br>
+유저, 태그 담당<br>
+<br>
+</td>
+
+</tr>
+<tr>
+<th>GitHub</th>
+<td width="100" align="center">
+<a href="https://github.com/eenzzi">
+<img src="http://img.shields.io/badge/eenzzi-green?style=social&logo=github"/>
+</a>
+</td>
+<td width="100" align="center">
+<a href="https://github.com/jyoooooung">
+<img src="http://img.shields.io/badge/jyoooooung-green?style=social&logo=github"/>
+</a>
+</td>
+<td width="100" align="center">
+<a href="https://github.com/lhj4499">
+<img src="http://img.shields.io/badge/lhj4499-green?style=social&logo=github"/>
+</a>
+</td>
+
+</tr>
+</table>
+
+
+
+<table width="500" align="center">
+</tbody>
+
+<br>
+
+<tbody>
+<tr>
+<th>Pictures</th>
+<td width="100" align="center">
+<a href="https://github.com/manimani10002">
+<img src="https://ibb.co/k2j4G3L0" width="60" height="60">
+</a>
+</td>
+<td width="100" align="center">
+<a href="https://github.com/Maxwithjude">
+<img src="https://avatars.githubusercontent.com/u/80088671?v=4" width="60" height="60">
+</a>
+</td>
+<td width="100" align="center">
+<a href="https://github.com/LeeSeongHui">
+<img src="https://avatars.githubusercontent.com/u/142785172?v=4" width="60" height="60">
+</a>
+</td>
+</tr>
+<tr>
+<th>Name</th>
+<td width="100" align="center">박태현</td>
+<td width="100" align="center">이동현</td>
+<td width="100" align="center">이성희</td>
+
+</tr>
+<tr>
+<th>Role</th>
+<td width="150" align="center">
+
+ **프론트 리더**<br>
+메인 페이지 담당<br>
+</td>
+<td width="150" align="center">
+
+ **인프라 + 프론트**<br>
+유저 페이지 담당<br>
+</td>
+<td width="150" align="center">
+
+ **프론트 + 백엔드**<br>
+크롬 익스텐션 담당<br>
+<br>
+</td>
+
+</tr>
+<tr>
+<th>GitHub</th>
+<td width="100" align="center">
+<a href="https://github.com/manimani10002">
+<img src="http://img.shields.io/badge/manimani10002-green?style=social&logo=github"/>
+</a>
+</td>
+<td width="100" align="center">
+<a href="https://github.com/Maxwithjude">
+<img src="http://img.shields.io/badge/Maxwithjude-green?style=social&logo=github"/>
+</a>
+</td>
+<td width="100" align="center">
+<a href="https://github.com/LeeSeongHui">
+<img src="http://img.shields.io/badge/LeeSeongHui-green?style=social&logo=github"/>
+</a>
+</td>
+
+
+</tr>
+</tbody>
+</table>
+
 # ✨ 주요 기능 
 
 ### 1. 크롬 익스텐션 설치
