@@ -13,17 +13,17 @@
 <th>Pictures</th>
 <td width="100" align="center">
 <a href="https://github.com/eenzzi">
-<img src="https://avatars.githubusercontent.com/u/142785172?v=4" width="60" height="60">
+<img src="https://i.imgur.com/e0TKpiS.png" width="60" height="60">
 </a>
 </td>
 <td width="100" align="center">
 <a href="https://github.com/jyoooooung">
-<img src="https://imgur.com/m7qRBUS" width="60" height="60">
+<img src="https://i.imgur.com/m7qRBUS.png" width="90" height="60">
 </a>
 </td>
 <td width="100" align="center">
 <a href="https://github.com/lhj4499">
-<img src="https://avatars.githubusercontent.com/u/142785172?v=4" width="60" height="60">
+<img src="https://i.imgur.com/ZaJD16p.png" width="60" height="60">
 </a>
 </td>
 </tr>
@@ -88,17 +88,17 @@
 <th>Pictures</th>
 <td width="100" align="center">
 <a href="https://github.com/manimani10002">
-<img src="https://ibb.co/k2j4G3L0" width="60" height="60">
+<img src="https://i.imgur.com/TSc75zm.png" width="60" height="60">
 </a>
 </td>
 <td width="100" align="center">
 <a href="https://github.com/Maxwithjude">
-<img src="https://avatars.githubusercontent.com/u/80088671?v=4" width="60" height="60">
+<img src="https://i.imgur.com/1lLN9ij.png" width="60" height="60">
 </a>
 </td>
 <td width="100" align="center">
 <a href="https://github.com/LeeSeongHui">
-<img src="https://avatars.githubusercontent.com/u/142785172?v=4" width="60" height="60">
+<img src="https://i.imgur.com/4htoJ4V.png" width="60" height="60">
 </a>
 </td>
 </tr>
