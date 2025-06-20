@@ -4,6 +4,7 @@ package com.be.byeoldam.config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.*;
+import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -23,6 +24,10 @@ public class RabbitMQConfig {
     private static final String EXCHANGE_NAME = "notification.exchange";
     private static final String ROUTING_KEY = "notification.key";
 
+    public static final String DLQ = "deadLetterQueue";
+    public static final String DLX = "deadLetterExchange";
+    public static final String DEAD_LETTER_ROUTING_KEY = "dead.letter";
+
     private static final Logger log = LoggerFactory.getLogger(RabbitMQConfig.class);
 
     // Message가 Queue에 도착했는지 확인하기 위한 변수
@@ -35,17 +40,35 @@ public class RabbitMQConfig {
 
     @Bean
     public Queue notificationQueue() {
-        return new Queue(QUEUE_NAME, true);  // durable=true -> 서버 재시작해도 큐 유지
+        //return new Queue(QUEUE_NAME, true);  // durable=true -> 서버 재시작해도 큐 유지
+        return QueueBuilder.durable(QUEUE_NAME)
+                .withArgument("x-dead-letter-exchange", DLX)
+                .withArgument("x-dead-letter-routing-key", DEAD_LETTER_ROUTING_KEY)
+                .build();
     }
+    @Bean
+    public Queue deadLetterQueue() {
+        return QueueBuilder.durable(DLQ).build();
+    }
+
 
     @Bean
     public DirectExchange notificationExchange() {
         return new DirectExchange(EXCHANGE_NAME);
     }
+    @Bean
+    public TopicExchange deadLetterExchange() {
+        return new TopicExchange(DLX);
+    }
+
 
     @Bean
     public Binding notificationBinding(Queue notificationQueue, DirectExchange notificationExchange) {
         return BindingBuilder.bind(notificationQueue).to(notificationExchange).with(ROUTING_KEY);
+    }
+    @Bean
+    public Binding deadLetterQueueBinding() {
+        return BindingBuilder.bind(deadLetterQueue()).to(deadLetterExchange()).with(DEAD_LETTER_ROUTING_KEY);
     }
 
     @Bean
@@ -92,5 +115,15 @@ public class RabbitMQConfig {
         return rabbitTemplate;
     }
 
+    @Bean
+    public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(ConnectionFactory connectionFactory,
+                                                                               Jackson2JsonMessageConverter jsonMessageConverter) {
+        SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
+        factory.setConnectionFactory(connectionFactory);
+        factory.setMessageConverter(jsonMessageConverter);
+        // 수정 모드 설정이 들어가야 Ack, Nack 전송 가능
+        factory.setAcknowledgeMode(AcknowledgeMode.MANUAL);
+        return factory;
+    }
 
 }

@@ -1,60 +1,50 @@
 package com.be.byeoldam.domain.notification.event;
 
-import com.be.byeoldam.domain.bookmark.model.Bookmark;
-import com.be.byeoldam.domain.bookmark.repository.BookmarkRepository;
-import com.be.byeoldam.domain.notification.NotificationRepository;
 import com.be.byeoldam.domain.notification.dto.NotificationMessage;
-import com.be.byeoldam.domain.notification.model.BookmarkNotification;
-import com.be.byeoldam.domain.notification.model.InviteNotification;
-import com.be.byeoldam.domain.sharedcollection.model.SharedCollection;
-import com.be.byeoldam.domain.sharedcollection.repository.SharedCollectionRepository;
-import com.be.byeoldam.domain.user.model.User;
-import com.be.byeoldam.domain.user.repository.UserRepository;
-import com.be.byeoldam.exception.CustomException;
+import com.be.byeoldam.domain.notification.service.NotificationService;
+import com.rabbitmq.client.Channel;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.support.AmqpHeaders;
+import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 public class NotificationConsumer {
 
-    private final NotificationRepository notificationRepository;
-    private final UserRepository userRepository;
-    private final SharedCollectionRepository sharedCollectionRepository;
-    private final BookmarkRepository bookmarkRepository;
+    private final RabbitTemplate rabbitTemplate;
+    private final RetryTemplate retryTemplate;
+    private final NotificationService notificationService;
 
-    @RabbitListener(queues = "notification.queue")
-    public void receiveNotification(NotificationMessage message) {
+    private static final Logger log = LoggerFactory.getLogger(NotificationConsumer.class);
+    @RabbitListener(queues = "notification.queue", containerFactory = "rabbitListenerContainerFactory")
+    public void receiveNotification(NotificationMessage message, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) {
 
-        User user = userRepository.findById(message.getUserId())
-                .orElseThrow(() -> new CustomException("사용자를 찾을 수 없습니다."));
+       try {
+           retryTemplate.execute(context -> {   //로직 수행
+               String type = message.getType();
+               if(!type.equals("INVITE") && !type.equals("BOOKMARK") ) {
+                   throw new RuntimeException(String.format(
+                           "Invalid message type received. type=%s, message=%s", type, message.toString()));
+               }
 
-        if (message.getType().equals("BOOKMARK")) {
+               notificationService.processNotification(message);
+               channel.basicAck(tag, false);
 
-            Bookmark bookmark = bookmarkRepository.findById(message.getTargetId())
-                    .orElseThrow(() -> new CustomException("북마크를 찾을 수 없습니다."));
+               return null;
+           },context ->{    // 재시도까지 포함해서 로직 실패한 경우 처리
+               log.error("DLQ로 이동할 메시지: {}", message);
+               channel.basicNack(tag, false, false);
 
-            BookmarkNotification notification = BookmarkNotification.builder()
-                    .user(user)
-                    .message(message.getMessage())
-                    .bookmark(bookmark) // 북마크 ID를 추가하려면 BookmarkRepository 필요
-                    .build();
-
-            notificationRepository.save(notification);
-
-        } else if (message.getType().equals("INVITE")) {
-
-            SharedCollection collection = sharedCollectionRepository.findById(message.getTargetId())
-                    .orElseThrow(() -> new CustomException("공유 컬렉션을 찾을 수 없습니다."));
-
-            InviteNotification notification = InviteNotification.builder()
-                    .user(user)
-                    .collection(collection)
-                    .message(message.getMessage())
-                    .build();
-
-            notificationRepository.save(notification);
-        }
+               return null;
+           });
+       }catch (Exception e) {
+           // recoveryCallback에서 예외 던지지 않아서 실행 x
+       }
     }
 }
