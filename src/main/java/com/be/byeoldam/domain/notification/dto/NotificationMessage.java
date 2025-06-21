@@ -3,6 +3,7 @@ package com.be.byeoldam.domain.notification.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * RabbitMQ 메시지 전송을 위한 DTO
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 @AllArgsConstructor
+@ToString
 public class NotificationMessage {
 
     private Long userId;     // 알림을 받을 사용자 ID
